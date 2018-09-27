@@ -1,7 +1,6 @@
 #!/usr/bin/python2.7
 
-"""
-    Name: nerLib.py
+""" Name: nerLib.py
 	NER: Named-Entity Recognition Module
     Author:  Jim, Sept 2018
     
@@ -41,14 +40,10 @@ import sys
 import os
 import time
 import json
-#import simpleURLLib as surl
-#import NCBIutilsLib as eulib
-#import xml.etree.ElementTree as ET
-#import runCommand
-#import Dispatcher
-# --------------------------
+import becas
+##############################################
 # Constants
-# --------------------------
+##############################################
 
 # Constants for naming concepts. We are interested in certain concepts.
 # The values of these constants are what the entity name in text gets
@@ -64,9 +59,11 @@ allConcepts = { diseaseConcept :    True,
 		anatomyConcept:     True,
 	    }
 # more...
+myEmail = "james.kadin@jax.org"
 
-# --------------------------
+##############################################
 class BaseNamedEntityRecognizer (object):
+##############################################
     """
     Is: an abstract base class for classes that implement or use a specific
     	tool to do NER.
@@ -80,7 +77,7 @@ class BaseNamedEntityRecognizer (object):
     def __init__(self, concepts=allConcepts,	# {concept_name: T/F }
 	):
 			# list of concepts to map to
-	self.concepts = [ c for (c,b) in concepts.items() if b == True ]
+	self.concepts = [ c for (c,b) in concepts.items() if b ]
 
 			# For each concept, keep
 			#   count of individual entity names mapped &
@@ -156,9 +153,40 @@ class BaseNamedEntityRecognizer (object):
     # --------------------------
 # end BaseNamedEntityRecognizer ------------
 
-class TestNamedEntityRecognizer(BaseNamedEntityRecognizer):
+##############################################
+class BecasNamedEntityRecognizer(BaseNamedEntityRecognizer):
+##############################################
+    """ Is: an NER that uses the API to Becas
     """
-    Is: a simple test NER
+    concept2BecasGroup = { geneProteinConcept : "PRGE",
+			    diseaseConcept: "DISO",
+			    anatomyConcept: "ANAT",
+			}
+
+    def __init__(self, concepts=allConcepts,	# {concept_name: T/F }
+	):
+	super(BecasNamedEntityRecognizer, self).__init__(concepts)
+	self.becasGroups = dict( [ [self.concept2BecasGroup[c], True]
+						    for c in concepts ] )
+	becas.email = myEmail
+    # --------------------------
+
+    def doEntityRecognition(self,
+			    docs, # [ doc ], each doc obj has .docId and .text
+	):
+	# BECAS DOES NOT STAY UP LONG ENOUGH FOR ME TO IMPLEMENT THIS!
+	for doc in docs:
+	    becasJson = becas.export_text(doc.text,'json',groups=self.becasGroups)
+	    print json.dumps(becasJson, sort_keys= True, indent=4, )
+	return []
+    # --------------------------
+# end BecasNamedEntityRecognizer ------------
+
+
+##############################################
+class TestNamedEntityRecognizer(BaseNamedEntityRecognizer):
+##############################################
+    """ Is: a simple test NER
     """
     entity_map = { 'Pax4' : geneProteinConcept,	# entities mapped to concepts
 		 'Pax5' : geneProteinConcept,
@@ -198,22 +226,29 @@ class TestNamedEntityRecognizer(BaseNamedEntityRecognizer):
 	return results
 
 # end TestNamedEntityRecognizer ------------
+##############################################
 
 class TestDoc (object):
     def __init__(self, id, text):
 	self.docId = id
 	self.text = text
-
 # --------------------------
+
 if __name__ == "__main__": 
     # some test code
-    ner = TestNamedEntityRecognizer()
     doc1 = TestDoc('doc1', 'this is about Pax6 and Pax5. Pax6 is my favorite')
     doc2 = TestDoc('doc2', 'Pax5 is expressed in eye but not heart. ')
+    docs = [doc1, doc2]
 
-    rslts = ner.doEntityRecognition([doc1,doc2])
-    print "doc1: '%s'" % doc1.text
-    print "doc2: '%s'" % doc2.text
-    print json.dumps(rslts, sort_keys=True, indent=4)
-    print json.dumps(ner.getConceptCounts(), sort_keys=True, indent=4)
-    print json.dumps(ner.getEntityCounts(), sort_keys=True, indent=4)
+    if True:
+	ner = BecasNamedEntityRecognizer()
+	rslts = ner.doEntityRecognition(docs)
+
+    if False:
+	ner = TestNamedEntityRecognizer()
+	rslts = ner.doEntityRecognition(docs)
+	print "doc1: '%s'" % doc1.text
+	print "doc2: '%s'" % doc2.text
+	print json.dumps(rslts, sort_keys=True, indent=4)
+	print json.dumps(ner.getConceptCounts(), sort_keys=True, indent=4)
+	print json.dumps(ner.getEntityCounts(), sort_keys=True, indent=4)
