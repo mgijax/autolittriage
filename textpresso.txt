@@ -1,0 +1,63 @@
+Questions for Hans-Michael Muller about Textpresso and SVM pipeline
+Skyped: 10/9/2018
+
+What corpus do you start with? Papers that are already known to be worm papers?
+(how do you know)
+    - yes worm papers
+    - pubmed search for c. elegans in title/abstract
+    - gets them all
+
+Their SVM is for predicting data types/areas, not relevance. ~10 data areas
+
+Are you using the full text extracted from PDFs? Or some subset?
+    - full text extracted
+Are you pulling text from the PDF and/or the xml files available from PMC OA?
+    - PDF extraction
+
+What do you use for PDF text extraction?
+    - have used Linux pdf 2 text
+    - in new system, Michael has written his own extraction code in C++
+
+Algorithm: not really using full text per se
+    - LDA (unsupervised topic modeling identifying clusters of words)
+    - each paper runs through LDA and gets a prob score for each topic area (?)
+    - SVM for each data type, input is the (small) vector of LDA scores
+
+Do you worry about the reference sections?
+    - yes and no, some of the titles/authors of references are helpful for
+	finding specific data areas
+    - not doing anything with it now
+
+What tools do you use to implement your classifiers and preprocessing steps?
+    - older version is sklearn
+    - newer is dblib.net in C++
+
+What are you using for named entity recognition?
+Is it a standard library/package or an API to an external resource?
+Do you use NER for dimension reduction in your classifiers or just in markup
+in Textpresso?
+    - NOT using NER for SVM
+    - for Textpresso, they use UIMA - dictionary lookup for markup
+    - Apache hosting ??
+    - get XMI back with original text  + markup at the end with text coord of
+	different terms
+How do you evaluate the accuracy of your NER?
+    - n/a
+
+What other text preprocessing/vectorization steps do you use for your
+classifiers?
+    - didn't really discuss
+
+Scale. If we were to use SVM pipeline, can we handle 500 PDFs per week?
+    - they get 50 papers per month (we get 500/week)
+    - their training set size, per data area
+	200-400 positives ~1000 negatives (hope)
+	    - negatives a little questionable
+    - didn't really talk about how things would scale with MGI's volume
+	(training or otherwise)
+
+Retraining. How do you handle evolving/updating your training sets over time?
+Is there a mechanism for curators to confirm positive and negative predictions
+so you can use those confirmations for future training?
+    - yes, curators can mark FP/TP, every year of so, they retrain.
+    - curators don't see negatives so they don't evaluate FN
