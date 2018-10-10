@@ -6,6 +6,20 @@ Backpopulate/
 
 Lessons Learned and Where We Are
 
+Previous thinking for python scripts in MLtextTools:
+    * getTrainingData.py would get a delimited file of samples
+    * preprocessSamples.py would massage the data in the delimited file(s)
+    * populateTrainigDirs.py would take a massaged delimited file and populate
+	the dirs that sklearn's load_files() wants.
+    Would it be better to have getTrainingData populate text files in the dirs
+    and massage the data in place (or into additional cooked files)?
+
+    BUT MLtextTools already has stuff in place, so lets keep with that 
+    paradigm. Can always run populateTrainingDirs.py at any time to generate
+    the text files to look at.
+    	- should add parameter to specify file extension
+	- should make it not assume class names are 'yes' 'no'
+
 NER thoughts
     Becas is very unreliable, down much of the time.
     Haven't found any other online tool (need to look some more).
