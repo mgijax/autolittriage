@@ -1,0 +1,3 @@
+#
+# from stdin, convert input records delimited by ';;' to \n
+cat - | awk '{gsub(/;;/,";;\n\n"); print}'

@@ -1,87 +1,95 @@
-#!/usr/bin/env python2.7 
-#
-"""
-    getTrainingData.py
-
-    Pull articles from the database, get their
-	pmid,
-	title, abstract,
-	extracted text,
-	journal, 
-	MGI-discard y/n
-    Populate text files with title+abstract+extracted text concat'd together.
-    
-    Output naming
-	/no	# MGI-discards (not relevant) go here
-	/yes	# non-discards (relevant) go here
-	   /journalname		# under /no and /yes, journal directories
-	       /pmid.txt	# the smooshed together text file
-
-    also output to stdout a summary report, tab delimited:
-    pmid,
-    yes/no,
-    journal,
-
-# Author: Jim Kadin
-##
-"""
-import sys
-#sys.path.append('..')
-#sys.path.append('../..')
-import string
-import time
-import os
-import argparse
-import db
-#import sampleDataLib as sdlib
-#from ConfigParser import ConfigParser
-#import sampleDataLib as sdLib
-#import sklearnHelperLib as ppLib	# module holding preprocessor function
+#!/usr/bin/env python2.7
 
 #-----------------------------------
-DEFAULT_OUTPUT_DIR = '.'
-TEXT_PART_SEP         = '::::\n'	# separates title, abstract, ext text
+'''
+  Purpose:
+	   run sql to get lit triage relevance training set
+	   Data transformations include:
+	    replacing non-ascii chars with ' '
+	    replacing FIELDSEP and RECORDSEP chars in the doc text w/ ' '
+
+  Outputs:     delimited file to stdout
+'''
+OutputColumns = [
+    'class', 	# "discard" or "keep" (CLASS_NAMES in config file)
+    'pubmed',
+    'year',
+    'journal',
+    'title',
+    'abstract',
+    'text',	# '|\r' replaced by space & convert Unicode to space
+    ]	# this column order is assumed in sampleDataLib.py
+
+#-----------------------------------
+# Try to keep this script easy to run from various servers,
+# Try to keep import dependencies down to standard Python libaries
+import sys
+import os
+import string
+import time
+import argparse
+import ConfigParser
+import db
+#-----------------------------------
+cp = ConfigParser.ConfigParser()
+cp.optionxform = str # make keys case sensitive
+cl = ['/'.join(l)+'/config.cfg' for l in [['.']]+[['..']*i for i in range(1,4)]]
+configFiles = cp.read(cl)
+#print configFiles
+
+# for the output delimited file
+FIELDSEP     = eval(cp.get("DEFAULT", "FIELDSEP"))
+RECORDSEP    = eval(cp.get("DEFAULT", "RECORDSEP"))
+CLASS_NAMES  = eval(cp.get("DEFAULT", "CLASS_NAMES"))
+INDEX_OF_YES = eval(cp.get("DEFAULT", "INDEX_OF_YES"))
+INDEX_OF_NO  = eval(cp.get("DEFAULT", "INDEX_OF_NO"))
+#-----------------------------------
 
 def getArgs():
     parser = argparse.ArgumentParser( \
-    description='get articles from db, write them to directory structure')
+	description='Get littriage relevance training samples, write to stdout')
 
-#    parser.add_argument('inputFile', action='store', 
-#    	help='tab-delimited input file of training data')
+    parser.add_argument('-s', '--server', dest='server', action='store',
+        required=False, default='dev',
+        help='db server. Shortcuts:  adhoc, prod, or dev (default)')
 
-    parser.add_argument('-o', '--outputDir', dest='outputDir', action='store',
-	required=False, default=DEFAULT_OUTPUT_DIR,
-    	help='dir where /no and /yes go. Default=%s' % DEFAULT_OUTPUT_DIR)
+    parser.add_argument('-d', '--database', dest='database', action='store',
+        required=False, default='mgd',
+        help='Which database. Example: mgd (default)')
 
-#    parser.add_argument('-p', '--preprocessor', dest='preprocessor',
-#	action='store', required=False, default=PREPROCESSOR,
-#    	help='preprocessor function name. Default= %s' % PREPROCESSOR)
+    parser.add_argument('--query', dest='query', action='store',
+        required=False, default='all', choices=['all', ],
+        help='which subset of the training data to get, for now only "all"')
+
+    parser.add_argument('-l', '--limit', dest='nResults',
+	type=int, default=0, 		# 0 means ALL
+        help="limit SQL to n results. Default is no limit")
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
         required=False, help="skip helpful messages to stderr")
 
-    parser.add_argument('-s', '--server', dest='server', action='store',
-        required=False, default='dev',
-        help='db server: adhoc, prod, or dev (default)')
-
-    args = parser.parse_args()
+    args =  parser.parse_args()
 
     if args.server == 'adhoc':
-        args.host = 'mgi-adhoc.jax.org'
-        args.db = 'mgd'
+	args.host = 'mgi-adhoc.jax.org'
+	args.db = 'mgd'
     if args.server == 'prod':
-        args.host = 'bhmgidb01'
-        args.db = 'prod'
+	args.host = 'bhmgidb01'
+	args.db = 'prod'
     if args.server == 'dev':
-        args.host = 'bhmgidevdb01'
-        args.db = 'prod'
+	args.host = 'bhmgidevdb01'
+	args.db = 'prod'
 
     return args
-#----------------------
+#-----------------------------------
+
 SQLSEPARATOR = '||'
-QUERY =  \
+
+# get articles for year > 2017
+Query1 =  \
 '''
-select a.accid pubmed, r.isdiscard, r.year, r.journal, r.title, r.abstract, bd.extractedtext
+select a.accid pubmed, r.isdiscard, r.year, r.journal, r.title, r.abstract,
+     translate(bd.extractedtext, E'\r', ' ') as "text" -- remove ^M
 from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
      join acc_accession a on
          (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
@@ -92,12 +100,31 @@ and r._referencetype_key=31576687 -- peer reviewed article
 and bd.haspdf=1
 -- r.isdiscard = 1
 -- and bd._supplemental_key =34026997  -- "supplemental attached"
-order by r.journal, pubmed
-limit 10
+-- order by r.journal, pubmed
 '''
+#-----------------------------------
 
-def main():
+def getQueries(args):
+    """
+    Return list of sql queries to run
+    """
+    if args.query == 'someoption':
+	queries = ['someQuery']
+    else:
+	queries = [Query1]
 
+    if args.nResults > 0:
+	limitText = "\nlimit %d\n" % args.nResults
+	final = []
+	for q in queries:
+	    final.append( q + limitText )
+    else: final = queries
+
+    return final
+#-----------------------------------
+
+def process():
+    """ Main routine"""
     args = getArgs()
 
     db.set_sqlServer  ( args.host)
@@ -106,27 +133,42 @@ def main():
     db.set_sqlPassword("mgdpub")
 
     if args.verbose:
-        sys.stderr.write( "Hitting database %s %s as mgd_public\n\n" % \
-                                                        (args.host, args.db))
-    queries = string.split(QUERY, SQLSEPARATOR)
-
+	sys.stderr.write( "Hitting database %s %s as mgd_public\n\n" % \
+							(args.host, args.db))
     startTime = time.time()
-    results = db.sql( queries, 'auto')
-    endTime = time.time()
-    if args.verbose:
-        sys.stderr.write( "Total SQL time: %8.3f seconds\n\n" % \
-                                                        (endTime-startTime))
-    baseDir = args.outputDir
-    for yesNo in ['yes', 'no']:
-	dirname =  os.sep.join( [ baseDir, yesNo ] )
-	if not os.path.exists(dirname):
-	    os.makedirs(dirname)
 
-    for i,r in enumerate(results[-1]):
-	pmid          = r['pubmed']
-	yesNo         = 'yes'		# default to yes (relevant)
+    sys.stdout.write( FIELDSEP.join(OutputColumns) + RECORDSEP )
+
+    for i, q in enumerate(getQueries(args)):
+	qStartTime = time.time()
+
+	results = db.sql( string.split(q, SQLSEPARATOR), 'auto')
+
+	if args.verbose:
+	    sys.stderr.write( "Query %d SQL time: %8.3f seconds\n\n" % \
+						(i, time.time()-qStartTime))
+	nResults = writeResults(results[-1]) # db.sql returns list of rslt lists
+
+	if args.verbose:
+	    sys.stderr.write( "%d references processed\n\n" % (nResults) )
+
+    if args.verbose:
+	sys.stderr.write( "Total time: %8.3f seconds\n\n" % \
+						    (time.time()-startTime))
+#-----------------------------------
+
+def writeResults( results	# list of records (dicts)
+    ):
+    """
+    # write records to stdout
+    # return count of records written
+    """
+    for r in results:
 	if r['isdiscard'] == 1:
-	    yesNo     = 'no'		# nope
+	    sampleClass = CLASS_NAMES[INDEX_OF_NO]
+	else:
+	    sampleClass = CLASS_NAMES[INDEX_OF_YES]
+	pmid          = str(r['pubmed'])
 	year          = str(r['year'])
 	journal       = '_'.join(r['journal'].split(' '))
 	title         = r['title']
@@ -134,34 +176,39 @@ def main():
 	# in case we omit these fields during debugging, check if defined
 	if r.has_key('abstract'): abstract = r['abstract']
 	else: abstract = ''
-	if r.has_key('extractedtext'): extractedText = r['extractedtext']
-	else: extractedText = ''
 
-	# Journal directory
-	dirname = os.sep.join( [ baseDir, yesNo, journal ] )
-	if not os.path.exists(dirname):
-	    os.makedirs(dirname)
+	if r.has_key('text'): text = r['text']
+	else: text = ''
 
-	# Text file
-	filename = os.sep.join( [ dirname, pmid + ".txt" ] )
-	fp = open(filename, 'w')
-	text = TEXT_PART_SEP.join([title, abstract, extractedText])
-	fp.write(text)
-	fp.close()
+	title    = removeNonAscii(cleanDelimiters(title))
+	abstract = removeNonAscii(cleanDelimiters(abstract))
+	text     = removeNonAscii(cleanDelimiters(text))
 
-	# Write to summary report
-	sys.stdout.write( \
-	    '\t'.join([
-		pmid,
-		yesNo,
-		year,
-		journal,
-		title[:20],
-		#abstract,
-		#extractedText,
-		]) + '\n')
-    return
+	sys.stdout.write( FIELDSEP.join( [
+	    sampleClass,
+	    pmid,
+	    year,
+	    journal,
+	    title,
+	    abstract,
+	    text,
+	    ] )
+	    + RECORDSEP
+	)
+    return len(results)
 #-----------------------------------
 
-if __name__ == "__main__":
-    main()
+def cleanDelimiters(text):
+    """ remove RECORDSEPs and FIELDSEPs from text (replace w/ ' ')
+    """
+    # not the most efficient way to do this ...
+    new = text.replace(RECORDSEP,' ').replace(FIELDSEP,' ')
+    return new
+#-----------------------------------
+
+def removeNonAscii(text):
+    new = ''.join([i if ord(i) < 128 else ' ' for i in text])
+    return new
+#-----------------------------------
+
+if __name__ == "__main__": process()
