@@ -74,10 +74,10 @@ def getArgs():
 	args.host = 'mgi-adhoc.jax.org'
 	args.db = 'mgd'
     if args.server == 'prod':
-	args.host = 'bhmgidb01'
+	args.host = 'bhmgidb01.jax.org'
 	args.db = 'prod'
     if args.server == 'dev':
-	args.host = 'bhmgidevdb01'
+	args.host = 'bhmgidevdb01.jax.org'
 	args.db = 'prod'
 
     return args
