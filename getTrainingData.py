@@ -170,14 +170,14 @@ def writeResults( results	# list of records (dicts)
 	    sampleClass = CLASS_NAMES[INDEX_OF_YES]
 	pmid          = str(r['pubmed'])
 	year          = str(r['year'])
-	journal       = '_'.join(r['journal'].split(' '))
-	title         = r['title']
+	journal       = '_'.join(str(r['journal']).split(' '))
+	title         = str(r['title'])
 
 	# in case we omit these fields during debugging, check if defined
-	if r.has_key('abstract'): abstract = r['abstract']
+	if r.has_key('abstract'): abstract = str(r['abstract'])
 	else: abstract = ''
 
-	if r.has_key('text'): text = r['text']
+	if r.has_key('text'): text = str(r['text'])
 	else: text = ''
 
 	title    = removeNonAscii(cleanDelimiters(title))
