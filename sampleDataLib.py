@@ -7,6 +7,7 @@ import string
 import re
 import ConfigParser
 import nltk.stem.snowball as nltk
+import figureText
 #sys.path.extend(['..', '../..', '../../..'])
 #from refSectionLib import RefSectionRemover
 #-----------------------------------
@@ -17,11 +18,13 @@ cp.optionxform = str # make keys case sensitive
 cl = ['/'.join(l)+'/config.cfg' for l in [['.']]+[['..']*i for i in range(1,6)]]
 cp.read(cl)
 
-FIELDSEP    = eval( cp.get("DEFAULT", "FIELDSEP") )
-RECORDSEP   = eval( cp.get("DEFAULT", "RECORDSEP") )
+FIELDSEP     = eval( cp.get("DEFAULT", "FIELDSEP") )
+RECORDSEP    = eval( cp.get("DEFAULT", "RECORDSEP") )
+CLASS_NAMES  = eval( cp.get("DEFAULT", "CLASS_NAMES") )
+INDEX_OF_YES = eval( cp.get("DEFAULT", "INDEX_OF_YES") )
+INDEX_OF_NO  = eval( cp.get("DEFAULT", "INDEX_OF_NO") )
 
-# CLASS_NAMES maps indexes to class names. CLASS_NAME[0] is 0th class name,etc.
-CLASS_NAMES = eval( cp.get("DEFAULT", "CLASS_NAMES") )
+TEXT_PART_SEP = '::::\n'	# separates title, abstract, extr text
 
 # As is the sklearn convention we use
 #  y_true to be the index of the known class of a sample (from training set)
@@ -50,21 +53,28 @@ class SampleRecord (object):
     def parseInput(self, s):
 	fields = s.split(FIELDSEP)
 
-	if len(fields) == 6:	# have known class name as 1st field
+	if len(fields) == 7:	# have known class name as 1st field
 	    self.knownClassName = fields[0]
 	    fields = fields[1:]
 	else:
 	    self.knownClassName = None
 
-	self.ID        = str(fields[0])
-	self.isDiscard = str(fields[1])
-	self.status    = fields[2]
-	self.journal   = fields[3]
-	self.doc       = self.constructDoc(fields[4])
+	self.ID            = str(fields[0])
+	self.year          = str(fields[1])
+	self.journal       = fields[2]
+	self.title         = fields[3]
+	self.abstract      = fields[4]
+	self.extractedText = fields[5]
+	
     #----------------------
 
-    def constructDoc(self, text):
-	# Do what needs to be done to construct the text portion
+    def constructDoc(self):
+	# Do what needs to be done to construct the text doc
+	# FIXME: not sure if we should joining with the TEXT_PART_SEP. But since
+	#    we'd be  adding punctuation and we've likely already removed punct
+	#    from the text files in other preprocessing steps. Hmmm...
+	text = ' '.join([self.title, self.abstract,
+						self.extractedText])
 	return text
     #----------------------
 
@@ -78,31 +88,35 @@ class SampleRecord (object):
 	else:
 	    fields = []
 	fields += [ self.ID,
-		    self.isDiscard,
-		    self.status,
+		    self.year,
 		    self.journal,
-		    self.doc,
+		    self.title,
+		    self.abstract,
+		    self.extractedText,
 		    ]
 	return FIELDSEP.join( fields) + RECORDSEP
     #----------------------
 
+    def getKnownClassName(self):
+	return self.knownClassName
+
     def getSampleName(self):
 	return self.ID
-
-    def getDiscard(self):
-	return self.isDiscard
-
-    def getStatus(self):
-	return self.status
 
     def getJournal(self):
 	return self.journal
 
-    def getDocument(self):
-	return self.doc
+    def getTitle(self):
+	return self.title
 
-    def getKnownClassName(self):
-	return self.knownClassName
+    def getAbstract(self):
+	return self.abstract
+
+    def getExtractedText(self):
+	return self.extractedText
+
+    def getDocument(self):
+	return self.constructDoc()
 
     def isReject(self):
 	return self.rejected
@@ -124,9 +138,16 @@ class SampleRecord (object):
     miceRegex = re.compile( r'\bmice\b', flags=re.IGNORECASE)
 
     def rejectIfNoMice(self):
-	if not SampleRecord.miceRegex.search(self.doc):
+				# might
+	if not SampleRecord.miceRegex.search(self.title + self.abstract +
+							self.extractedText):
 	    self.rejected = True
 	    self.rejectReason = "Mice not found"
+	return self
+    # ---------------------------
+
+    def figureText(self):
+	self.extractedText = ' '.join(figureText.text2FigText(self.extractedText))
 	return self
     # ---------------------------
 
@@ -142,13 +163,19 @@ class SampleRecord (object):
 	Stem,
 	Replace \n with spaces
 	'''
-	output = ''
+	def _removeURLsCleanStem(text):
+	    output = ''
+	    for s in SampleRecord.urls_re.split(text): # split and remove URLs
+		s = s.replace('-/-', ' mut_mut ').lower()
+		for m in SampleRecord.token_re.finditer(s):
+		    # this would be the place to remove stop words or do
+		    #  other token mappings, e.g., "e12" -> e_day
+		    output += " " + SampleRecord.stemmer.stem(m.group())
+	    return  output
 
-	for s in SampleRecord.urls_re.split(self.doc): # split and remove URLs
-	    s = s.replace('-/-', ' mut_mut ').lower()
-	    for m in SampleRecord.token_re.finditer(s):
-		output += " " + SampleRecord.stemmer.stem(m.group())
-	self.doc = output
+	self.title         = _removeURLsCleanStem(self.title)
+	self.abstract      = _removeURLsCleanStem(self.abstract)
+	self.extractedText = _removeURLsCleanStem(self.extractedText)
 	return self
     # ---------------------------
 
@@ -157,12 +184,16 @@ class SampleRecord (object):
 	Remove URLs, lower case everything,
 	Convert '-/-' to 'mut_mut',
 	'''
-	output = ''
+	def _removeURLs(text):
+	    output = ''
+	    for s in SampleRecord.urls_re.split(text):
+		s = s.replace('-/-', ' mut_mut ').lower()
+		output += ' ' + s
+	    return output
 
-	for s in SampleRecord.urls_re.split(self.doc):
-	    s = s.replace('-/-', ' mut_mut ').lower()
-	    output += ' ' + s
-	self.doc = output
+	self.title         = _removeURLs(self.title)
+	self.abstract      = _removeURLs(self.abstract)
+	self.extractedText = _removeURLs(self.extractedText)
 	return self
     # ---------------------------
 
@@ -171,18 +202,20 @@ class SampleRecord (object):
 	add the journal name as a text token to the document
 	'''
 	jtext = 'journal__' + '_'.join( self.journal.split(' ') ).lower()
-	self.doc += " " + jtext
+	self.extractedText += " " + jtext
 	return self
-
     # ---------------------------
 
     def truncateText(self):
 	# for debugging, so you can see a sample record easily
-	self.doc = self.doc[:50]
+	self.abstract = self.abstract[:50]
+	self.extractedText = self.extractedText[:50]
 	return self
 # end class SampleRecord ------------------------
 
 class PredictionReporter (object):
+
+# NOT MODIFIED YET TO HANDLE AUTOMATED TRIAGE SAMPLES!
     """
     Knows how to generate/format prediction reports for SampleRecords and their
     predictions from some model.
@@ -262,23 +295,6 @@ class PredictionReporter (object):
 	cols.append(str(sample.doc))
 	return self.rptFieldSep.join(cols) + '\n'
 # end class PredictionReporter ----------------
-
-def text2FigText(fulltext):
-    """
-    Take a fulltext doc and return the figure text within it.
-    Figure text means:
-	"Fig(ure) alphnumeric optional(.:)" at start of new paragraph
-	(paragraph = \n\ntext..)
-	or
-	... figure or fig ... (case insensitive) in the middle of a paragraph.
-	    take 50 words on either side ("word" = whitespace delimited space)
-	    but stop at \n. don't overlap other fig text
-    """
-    captionRe = r'^^fig(ure)? \w+[.: ](.+)$$'	# match true figure caption
-    discussRe = r''			# match figure discussion in text
-
-    r = re.compile(captionRe, re.IGNORECASE | re.MULTILINE)
-
 
 if __name__ == "__main__":
     r = SampleRecord(\
