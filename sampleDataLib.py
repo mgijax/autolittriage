@@ -20,9 +20,7 @@ cp.read(cl)
 
 FIELDSEP     = eval( cp.get("DEFAULT", "FIELDSEP") )
 RECORDSEP    = eval( cp.get("DEFAULT", "RECORDSEP") )
-CLASS_NAMES  = eval( cp.get("DEFAULT", "CLASS_NAMES") )
-INDEX_OF_YES = eval( cp.get("DEFAULT", "INDEX_OF_YES") )
-INDEX_OF_NO  = eval( cp.get("DEFAULT", "INDEX_OF_NO") )
+CLASS_NAMES  = eval( cp.get("CLASS_NAMES", "y_class_names") )
 
 TEXT_PART_SEP = '::::\n'	# separates title, abstract, extr text
 
