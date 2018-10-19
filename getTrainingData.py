@@ -40,9 +40,9 @@ configFiles = cp.read(cl)
 # for the output delimited file
 FIELDSEP     = eval(cp.get("DEFAULT", "FIELDSEP"))
 RECORDSEP    = eval(cp.get("DEFAULT", "RECORDSEP"))
-CLASS_NAMES  = eval(cp.get("DEFAULT", "CLASS_NAMES"))
-INDEX_OF_YES = eval(cp.get("DEFAULT", "INDEX_OF_YES"))
-INDEX_OF_NO  = eval(cp.get("DEFAULT", "INDEX_OF_NO"))
+CLASS_NAMES  = eval(cp.get("CLASS_NAMES", "y_class_names"))
+INDEX_OF_KEEP    = 1		# index in CLASS_NAMES of the keep label
+INDEX_OF_DISCARD = 0		# index in CLASS_NAMES of the discard label
 #-----------------------------------
 
 def getArgs():
@@ -165,9 +165,9 @@ def writeResults( results	# list of records (dicts)
     """
     for r in results:
 	if r['isdiscard'] == 1:
-	    sampleClass = CLASS_NAMES[INDEX_OF_NO]
+	    sampleClass = CLASS_NAMES[INDEX_OF_DISCARD]
 	else:
-	    sampleClass = CLASS_NAMES[INDEX_OF_YES]
+	    sampleClass = CLASS_NAMES[INDEX_OF_KEEP]
 	pmid          = str(r['pubmed'])
 	year          = str(r['year'])
 	journal       = '_'.join(str(r['journal']).split(' '))
