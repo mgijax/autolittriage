@@ -4,21 +4,22 @@
 '''
   Purpose:
 	   run sql to get lit triage relevance training set
-	   Data transformations include:
+	   (minor) Data transformations include:
 	    replacing non-ascii chars with ' '
 	    replacing FIELDSEP and RECORDSEP chars in the doc text w/ ' '
 
   Outputs:     delimited file to stdout
 '''
-OutputColumns = [
+OutputColumns = [	# this column order is assumed in sampleDataLib.py
     'class', 	# "discard" or "keep" (CLASS_NAMES in config file)
     'pubmed',
+    'creation_date',
     'year',
     'journal',
     'title',
     'abstract',
     'text',	# '|\r' replaced by space & convert Unicode to space
-    ]	# this column order is assumed in sampleDataLib.py
+    ]
 
 #-----------------------------------
 # Try to keep this script easy to run from various servers,
@@ -55,14 +56,15 @@ def getArgs():
 
     parser.add_argument('-d', '--database', dest='database', action='store',
         required=False, default='mgd',
-        help='Which database. Example: mgd (default)')
+        help='which database. Example: mgd (default)')
 
     parser.add_argument('--query', dest='query', action='store',
-        required=False, default='all', choices=['all', ],
-        help='which subset of the training data to get, for now only "all"')
+        required=False, default='all', choices=['all', 
+			    'discard_after', 'keep_after', 'keep_before'],
+        help='which subset of the training data to get. Default: "all"')
 
     parser.add_argument('-l', '--limit', dest='nResults',
-	type=int, default=0, 		# 0 means ALL
+	required=False, type=int, default=0, 		# 0 means ALL
         help="limit SQL to n results. Default is no limit")
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
@@ -85,33 +87,78 @@ def getArgs():
 
 SQLSEPARATOR = '||'
 
-# get articles for year > 2017
-Query1 =  \
-'''
-select a.accid pubmed, r.isdiscard, r.year, r.journal, r.title, r.abstract,
-     translate(bd.extractedtext, E'\r', ' ') as "text" -- remove ^M
+# get articles for creation date >= Nov 1, 2017. After lit triage release
+
+# base of query select stmt
+BASE_SELECT =  \
+'''select a.accid pubmed, r.isdiscard, r.year,
+    to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
+    r.journal, r.title, r.abstract,
+    translate(bd.extractedtext, E'\r', ' ') as "text" -- remove ^M
 from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
      join acc_accession a on
          (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
           and a._mgitype_key=1 )
-where
-r.year > 2017
-and r._referencetype_key=31576687 -- peer reviewed article
-and bd.haspdf=1
--- r.isdiscard = 1
--- and bd._supplemental_key =34026997  -- "supplemental attached"
--- order by r.journal, pubmed
 '''
+
+# list potential queries, best of these are non-overlapping
+QUERY_LIST = { \
+'discard_after' :  BASE_SELECT +
+    '''
+    where
+    r.creation_date > '10/31/2017'
+    and r.isdiscard = 1
+    and r._createdby_key != 1609	-- littriage_discard user on dev
+    and r._referencetype_key=31576687 -- peer reviewed article
+    and bd.haspdf=1
+    -- order by r.journal, pubmed
+    ''',
+
+'keep_after' :  BASE_SELECT +
+    '''
+    join bib_status_view bs on (bs._refs_key = r._refs_key)
+    where
+    r.creation_date > '10/31/2017'
+    and 
+    (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+    )
+    and r._referencetype_key=31576687 -- peer reviewed article
+    and bd.haspdf=1
+    -- order by r.journal, pubmed
+    ''',
+
+'keep_before' :  BASE_SELECT +
+    '''
+    join bib_status_view bs on (bs._refs_key = r._refs_key)
+    where
+    r.creation_date >= '10/1/2016'
+    and r.creation_date <= '10/31/2017'
+    and 
+    (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+    )
+    and r._referencetype_key=31576687 -- peer reviewed article
+    and bd.haspdf=1
+    -- order by r.journal, pubmed
+    ''',
+}	# end QUERY_LIST
 #-----------------------------------
 
 def getQueries(args):
     """
     Return list of sql queries to run
     """
-    if args.query == 'someoption':
-	queries = ['someQuery']
+    if args.query == 'all':
+	queries = QUERY_LIST.values()
     else:
-	queries = [Query1]
+	queries = [ QUERY_LIST[args.query] ]
 
     if args.nResults > 0:
 	limitText = "\nlimit %d\n" % args.nResults
@@ -169,6 +216,7 @@ def writeResults( results	# list of records (dicts)
 	else:
 	    sampleClass = CLASS_NAMES[INDEX_OF_KEEP]
 	pmid          = str(r['pubmed'])
+	creation_date = str(r['creation_date'])
 	year          = str(r['year'])
 	journal       = '_'.join(str(r['journal']).split(' '))
 	title         = str(r['title'])
@@ -187,6 +235,7 @@ def writeResults( results	# list of records (dicts)
 	sys.stdout.write( FIELDSEP.join( [
 	    sampleClass,
 	    pmid,
+	    creation_date,
 	    year,
 	    journal,
 	    title,

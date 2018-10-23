@@ -59,10 +59,11 @@ class SampleRecord (object):
 
 	self.ID            = str(fields[0])
 	self.year          = str(fields[1])
-	self.journal       = fields[2]
-	self.title         = fields[3]
-	self.abstract      = fields[4]
-	self.extractedText = fields[5]
+	self.creation_date = str(fields[2])
+	self.journal       = fields[3]
+	self.title         = fields[4]
+	self.abstract      = fields[5]
+	self.extractedText = fields[6]
 	
     #----------------------
 
@@ -87,6 +88,7 @@ class SampleRecord (object):
 	    fields = []
 	fields += [ self.ID,
 		    self.year,
+		    self.creation_date,
 		    self.journal,
 		    self.title,
 		    self.abstract,
