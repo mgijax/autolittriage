@@ -149,7 +149,7 @@ class SampleRecord (object):
 	return self
     # ---------------------------
 
-    urls_re = re.compile(r'\bhttps?://\S*',re.IGNORECASE) # match URLs
+    urls_re = re.compile(r'\b(?:https?://|www[.])\S*',re.IGNORECASE) # match URLs
     token_re = re.compile(r'\b([a-z_]\w+)\b')	# match lower case words
     stemmer = nltk.EnglishStemmer()
 
@@ -170,6 +170,7 @@ class SampleRecord (object):
 		    #  other token mappings, e.g., "e12" -> e_day
 		    output += " " + SampleRecord.stemmer.stem(m.group())
 	    return  output
+	#-----------
 
 	self.title         = _removeURLsCleanStem(self.title)
 	self.abstract      = _removeURLsCleanStem(self.abstract)
@@ -188,10 +189,29 @@ class SampleRecord (object):
 		s = s.replace('-/-', ' mut_mut ').lower()
 		output += ' ' + s
 	    return output
+	#-----------
 
 	self.title         = _removeURLs(self.title)
 	self.abstract      = _removeURLs(self.abstract)
 	self.extractedText = _removeURLs(self.extractedText)
+	return self
+    # ---------------------------
+
+    def tokenPerLine(self):
+	"""
+	Convert text to have one token per line.
+	Makes it easier to examine the tokens/features
+	"""
+	def _tokenPerLine(text):
+	    output = ''
+	    for m in SampleRecord.token_re.finditer(text):
+		output += m.group().strip() + '\n'
+	    return  output
+	#-----------
+
+	self.title         = _tokenPerLine(self.title)
+	self.abstract      = _tokenPerLine(self.abstract)
+	self.extractedText = _tokenPerLine(self.extractedText)
 	return self
     # ---------------------------
 
@@ -296,22 +316,25 @@ class PredictionReporter (object):
 
 if __name__ == "__main__":
     r = SampleRecord(\
-    'yes|pmID1|noDiscard|Indexed|my Journal|text text text text text Reference r1\n'
+    '''discard|pmID1|1900|my Journal|My Title|
+    My Abstract|My text: text https://foo text www.foo.org text text text Reference r1'''
     )
     print r.getKnownClassName()
     print r.getSampleName()
-    print r.getJournal()
-    print r.isReject()
+#    print r.getJournal()
+#    print r.isReject()
     print r.getDocument()
-    print r.getSampleAsText(),
+    print r.getSampleAsText()
 #    r.removeRefSection()
 #    print r.getDocument()
-    r.rejectIfNoMice()
-    print r.isReject()
-    print r.getRejectReason()
-    r.addJournalFeature()
+#    r.rejectIfNoMice()
+#    print r.isReject()
+#    print r.getRejectReason()
+#    r.addJournalFeature()
+    r.removeURLs()
+    r.tokenPerLine()
     print r.getDocument()
-    print "Prediction Report:"
-    rptr = PredictionReporter(r, hasConfidence=True)
-    print rptr.getPredOutputHeader(),
-    print rptr.getPredOutput(r, 0, confidence=-0.5)
+#    print "Prediction Report:"
+#    rptr = PredictionReporter(r, hasConfidence=True)
+#    print rptr.getPredOutputHeader(),
+#    print rptr.getPredOutput(r, 0, confidence=-0.5)
