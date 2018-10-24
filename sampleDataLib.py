@@ -51,8 +51,8 @@ class SampleRecord (object):
     def parseInput(self, s):
 	fields = s.split(FIELDSEP)
 
-	if len(fields) == 7:	# have known class name as 1st field
-	    self.knownClassName = fields[0]
+	if len(fields) == 8:	# have known class name as 1st field
+	    self.knownClassName = self.validateClassName(fields[0])
 	    fields = fields[1:]
 	else:
 	    self.knownClassName = None
@@ -65,6 +65,25 @@ class SampleRecord (object):
 	self.abstract      = fields[5]
 	self.extractedText = fields[6]
 	
+    #----------------------
+    className_re = re.compile(r'\b(\w+)\b')	# match alpha numeric
+    def validateClassName(self, name):
+	"""
+	Given the potential sample class 'name',
+	1) transform it as needed: remove any leading/trailing spaces and punct
+	2) validate the name is a CLASS_NAME
+	Return the cleaned up name and set self.rejected if it is not valid.
+	The need for this arose when using ';;' as the record sep and having
+	   some extracted text ending in ';'. So splitting records on ';;'
+	   left the record's class as ';discard' which caused problems down
+	   the line.
+	"""
+	m = SampleRecord.className_re.search(name)
+	if m and m.group() in CLASS_NAMES:	# have match
+	    return m.group()
+	self.rejected = True
+	self.rejectReason = "invalid class name '%s'" % (name)
+	return name 
     #----------------------
 
     def constructDoc(self):
@@ -228,8 +247,10 @@ class SampleRecord (object):
 
     def truncateText(self):
 	# for debugging, so you can see a sample record easily
-	self.abstract = self.abstract[:50]
-	self.extractedText = self.extractedText[:50]
+	
+	self.title = self.title[:10].replace('\n',' ')
+	self.abstract = self.abstract[:20].replace('\n',' ')
+	self.extractedText = self.extractedText[:20].replace('\n',' ') + '\n'
 	return self
 # end class SampleRecord ------------------------
 
@@ -340,3 +361,12 @@ if __name__ == "__main__":
 #    rptr = PredictionReporter(r, hasConfidence=True)
 #    print rptr.getPredOutputHeader(),
 #    print rptr.getPredOutput(r, 0, confidence=-0.5)
+    r = SampleRecord(''';discard...|pmID1|1900|10/3/2017|journal|title|abstract|text''')
+    print "Reject? %s " % str(r.isReject())
+    print "Reason: " +  str(r.getRejectReason())
+    print r.getKnownClassName()
+    r = SampleRecord(''';foo...|pmID1|1900|10/3/2017|journal|title|abstract|text''')
+    print "Reject? %s " % str(r.isReject())
+    print "Reason: " +  str(r.getRejectReason())
+    print r.getKnownClassName()
+
