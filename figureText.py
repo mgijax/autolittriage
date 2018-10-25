@@ -385,6 +385,6 @@ overlap. but, But! But! Blah, this figure 2 discussion should not overlap
 
 And here is the end of this amazing document. Really it is over
 """
-	blurbs = text2FigText(testdoc, numLeading=50, numTrailing=50)
+	blurbs = text2FigText(simpleTestDoc, numLeading=50, numTrailing=50)
 	for b in blurbs:
 	    print "**** %s ****" % b

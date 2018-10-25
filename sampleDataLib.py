@@ -8,6 +8,7 @@ import re
 import ConfigParser
 import nltk.stem.snowball as nltk
 import figureText
+import featureTransform
 #sys.path.extend(['..', '../..', '../../..'])
 #from refSectionLib import RefSectionRemover
 #-----------------------------------
@@ -27,6 +28,16 @@ TEXT_PART_SEP = '::::\n'	# separates title, abstract, extr text
 # As is the sklearn convention we use
 #  y_true to be the index of the known class of a sample (from training set)
 #  y_pred is the index of the predicted class of a sample/record
+
+#-----------------------------------
+# Regex's
+miceRegex    = re.compile( r'\bmice\b', flags=re.IGNORECASE)
+urls_re      = re.compile(r'\b(?:https?://|www[.])\S*',re.IGNORECASE)
+token_re     = re.compile(r'\b([a-z_]\w+)\b',re.IGNORECASE)
+className_re = re.compile(r'\b(\w+)\b')	# valid class names (all alpha numeric)
+
+stemmer = nltk.EnglishStemmer()
+
 #-----------------------------------
 
 class SampleRecord (object):
@@ -66,7 +77,6 @@ class SampleRecord (object):
 	self.extractedText = fields[6]
 	
     #----------------------
-    className_re = re.compile(r'\b(\w+)\b')	# match alpha numeric
     def validateClassName(self, name):
 	"""
 	Given the potential sample class 'name',
@@ -78,7 +88,7 @@ class SampleRecord (object):
 	   left the record's class as ';discard' which caused problems down
 	   the line.
 	"""
-	m = SampleRecord.className_re.search(name)
+	m = className_re.search(name)
 	if m and m.group() in CLASS_NAMES:	# have match
 	    return m.group()
 	self.rejected = True
@@ -105,11 +115,17 @@ class SampleRecord (object):
 	    fields = [self.knownClassName]
 	else:
 	    fields = []
+
+	# make sure title starts with '\n' so we can find the record boundaries
+	#  during debugging
+	#if self.title[0] == '\n': title = self.title
+	#else: title = '\n' + self.title
+
 	fields += [ self.ID,
 		    self.year,
 		    self.creation_date,
 		    self.journal,
-		    self.title,
+		    self.title,		# USE TITLE
 		    self.abstract,
 		    self.extractedText,
 		    ]
@@ -145,36 +161,38 @@ class SampleRecord (object):
 
     #----------------------
     # "Preprocessor" functions.
-    #  Each preprocessor should modify this sample and return itself
+    #  Each Preprocessor should modify this sample and return itself
     #----------------------
 #    refRemover = RefSectionRemover(maxFraction=0.4) # finds ref sections
 #
 #    def removeRefSection(self):
-#	self.doc = SampleRecord.refRemover.getBody(self.doc)
+#	self.doc = refRemover.getBody(self.doc)
 #	return self
     # ---------------------------
 
-    miceRegex = re.compile( r'\bmice\b', flags=re.IGNORECASE)
 
-    def rejectIfNoMice(self):
+    def rejectIfNoMice(self):	# preprocessor
 				# might
-	if not SampleRecord.miceRegex.search(self.title + self.abstract +
+	if not miceRegex.search(self.title + self.abstract +
 							self.extractedText):
 	    self.rejected = True
 	    self.rejectReason = "Mice not found"
 	return self
     # ---------------------------
 
-    def figureText(self):
+    def figureText(self):	# preprocessor
 	self.extractedText = ' '.join(figureText.text2FigText(self.extractedText))
 	return self
     # ---------------------------
 
-    urls_re = re.compile(r'\b(?:https?://|www[.])\S*',re.IGNORECASE) # match URLs
-    token_re = re.compile(r'\b([a-z_]\w+)\b')	# match lower case words
-    stemmer = nltk.EnglishStemmer()
+    def featureTransform(self):	# preprocessor
+	self.title         = featureTransform.transformText(self.title)
+	self.abstract      = featureTransform.transformText(self.abstract)
+	self.extractedText = featureTransform.transformText(self.extractedText)
+	return self
+    # ---------------------------
 
-    def removeURLsCleanStem(self):
+    def removeURLsCleanStem(self):	# preprocessor
 	'''
 	Remove URLs and punct, lower case everything,
 	Convert '-/-' to 'mut_mut',
@@ -182,16 +200,17 @@ class SampleRecord (object):
 	Stem,
 	Replace \n with spaces
 	'''
+	#------
 	def _removeURLsCleanStem(text):
 	    output = ''
-	    for s in SampleRecord.urls_re.split(text): # split and remove URLs
-		s = s.replace('-/-', ' mut_mut ').lower()
-		for m in SampleRecord.token_re.finditer(s):
+	    for s in urls_re.split(text): # split and remove URLs
+		s = featureTransform.transformText(s).lower()
+		for m in token_re.finditer(s):
 		    # this would be the place to remove stop words or do
 		    #  other token mappings, e.g., "e12" -> e_day
-		    output += " " + SampleRecord.stemmer.stem(m.group())
+		    output += " " + stemmer.stem(m.group())
 	    return  output
-	#-----------
+	#------
 
 	self.title         = _removeURLsCleanStem(self.title)
 	self.abstract      = _removeURLsCleanStem(self.abstract)
@@ -199,18 +218,17 @@ class SampleRecord (object):
 	return self
     # ---------------------------
 
-    def removeURLs(self):
+    def removeURLs(self):	# preprocessor
 	'''
 	Remove URLs, lower case everything,
-	Convert '-/-' to 'mut_mut',
 	'''
+	#------
 	def _removeURLs(text):
 	    output = ''
-	    for s in SampleRecord.urls_re.split(text):
-		s = s.replace('-/-', ' mut_mut ').lower()
-		output += ' ' + s
+	    for s in urls_re.split(text):
+		output += ' ' + s.lower
 	    return output
-	#-----------
+	#------
 
 	self.title         = _removeURLs(self.title)
 	self.abstract      = _removeURLs(self.abstract)
@@ -218,17 +236,20 @@ class SampleRecord (object):
 	return self
     # ---------------------------
 
-    def tokenPerLine(self):
+    def tokenPerLine(self):	# preprocessor
 	"""
 	Convert text to have one token per line.
 	Makes it easier to examine the tokens/features
+	FIXME: (?) maybe this should just break on whitespace and not tokenize
+	    punctuation away ??
 	"""
+	#------
 	def _tokenPerLine(text):
 	    output = ''
-	    for m in SampleRecord.token_re.finditer(text):
+	    for m in token_re.finditer(text):
 		output += m.group().strip() + '\n'
 	    return  output
-	#-----------
+	#------
 
 	self.title         = _tokenPerLine(self.title)
 	self.abstract      = _tokenPerLine(self.abstract)
@@ -236,7 +257,7 @@ class SampleRecord (object):
 	return self
     # ---------------------------
 
-    def addJournalFeature(self):
+    def addJournalFeature(self):	# preprocessor
 	'''
 	add the journal name as a text token to the document
 	'''
@@ -245,7 +266,7 @@ class SampleRecord (object):
 	return self
     # ---------------------------
 
-    def truncateText(self):
+    def truncateText(self):	# preprocessor
 	# for debugging, so you can see a sample record easily
 	
 	self.title = self.title[:10].replace('\n',' ')
