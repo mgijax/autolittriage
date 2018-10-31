@@ -6,6 +6,12 @@ Backpopulate/
 
 Lessons Learned and Where We Are
 
+Understanding Vectorizers
+    vect = CountVectorizer( stop_words="english", ngram_range=(1,2))
+    * tokenized 1st (e.g., break/remove punct), stopwords are removed,
+	then ngrams built, then min_df/max_df applied
+
+
 Previous thinking for python scripts in MLtextTools:
     * getTrainingData.py would get a delimited file of samples
     * preprocessSamples.py would massage the data in the delimited file(s)
@@ -17,8 +23,8 @@ Previous thinking for python scripts in MLtextTools:
     BUT MLtextTools already has stuff in place, so lets keep with that 
     paradigm. Can always run populateTrainingDirs.py at any time to generate
     the text files to look at.
-    	- should add parameter to specify file extension
-	- should make it not assume class names are 'yes' 'no'
+    	- should add parameter to specify file extension (done)
+	- should make it not assume class names are 'yes' 'no' (done)
 
 NER thoughts
     Becas is very unreliable, down much of the time.
