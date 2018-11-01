@@ -1,0 +1,1411 @@
+SELECT 924
+journal|num_since_jan2010|num_since_oct2016
+2012 Biennial Meeting of the International Society for Eye Research|1|
+Acad J Xian Jiaotong Univ|1|
+ACS Chem Neurosci|6|4
+ACS Infect Dis|1|1
+Acta Biochim Biophys Sin (Shanghai)|5|1
+Acta Biochim Pol|1|
+Acta Crystallogr D Biol Crystallogr|3|2
+Acta Crystallogr Sect F Struct Biol Cryst Commun|3|
+Acta Endocrinol (Copenh)|1|
+Acta Histochem|10|1
+Acta Histochem Cytochem|2|
+Acta Neuropathol|15|6
+Acta Neuropathol Commun|8|8
+Acta Odontol Scand|1|
+Acta Paediatr|1|
+Acta Pathol Microbiol Scand B Microbiol Immunol|1|
+Acta Pharmacol Sin|1|1
+Acta Physiol (Oxf)|8|3
+Acta Trop|2|2
+Acta Veterinaria-Beograd|1|
+Acta Zooligica Sinica|1|
+Addict Biol|6|2
+Adipocyte|2|1
+Adv Biol Regul|1|1
+Adv Biosci Biotechnol|1|1
+Adv Enzyme Regul|2|
+Adv Exp Med Biol|9|2
+Adv Genet|1|1
+Adv Genomics Genet|1|
+Adv Neurochem|1|
+Adv Nutr|1|1
+Adv Pharmacol|1|1
+Adv Wound Care (New Rochelle)|1|
+Afr J Cell Pathol|1|1
+Age (Dordr)|2|1
+Ageing Res Rev|1|
+Aging (Albany NY)|11|3
+Aging Cell|504|368
+Aging Dis|2|1
+AIMS Genet|1|1
+Alcohol|8|5
+Alcohol Clin Exp Res|8|6
+Allen Brain Atlas|1|
+Allen Institute|1|1
+Allergol Int|2|1
+Allergy|2|2
+Alzheimers Res Ther|2|
+AMB Express|1|1
+Amino Acids|5|3
+Am J Cancer Res|1|1
+Am J Cardiovasc Dis|2|2
+Am J Clin Nutr|2|
+Am J Dermatopathol|1|
+Am J Hematol|5|1
+Am J Hum Biol|1|1
+Am J Hum Genet|253|72
+Am J Hypertens|1|
+Am J Med Genet A|8|1
+Am J Med Genet B Neuropsychiatr Genet|2|1
+Am J Med Genet C Semin Med Genet|1|1
+Am J Orthod Dentofacial Orthop|1|
+Am J Pathol|1603|248
+Am J Physiol|4|
+Am J Physiol Cell Physiol|416|146
+Am J Physiol Endocrinol Metab|705|251
+Am J Physiol Gastrointest Liver Physiol|446|69
+Am J Physiol Heart Circ Physiol|761|269
+Am J Physiol Lung Cell Mol Physiol|562|238
+Am J Physiol Regul Integr Comp Physiol|419|256
+Am J Physiol Renal Physiol|534|20
+Am J Psychiatry|1|
+Am J Reprod Immunol|3|1
+Am J Respir Cell Mol Biol|491|156
+Am J Respir Crit Care Med|41|6
+Am J Transl Res|5|4
+Am J Transplant|3|1
+Am J Trop Med Hyg|3|1
+Amyloid|1|
+Amyotroph Lateral Scler|1|
+Anaesthesia|1|
+Anal Biochem|5|2
+Anal Chem|2|
+Anat Cell Biol|5|1
+Anat Embryol (Berl)|1|
+Anat Histol Embryol|2|
+Anat Rec|1|
+Anat Rec A Discov Mol Cell Evol Biol|10|
+Anat Rec (Hoboken)|83|22
+Anat Sci Int|2|1
+Andrology|4|1
+Anemia|1|
+Anesthesiology|2|
+Angew Chem Int Ed Engl|3|
+Angiogenesis|8|7
+Angle Orthod|1|
+Animal Cells Syst (Seoul)|1|1
+Ann Anat|2|1
+Ann Clin Microbiol Antimicrob|1|1
+Ann Clin Transl Neurol|4|3
+Ann Hematol|1|
+Ann Neurol|14|6
+Ann N Y Acad Sci|18|1
+Ann Oncol|1|
+Ann Rheum Dis|8|5
+Ann Surg|1|
+Ann Surg Oncol|1|1
+Annual Meeting for Investigative Dermatology|1|
+Annual Meeting of the Society for Neuroscience Program #519.2|1|
+Annu Rev Immunol|2|
+Annu Rev Neurosci|1|
+Anticancer Res|2|
+Antimicrob Agents Chemother|2|2
+Antioxid Redox Signal|18|10
+Antiviral Res|2|1
+Apoptosis|4|
+Appl Environ Microbiol|2|1
+Appl Physiol Nutr Metab|1|1
+Arch Biochem Biophys|359|229
+Arch Gen Psychiatry|1|
+Arch Histol Cytol|1|
+Arch Immunol Ther Exp (Warsz)|1|1
+Arch Med Res|1|
+Arch Med Sci|1|1
+Arch Neurol|2|
+Arch Oral Biol|8|2
+Arch Virol|1|
+Arq Neuropsiquiatr|1|
+Arterioscler Thromb Vasc Biol|952|339
+Arthritis Res Ther|14|11
+Arthritis Rheum|37|14
+Arthritis Rheumatol|12|10
+Asian J Androl|2|2
+ASN Neuro|5|4
+ASN's 39th Annual Renal Week Meeting|1|
+Assay Drug Dev Technol|1|
+Atherosclerosis|14|5
+Audiol Neurootol|1|
+Audiol Neurotol Extra|1|1
+Autism Res|4|1
+Autoimmunity|2|
+Autophagy|32|16
+Basal Ganglia|1|1
+Basic Res Cardiol|6|3
+Behav Brain Funct|2|
+Behav Brain Res|677|252
+Behav Genet|10|2
+Behav Healthc|1|
+Behav Neurosci|6|3
+Behav Pharmacol|1|1
+Biochem Biophys Rep|1|1
+Biochem Biophys Res Commun|1740|382
+Biochem Cell Biol|7|1
+Biochem Genet|1|1
+Biochemistry|94|19
+Biochem J|795|443
+Biochem Pharmacol|325|246
+Biochem Soc Trans|7|1
+Biochim Biophys Acta|3352|2500
+Biochim Biophys Acta Gene Regul Mech|5|5
+Biochim Biophys Acta Gen Subj|39|39
+Biochim Biophys Acta Mol Cell Biol Lipids|34|34
+Biochim Biophys Acta Mol Cell Res|29|29
+Biochimie|6|1
+Bioelectromagnetics|1|1
+Bioeng Bugs|1|
+Bioengineered|1|
+Bioessays|1|
+Biofactors|2|
+Bioinformatics|2|
+Biol Blood Marrow Transplant|1|
+Biol Cell|4|1
+Biol Chem|6|
+Biol Direct|1|1
+Biol Mood Anxiety Disord|1|1
+Biol Open|463|321
+Biol Pharm Bull|6|2
+Biol Proced Online|1|1
+Biol Psychiatry|50|31
+Biol Reprod|693|259
+Biol Res|1|1
+Biol Rev Camb Philos Soc|1|1
+Biol Sex Differ|1|1
+Biomaterials|2|1
+Biomedicines|1|1
+Biomed Opt Express|3|3
+Biomed Pharmacother|1|
+Biomed Rep|2|2
+Biomed Res|1|
+Biomed Res Int|4|3
+Biometals|1|1
+Biomicrofluidics|1|1
+Biomolecules|2|
+Biopharm Drug Dispos|1|
+Biophys J|5|2
+Bioresour Technol|2|2
+Biorheology|1|
+bioRxiv|4|4
+bioRxiv (Cold Spring Harbor Lab reprint)|4|2
+Biosci Biotechnol Biochem|9|5
+Biosci Rep|6|4
+Biosens Bioelectron|1|
+Biotech Histochem|2|
+Biotechnol Bioeng|1|1
+Biotechnol Lett|3|
+Birth Defects Res|2|2
+Birth Defects Res A Clin Mol Teratol|13|3
+Birth Defects Res B Dev Reprod Toxicol|2|
+BJU Int|1|
+Blood|2348|570
+Blood Adv|3|3
+Blood Cancer J|3|2
+Blood Cells Mol Dis|10|1
+BMB Rep|11|2
+BMC Biochem|7|
+BMC Bioinformatics|1|1
+BMC Biol|46|7
+BMC Biotechnol|3|
+BMC Cancer|5|1
+BMC Cell Biol|10|3
+BMC Complement Altern Med|1|1
+BMC Dev Biol|107|16
+BMC Evol Biol|5|2
+BMC Gastroenterol|1|
+BMC Genet|26|16
+BMC Genomics|247|166
+BMC Immunol|5|4
+BMC Med|1|
+BMC Med Genet|1|
+BMC Med Genomics|1|1
+BMC Mol Biol|10|1
+BMC Musculoskelet Disord|1|
+BMC Nephrol|5|2
+BMC Neurol|1|1
+BMC Neurosci|27|8
+BMC Ophthalmol|1|
+BMC Pharmacol Toxicol|2|1
+BMC Physiol|6|
+BMC Res Notes|36|24
+BMC Syst Biol|2|1
+BMJ Open|1|
+Bone|661|381
+Bonekey Rep|2|2
+Bone Rep|1|1
+Bone Res|2|1
+Brain|55|26
+Brain Behav|3|3
+Brain Behav Immun|10|6
+Brain Cell Biol|3|
+Brain Dev|1|
+Brain Lang|1|
+Brain Pathol|8|3
+Brain Res|331|28
+Brain Res Bull|9|1
+Brain Res Dev Brain Res|2|
+Brain Res Mol Brain Res|4|
+Brain Struct Funct|42|26
+Braz J Med Biol Res|3|
+Breast Cancer Res|13|1
+Breast Cancer Res Treat|1|1
+Breast Dis|1|
+Brief Bioinform|1|1
+Brief Funct Genomic Proteomic|1|
+Br J Cancer|6|
+Br J Dermatol|1|
+Br J Haematol|11|3
+Br J Nutr|4|1
+Br J Ophthalmol|1|1
+Br J Pharmacol|14|6
+Br J Surg|1|
+Br Med J|1|
+Calcif Tissue Int|5|1
+Calculated microRNA cluster membership based on chromosomal location|1|
+Calif Med|1|
+Cancer Biol Ther|2|1
+Cancer Cell|737|236
+Cancer Discov|333|140
+Cancer Genet|7|
+Cancer Genet Cytogenet|1|
+Cancer Immunol Immunother|1|
+Cancer Immunol Res|1|1
+Cancer Lett|790|545
+Cancer Metab|1|
+Cancer Prev Res (Phila)|10|6
+Cancer Res|1934|767
+Cancer Research|1|1
+Cancers (Basel)|2|1
+Cancer Sci|8|3
+Can J Physiol Pharmacol|1|
+Carcinogenesis|500|159
+Cardiovasc Diabetol|3|3
+Cardiovasc Pathol|2|1
+Cardiovasc Res|976|504
+Cardiovascular Research|1|
+Cell|1199|427
+Cell Adh Migr|2|
+Cell Biochem Biophys|2|
+Cell Biochem Funct|4|2
+Cell Biol Int|2|
+Cell Biol Toxicol|1|1
+Cell Biosci|7|5
+Cell Calcium|5|2
+Cell Chem Biol|1|1
+Cell Commun Signal|4|2
+Cell Cycle|61|11
+Cell Death Differ|941|511
+Cell Death Dis|64|42
+Cell Death Discov|1|1
+Cell Differ Dev|1|
+Cell Discov|7|7
+Cell Growth Differ|3|1
+Cell Host Microbe|27|17
+Cell Immunol|113|2
+Cell Metab|1036|454
+Cell Microbiol|5|1
+Cell Mol Biol Lett|2|2
+Cell Mol Biol (Noisy-le-grand)|1|
+Cell Mol Gastroenterol Hepatol|6|6
+Cell Mol Immunol|5|2
+Cell Mol Life Sci|27|6
+Cell Mol Neurobiol|12|4
+Cell Motil Cytoskeleton|6|2
+Cell Physiol Biochem|10|2
+Cell Prolif|2|
+Cell Regul|1|
+Cell Rep|1551|976
+Cell Reprogram|1|1
+Cell Res|48|22
+Cell Signal|27|5
+Cell Stem Cell|293|91
+Cells Tissues Organs|11|1
+Cell Stress Chaperones|4|3
+Cell Struct Funct|4|1
+Cell Syst|2|2
+Cell Tissue Res|35|14
+Cell Transplant|3|1
+Cereb Cortex|394|196
+Cerebellum|11|4
+Cerebrospinal Fluid Res|1|1
+Cerebrovasc Dis|1|
+Channels (Austin)|6|5
+Chem Biol|2|
+Chem Biol Interact|1|1
+Chemosphere|1|1
+Chem Res Toxicol|2|
+Chem Rev|1|1
+Chem Senses|9|4
+Chin J Cancer|1|1
+Chin Med J (Engl)|4|
+Cholesterol|1|1
+Chromosoma|8|3
+Chromosome Res|3|2
+Chronobiol Int|2|
+Cilia|41|23
+Circ Arrhythm Electrophysiol|7|5
+Circ Cardiovasc Genet|9|5
+Circ Heart Fail|5|2
+Circ J|1|
+Circ Res|1061|477
+Circulation|553|166
+Cleft Palate Craniofac J|3|
+Clin Cancer Res|14|4
+Clin Dev Immunol|3|
+Clin Diagn Lab Immunol|1|
+Clin Dysmorphol|1|
+Clin Endocrinol (Oxf)|1|
+Clin Epigenetics|3|3
+Clin Exp Allergy|1|
+Clin Exp Dermatol|1|
+Clin Exp Gastroenterol|1|
+Clin Exp Hypertens|1|1
+Clin Exp Immunol|78|9
+Clin Exp Pharmacol Physiol|2|
+Clin Exp Reprod Med|1|1
+Clin Immunol|52|
+Clin Proteomics|1|1
+Clin Res Cardiol|1|1
+Clin Sci (Lond)|2|2
+Clin Vaccine Immunol|1|1
+CNS Neurosci Ther|1|
+Cogent Biology|2|2
+Cold Spring Harb Mol Case Stud|1|1
+Cold Spring Harb Perspect Biol|3|
+Cold Spring Harb Protoc|2|1
+Cold Spring Harb Symp Quant Biol|3|
+Coll Antropol|2|
+Commun Integr Biol|1|1
+Comp Biochem Physiol Part D Genomics Proteomics|1|
+Comp Funct Genomics|1|
+Comp Med|9|6
+Comput Biol Chem|1|1
+Comput Struct Biotechnol J|1|
+Conf Proc IEEE Eng Med Biol Soc|1|1
+Cong Anom|2|
+Congenit Anom (Kyoto)|16|2
+Connect Tissue Res|4|2
+C R Acad Sci Hebd Seances Acad Sci D|1|1
+Crit Care Med|1|1
+Crit Rev Eukaryot Gene Expr|1|
+Cryo Letters|1|1
+CSH Protoc|1|1
+Curated Relationships|1|
+Curr Alzheimer Res|2|2
+Curr Biol|176|72
+Current Zoology|1|
+Curr Eye Res|11|
+Curr Mol Med|2|
+Curr Opin Genet Dev|1|
+Curr Opin Immunol|1|
+Curr Opin Neurobiol|2|
+Curr Pharm Biotechnol|1|
+Curr Protoc Immunol|1|1
+Curr Protoc Pharmacol|1|1
+Curr Top Microbiol Immunol|2|1
+Curr Urol|1|1
+Cytogenet Cell Genet|5|
+Cytogenet Genome Res|7|
+Cytogenetics|1|
+Cytokine|9|3
+Cytokine Growth Factor Rev|1|
+Cytometry B Clin Cytom|1|1
+Cytoskeleton (Hoboken)|11|3
+Data Association load|1|
+Database Download|14|
+Database (Oxford)|4|2
+Database Release|8|5
+Data Brief|4|4
+Dermatoendocrinol|1|1
+Dev Biol|1132|304
+Dev Cell|487|215
+Dev Comp Immunol|2|1
+Dev Dyn|408|51
+Development|1262|442
+Dev Genet|1|
+Dev Growth Differ|19|5
+Dev Neurobiol|88|70
+Dev Neurosci|27|19
+Dev Psychobiol|1|
+Diabetes|2263|1558
+Diabetes Metab Syndr Obes|2|1
+Diabetes Obes Metab|1|1
+Diabetologia|599|254
+Diagn Microbiol Infect Dis|2|2
+Dialogues Clin Neurosci|1|
+Differentiation|42|11
+Dig Dis Sci|2|
+Direct Data Submission from Genetic Resource Science|8|2
+Dis Esophagus|1|
+Dis Model Mech|364|148
+Dissertation|1|
+Dissertation (see notes)|1|
+DNA Cell Biol|8|3
+DNA Repair (Amst)|8|2
+DNA Res|1|1
+Doctoral Thesis, University of London|1|
+Dongwuxue Yanjiu|1|1
+Drug Alcohol Depend|3|1
+Drug Chem Toxicol|1|
+Drug Deliv Transl Res|1|
+Drug Discov Ther|1|1
+Drug Discov Today|2|
+Drug Metab Dispos|14|3
+EBioMedicine|20|20
+Ecotoxicol Environ Saf|2|1
+Elife|1722|1395
+EMBO J|877|177
+EMBO Mol Med|198|83
+EMBO Rep|301|157
+Emerg Infect Dis|1|
+Endocr Connect|1|1
+Endocrinology|1726|721
+Endocr J|4|1
+Endocr Relat Cancer|9|1
+Endocr Rev|2|1
+eNeuro|179|170
+Environ Epigenet|1|1
+Environ Health Perspect|7|6
+Environ Mol Mutagen|3|2
+Environ Pollut|1|
+Epigenetics|13|3
+Epigenetics Chromatin|8|2
+Epigenomics|1|1
+Epilepsia|13|7
+Epilepsy Res|5|
+eThOS|1|
+Eur Biophys J|1|1
+Eur Heart J|5|2
+Eur J Biochem|8|
+Eur J Cancer|29|
+Eur J Cancer Care (Engl)|1|1
+Eur J Cell Biol|16|4
+Eur J Clin Invest|4|
+Eur J Endocrinol|2|
+Eur J Epidemiol|1|1
+Eur J Haematol|1|1
+Eur J Histochem|5|1
+Eur J Hum Genet|20|4
+Eur J Immunol|1248|566
+Eur J Neurosci|314|48
+Eur J Nucl Med Mol Imaging|1|
+Eur J Oral Sci|17|5
+Eur J Orthod|1|
+Eur J Pediatr Surg|1|
+Eur J Pharmacol|11|4
+Eur Neuropsychopharmacol|4|
+Eur Respir J|3|
+Eur Rev Med Pharmacol Sci|1|
+Eur Thyroid J|1|1
+Eur Urol|1|
+Evol Dev|1|1
+Evolution|3|
+Exp Anim|35|21
+Exp Anim (Tokyo)|1|
+Exp Biol Med (Maywood)|14|2
+Exp Brain Res|3|1
+Exp Cell Res|677|472
+Exp Clin Endocrinol Diabetes|2|
+Exp Dermatol|13|4
+Exp Diabetes Res|2|
+Experientia|2|
+Expert Opin Ther Targets|1|
+Expert Rev Gastroenterol Hepatol|1|1
+Exp Eye Res|149|7
+Exp Gerontol|50|
+Exp Hematol|158|3
+Exp Lung Res|2|
+Exp Mol Med|9|5
+Exp Mol Pathol|12|4
+Exp Neurobiol|1|
+Exp Neurol|515|305
+Exp Parasitol|2|1
+Exp Physiol|3|1
+Exp Ther Med|3|1
+Exp Toxicol Pathol|1|1
+Eye (Lond)|1|
+F1000Res|5|3
+F1000Research|2|
+FASEB J|950|324
+FEBS J|498|238
+FEBS Lett|654|74
+FEBS Open Bio|8|4
+Fed Proc|1|
+FEMS Microbiol Rev|1|1
+Fertil Steril|6|1
+Fibrogenesis Tissue Repair|1|1
+Fluids Barriers CNS|1|
+Folia Biol (Krakow)|1|
+Folia Biol (Praha)|1|
+Folia Histochem Cytobiol|2|
+Food Chem Toxicol|1|
+Free Radic Biol Med|362|137
+Free Radic Res|1|1
+Front Aging Neurosci|16|16
+Front Behav Neurosci|72|46
+Front Biosci (Elite Ed)|3|1
+Front Biosci (Landmark Ed)|1|1
+Front Cardiovasc Med|1|1
+Front Cell Dev Biol|3|2
+Front Cell Infect Microbiol|1|1
+Front Cell Neurosci|89|78
+Front Comput Neurosci|1|1
+Front Endocrinol (Lausanne)|8|7
+Front Genet|7|2
+Front Hum Neurosci|1|1
+Front Immunol|37|33
+Front Integr Neurosci|2|2
+Front Mater|1|1
+Front Microbiol|5|4
+Front Mol Neurosci|50|38
+Front Neural Circuits|17|10
+Front Neuroanat|21|16
+Front Neuroenergetics|1|
+Front Neurol|2|2
+Front Neurosci|35|23
+Front Oncol|2|
+Front Pharmacol|12|8
+Front Physiol|31|22
+Front Psychol|1|1
+Front Synaptic Neurosci|6|6
+Front Syst Neurosci|6|3
+Funct Integr Genomics|1|1
+Fundam Clin Pharmacol|1|1
+Future Neurol|1|1
+G3 (Bethesda)|67|42
+Gamete Res|1|
+Gastroenterology|97|28
+Gen Comp Endocrinol|2|
+Gene|231|118
+Gene Expr|2|1
+Gene Expr Patterns|125|21
+Genes (Basel)|2|
+Genes Brain Behav|261|74
+Genes Cancer|8|2
+Genes Cells|156|11
+Genes Chromosomes Cancer|3|
+Genes Dev|592|105
+Genes Dis|1|1
+Genes Environ|1|1
+Genes Genet Syst|5|2
+Genes Immun|28|5
+Genesis|362|100
+Genes Nutr|2|1
+Gene Ther|7|1
+Genetica Polonica|2|
+Genetics|201|116
+Genet Mol Biol|1|1
+Genet Mol Res|4|2
+Genet Res|9|
+Genet Res Camb|1|
+Genet Res (Camb)|1|1
+Genom Data|4|4
+Genome Biol|21|7
+Genome Biol Evol|2|2
+Genome Med|5|5
+Genome Res|86|11
+Genomics|31|7
+Gen Physiol Biophys|1|
+Gerontology|1|1
+Geroscience|1|1
+Glia|723|212
+Glycobiology|19|4
+GMS Z Med Ausbild|1|1
+Graefes Arch Clin Exp Ophthalmol|1|
+Growth Factors|2|
+Growth Horm IGF Res|3|
+Gut|34|7
+Gynecol Obstet Invest|1|
+Gynecol Oncol|2|
+Haematologica|16|4
+Handb Exp Pharmacol|1|1
+Health Research|1|
+Hear Res|33|3
+Heart|1|
+Heart Rhythm|3|3
+Heart Vessels|1|1
+Hematol Rep|1|1
+Hepatology|83|40
+Hepatol Res|2|
+Hereditas|2|
+Heredity|1|
+Heredity (Edinb)|6|5
+Hippocampus|21|11
+Histochem Cell Biol|35|8
+Histochem J|2|
+Histol Histopathol|1|1
+Histopathology|1|
+Horm Behav|2|
+Horm Cancer|1|
+Horm Metab Res|4|
+Hum Antibodies|1|
+Hum Genet|14|3
+Hum Gene Ther|3|2
+Hum Gene Ther Methods|2|1
+Hum Genomics|1|
+Hum Immunol|2|
+Hum Mol Genet|1909|664
+Hum Mutat|18|5
+Hum Pathol|1|
+Hum Reprod|5|
+Hybridoma (Larchmt)|1|
+Hypertension|64|15
+Hypertens Res|1|
+IBRO Reports|1|1
+ILAR J|2|1
+Immun Ageing|2|2
+Immune Netw|1|1
+Immun Inflamm Dis|2|1
+Immunity|981|385
+Immunobiology|4|2
+Immunogenetics|26|5
+Immunol Cell Biol|13|4
+Immunol Invest|1|
+Immunol Lett|10|7
+Immunology|658|485
+Immunol Rev|1|
+Indian J Hum Genet|1|
+Infect Genet Evol|1|1
+Infect Immun|436|10
+Inflamm Bowel Dis|13|4
+Inflamm Regen|1|
+Innate Immun|3|2
+Int Immunol|317|157
+Int Immunopharmacol|1|
+Int J Androl|3|1
+Int J Behav Nutr Phys Act|1|1
+Int J Biochem Cell Biol|16|2
+Int J Biol Sci|36|9
+Int J Cancer|358|192
+Int J Cardiol|4|1
+Int J Cardiol Heart Vasc|1|1
+Int J Cell Biol|1|
+Int J Clin Exp Pathol|1|
+Int J Dev Biol|59|5
+Int J Dev Neurosci|19|3
+Int J Endocrinol|1|
+Int J Exp Pathol|3|1
+Int J Genomics|3|2
+Int J Hematol|1|
+Int J Hypertens|1|1
+Int J Med Microbiol|1|
+Int J Med Sci|1|
+Int J Mol Med|12|4
+Int J Mol Sci|20|16
+Int J Neuropsychopharmacol|7|5
+Int J Obes (Lond)|12|6
+Int J Obes Suppl|1|1
+Int J Oncol|22|2
+Int J Oral Sci|1|
+Int J Physiol Pathophysiol Pharmacol|3|
+Int J Radiat Oncol Biol Phys|1|
+Int J Rheumatol|1|1
+Int Urol Nephrol|2|1
+Invasion Metastasis|1|
+Invest Ophthalmol Vis Sci|1182|576
+In Vitro Cell Dev Biol Anim|9|2
+In Vivo|1|
+Islets|5|2
+ISME J|1|1
+IUBMB Life|3|2
+J AAPOS|1|
+J Aging Stud|1|1
+JAKSTAT|1|
+J Allergy Clin Immunol|27|14
+J Alzheimers Dis|8|3
+JAMA Neurol|1|
+J Am Assoc Lab Anim Sci|6|6
+J Am Chem Soc|1|1
+J Am Coll Cardiol|11|8
+J Am Heart Assoc|26|15
+J Amino Acids|1|
+J Am Soc Nephrol|189|35
+J Anat|24|11
+J Androl|3|
+J Anim Sci|1|
+J Antimicrob Chemother|1|1
+J Appl Genet|1|
+J Appl Physiol|29|
+J Appl Physiol (1985)|7|4
+J Appl Psychol|1|1
+J Assist Reprod Genet|2|1
+J Assoc Res Otolaryngol|17|5
+J Atheroscler Thromb|1|
+J Autoimmun|8|6
+J Bacteriol|1|1
+J Biochem|22|4
+J Biochem Mol Biol|1|1
+J Biochem Mol Toxicol|2|2
+J Bioenerg Biomembr|1|
+J Biol|1|
+J Biol Chem|4877|1936
+J Biol Rhythms|7|3
+J Biomech|1|1
+J Biomed Biotechnol|2|
+J Biomed Inform|1|1
+J Biomed Opt|2|
+J Biomed Res|1|
+J Biomed Sci|17|7
+J Biomed Semantics|2|1
+J Biomol NMR|1|
+J Biomol Tech|1|1
+J Biopharm Stat|1|1
+J Biosci Bioeng|1|1
+J Biotechnol|4|1
+JBMR Plus|1|1
+J Bone Joint Surg Am|1|
+J Bone Miner Metab|10|2
+J Bone Miner Res|244|26
+J Cancer|2|1
+J Cancer Biol Res|1|
+J Cancer Prevention|1|
+J Cancer Res Clin Oncol|1|
+J Card Fail|1|
+J Cardiovasc Dev Dis|1|1
+J Cardiovasc Dis Diagn|1|1
+J Cardiovasc Dis Res|1|1
+J Cardiovasc Pharmacol Ther|1|
+J Cardiovasc Transl Res|1|
+J Cell Biochem|50|9
+J Cell Biol|1224|659
+J Cell Commun Signal|5|1
+J Cell Mol Med|23|10
+J Cell Physiol|51|15
+J Cell Sci|1063|571
+J Cereb Blood Flow Metab|14|6
+J Chem Neuroanat|5|2
+J Child Neurol|1|
+J Child Psychol Psychiatry|1|1
+JCI Insight|36|36
+J Circadian Rhythms|1|
+J Clin Endocrinol Metab|4|1
+J Clin Invest|2052|623
+J Clin Pathol|2|
+J Comp Neurol|287|122
+J Comp Pathol|2|
+J Comp Psychol|1|
+J Control Release|1|
+J Craniofac Surg|2|
+J Cyst Fibros|7|1
+J Dairy Sci|1|
+J Dent Res|44|18
+J Dermatol Sci|8|3
+J Dev Biol|3|3
+J Diabetes Investig|2|1
+J Diabetes Res|1|1
+J Embryol Exp Morphol|5|
+J Endocrinol|26|13
+J Endod|3|1
+J Environ Pathol Toxicol|2|2
+J Ethnopharmacol|1|1
+J Evol Biol|2|2
+J Exp Biol|1|
+J Exp Bot|1|
+J Exp Clin Cancer Res|1|1
+J Exp Med|1674|863
+J Exp Zool|1|
+J Exp Zool B Mol Dev Evol|6|1
+J Fertili In Vitro|1|1
+J Genet|2|
+J Genet Genomics|4|1
+J Gen Physiol|12|4
+J Gen Virol|7|3
+J Gerontol A Biol Sci Med Sci|8|4
+J Glob Antimicrob Resist|1|1
+J Hematol Oncol|3|2
+J Hepatol|12|8
+J Hered|9|3
+J Histochem Cytochem|71|7
+J Huazhong Univ Sci Technolog Med Sci|1|
+J Hum Genet|2|
+J Huntingtons Dis|1|1
+J Hyg (Lond)|3|
+J Hypertens|2|2
+Jikken Dobutsu|1|
+J Immunogenet|1|
+J Immunol|4799|1449
+J Immunol Methods|5|2
+J Immunol Res|1|1
+J Immunother|1|
+J Immunotoxicol|1|
+J Inborn Errors of Metab and Screening|1|1
+J Infect Dis|3|
+J Inflamm|2|
+J Inherit Metab Dis|1|1
+J Innate Immun|1|
+J Inorg Biochem|1|
+J Interferon Cytokine Res|5|
+J Intern Med|1|1
+J Invest Dermatol|868|340
+J Investig Med|2|
+J Leukoc Biol|589|312
+J Lipid Res|666|280
+J Mammary Gland Biol Neoplasia|3|1
+J Matern Fetal Neonatal Med|1|
+J Med Genet|24|3
+J Med Invest|1|
+J Membr Biol|1|1
+J Microbiol Biotechnol|1|
+J Mol Biol|155|11
+J Mol Cell Biol|12|5
+J Mol Cell Cardiol|560|389
+J Mol Endocrinol|8|2
+J Mol Evol|3|
+J Mol Histol|30|4
+J Mol Med|1|
+J Mol Med (Berl)|8|2
+J Mol Neurosci|6|2
+J Mol Psychiatry|1|1
+J Mol Recognit|2|
+J Mol Signal|4|
+J Morphol|1|
+J Musculoskelet Neuronal Interact|2|1
+J Musculoskelet Res|1|1
+J Nanosci Nanotechnol|1|
+J Natl Cancer Inst|159|92
+J Negat Results Biomed|2|1
+J Nephrol|1|
+J Neural Transm|1|
+J Neurochem|782|332
+J Neurocytol|2|1
+J Neurodev Disord|2|
+J Neuroendocrinol|8|2
+J Neurogenet|2|
+J Neuroimmune Pharmacol|1|1
+J Neuroimmunol|10|2
+J Neuroinflammation|18|11
+J Neurol Sci|1|
+J Neuromuscul Dis|1|1
+J Neurooncol|1|
+J Neuropathol Exp Neurol|12|5
+J Neurophysiol|50|31
+J Neurosci|3527|1003
+J Neurosci Methods|12|8
+J Neurosci Res|55|20
+J Neurotrauma|2|2
+J Nutr|44|
+J Nutr Biochem|3|1
+J Nutr Metab|1|1
+J Ocul Pharmacol Ther|1|
+Joint Scientific Meeting of BDSR and NOF|1|
+J Ophthalmol|1|
+J Oral Biosci|1|1
+J Oral Microbiol|1|1
+J Oral Pathol Med|1|
+J Orthop Res|16|10
+J Osteoporos|2|1
+J Pathol|442|205
+J Pediatr Surg|4|
+J Periodontal Res|1|1
+J Periodontol|2|2
+J Pharmacol Exp Ther|17|2
+J Pharmacol Sci|2|1
+J Physiol|431|15
+J Physiol Biochem|4|2
+J Physiol Pharmacol|1|
+J Physiol Sci|1|
+Jpn J Med|1|
+Jpn J Ophthalmol|1|
+Jpn J Physiol|1|
+J Popul Ageing|1|1
+J Proteome Res|8|3
+J Proteomics|4|1
+J Psychiatr Res|1|
+J Psychiatry Neurosci|3|3
+J Psychopharmacol|2|1
+J Radiat Res|2|1
+J Renin Angiotensin Aldosterone Syst|2|
+J Reprod Dev|22|9
+J Reprod Fertil|3|
+J Reprod Immunol|6|3
+J RNAi Gene Silencing|1|
+J Skin Cancer|1|
+J Sleep Res|1|
+JSLS|1|
+J Steroid Biochem Mol Biol|29|4
+J Struct Biol|3|1
+J Surg Res|6|
+J Theor Biol|1|
+J Thromb Haemost|26|4
+J Tissue Eng Regen Med|1|1
+J Toxicol Pathol|6|6
+J Toxicol Sci|2|
+J Urol|5|
+J Vasc Res|6|1
+J Vasc Surg|2|1
+J Vet Med Sci|13|7
+J Vet Sci|1|
+J Virol|499|221
+J Vis Exp|7|5
+J Zhejiang Univ Sci B|1|1
+Kidney Blood Press Res|1|
+Kidney Int|186|10
+Kobe J Med Sci|4|
+Korean J Ophthalmol|1|
+Korean J Physiol Pharmacol|2|1
+Lab Anim|5|1
+Lab Anim Res|2|2
+Lab Anim Sci|1|
+Lab Invest|262|4
+Lancet|1|1
+Lancet Neurol|1|1
+Langmuir|1|
+Laryngoscope|1|1
+Learn Mem|32|4
+Leg Med (Tokyo)|1|
+Leukemia|524|294
+Leuk Lymphoma|1|
+Leuk Res|5|2
+Life Sci|9|3
+Lipids|4|1
+Lipids Health Dis|1|
+Liver Int|4|1
+Lung Cancer|2|
+MAbs|1|
+Magn Reson Med|1|1
+Malar J|1|1
+Mamm Genome|295|117
+Master of Science Thesis Submitted to the Faculty Graduate Studies, University of Manitoba|1|1
+Master's Thesis - The University of Tennessee|1|
+Matrix Biol|232|121
+MBio|19|18
+Mech Ageing Dev|2|2
+Mech Dev|91|28
+Med Electron Microsc|1|
+Med Eng Phys|1|
+Med Hypotheses|1|
+Mediators Inflamm|8|6
+Medicine (Baltimore)|1|1
+Med Mol Morphol|1|
+Med Sci Monit|1|1
+Mem Inst Oswaldo Cruz|2|2
+Metab Brain Dis|1|1
+Metabolism|9|4
+Metabolomics|1|1
+Meta Gene|1|1
+Methods|2|2
+Methods Enzymol|6|2
+Methods Mol Biol|25|6
+MGI Direct Data Submission|979|264
+MGI Direct Data Submission 2009|2|
+MGI Direct Data Submission (B2B/CvDC)|1|
+Microbiol Immunol|3|
+Microbiol Mol Biol Rev|1|
+Microbiologyopen|1|1
+Microb Pathog|1|
+Microcirculation|4|3
+Microsc Microanal|2|1
+Microsc Res Tech|1|
+Microvasc Res|1|
+Middle East Afr J Ophthalmol|1|
+Mitochondrion|14|1
+Mod Rheumatol|2|
+Mol Autism|8|3
+Mol Biol Cell|337|29
+Mol Biol Evol|4|1
+Mol Biol Rep|10|4
+Mol Biosyst|1|
+Mol Biotechnol|2|
+Mol Brain|39|20
+Mol Cancer|13|1
+Mol Cancer Res|294|157
+Mol Cancer Ther|5|1
+Mol Carcinog|4|2
+Mol Cell|762|387
+Mol Cell Biochem|9|
+Mol Cell Biol|1216|245
+Mol Cell Endocrinol|831|626
+Mol Cell Neurosci|466|188
+Mol Cell Probes|1|
+Mol Cell Proteomics|19|8
+Mol Cells|17|3
+Mol Endocrinol|287|14
+Mol Genet Genomic Med|11|9
+Mol Genet Genomics|4|2
+Mol Genet Metab|121|16
+Mol Genet Metab Rep|4|2
+Mol Hum Reprod|15|4
+Mol Imaging Biol|2|
+Mol Immunol|204|4
+Mol Med|6|1
+Mol Med Rep|1|
+Mol Med Today|1|
+Mol Membr Biol|1|
+Mol Metab|133|67
+Mol Microbiol|1|
+Mol Neurobiol|10|8
+Mol Neurodegener|29|17
+Mol Neuropsychiatry|1|1
+Mol Nutr Food Res|1|1
+Mol Oncol|1|1
+Mol Pain|24|11
+Mol Pharm|2|
+Mol Pharmacol|37|12
+Mol Psychiatry|54|32
+Mol Reprod Dev|62|7
+Mol Syndromol|1|1
+Mol Syst Biol|6|3
+Mol Ther|17|8
+Mol Ther Methods Clin Dev|2|1
+Mol Ther Nucleic Acids|2|2
+Mol Vis|116|6
+Mouse Genome|4|
+Mouse News Lett|25|
+Mov Disord|2|1
+mSystems|2|2
+Mucosal Immunol|43|11
+Muscle Nerve|1|
+Mutagenesis|1|
+Mutat Res|49|1
+Nanotoxicology|1|
+Nat Biotechnol|23|6
+Nat Cell Biol|556|228
+Nat Chem Biol|8|3
+Nat Commun|5080|4294
+Nat Genet|553|402
+Nat Immunol|828|367
+Nat Med|743|261
+Nat Methods|26|7
+Nat Nanotechnol|1|
+Nat Neurosci|857|446
+Nat Photonics|1|1
+Nat Protoc|8|5
+Nat Rev Cancer|190|48
+Nat Rev Drug Discov|1|
+Nat Rev Endocrinol|1|
+Nat Rev Immunol|2|
+Nat Rev Mol Cell Biol|1|1
+Nat Rev Neurosci|3|2
+Nat Struct Biol|4|1
+Nat Struct Mol Biol|91|71
+Nature|1677|783
+N Biotechnol|1|1
+N Engl J Med|12|3
+Neonatology|1|1
+Neoplasia|21|6
+Nephrol Dial Transplant|7|
+Nephron|1|
+Nephron Exp Nephrol|3|
+Nephron Physiol|1|
+Neural Dev|187|81
+Neural Plast|7|5
+Neural Regen Res|1|1
+Neurobiol Aging|606|184
+Neurobiol Dis|839|416
+Neurobiol Learn Mem|11|4
+Neurochem Int|15|5
+Neurochem Res|12|4
+Neurodegener Dis|2|
+Neuro Endocrinol Lett|1|
+Neuroendocrinology|1|1
+Neurogastroenterol Motil|6|1
+Neurogenetics|9|6
+Neuroimage|4|1
+Neuroimage Clin|1|1
+Neurol Med Chir (Tokyo)|1|
+Neurology|2|
+Neurol Res|1|
+Neuromolecular Med|5|1
+Neuromuscul Disord|8|2
+Neuron|1108|508
+Neuro Oncol|4|2
+Neuropathol Appl Neurobiol|3|2
+Neuropeptides|4|1
+Neuropharmacology|246|124
+Neurophotonics|2|2
+Neuropsychopharmacology|56|27
+Neuroreport|13|2
+Neurosci Biobehav Rev|2|2
+Neurosci Bull|1|1
+Neurosci Commun (Houst)|1|1
+Neuroscience|1330|547
+Neuroscientist|1|1
+Neurosci Lett|707|426
+Neurosci Res|88|31
+Neurotherapeutics|3|1
+Neurotoxicology|4|2
+Neurotoxicol Teratol|5|3
+Neurourol Urodyn|1|
+Nitric Oxide|1|
+North American J Med Sci|1|
+not specified|1|1
+NPJ Vaccines|1|1
+Nucleic Acids Res|2331|1840
+Nucleic Acids Symp Ser (Oxf)|1|
+Nucleosides Nucleotides Nucleic Acids|2|1
+Nucleus|2|
+Nutr Diabetes|3|3
+Nutrients|1|1
+Nutr Metab Cardiovasc Dis|1|
+Nutr Metab (Lond)|2|
+Nutr Neurosci|1|1
+Obesity (Silver Spring)|14|4
+Obes Res|1|1
+Oncogene|1860|1224
+Oncogenesis|6|4
+Oncoimmunology|11|6
+Oncol Lett|1|1
+Oncol Rep|2|1
+Oncolytic Virother|1|1
+Oncotarget|67|55
+Onco Targets Ther|1|1
+Open Access Maced J Med Sci|1|1
+Open Biol|4|2
+Open Life Sci|1|1
+Open Virol J|1|
+Ophthalmic Res|1|
+Opt Express|1|
+Oral Dis|1|
+Organogenesis|6|1
+Orphanet J Rare Dis|4|2
+Orthod Craniofac Res|1|
+Osteoarthritis Cartilage|24|15
+Osteoporos Int|1|1
+Oxid Med Cell Longev|1|1
+Pain|14|3
+Pancreas|4|
+Parasite Immunol|1|1
+Parasitol Int|1|1
+Parasitology|1|
+Parasitol Res|1|
+Parkinsonism Relat Disord|3|
+Parkinsons Dis|2|
+Part Fibre Toxicol|1|
+Patent Application     US20100138936 A1|1|
+Pathobiol Aging Age Relat Dis|3|2
+Pathogenetics|1|
+Pathol Int|1|
+Pediatr Blood Cancer|2|
+Pediatr Cardiol|2|1
+Pediatr Nephrol|4|
+Pediatr Neurol|1|
+Pediatr Res|12|3
+Pediatr Surg Int|4|
+PeerJ|7|4
+Peptides|4|2
+Personal Communication|19|1
+Personal Communication, The Jackson Laboratory|4|
+Personal Communication (Thesis)|2|
+Personal Communication through S Ball (MRC Harwell) to The Jackson Laboratory|1|
+Personal Communication to Beverly Richards-Smith|1|
+Personal Communication to K. Pickford at Harwell|1|
+Personal Communication to the Medical Research Council Mammalian Genetics Unit, Harwell, UK.|1|
+Pflugers Arch|14|3
+Pharmacogenet Genomics|3|
+Pharmacogenomics J|2|
+Pharmacol Biochem Behav|5|1
+Pharmacol Res|1|
+Pharmacol Res Perspect|1|1
+Pharmacol Rev|2|1
+Pharmgenomics Pers Med|1|1
+Pharm Res|1|
+PhD Thesis - McGill University|1|1
+PhD Thesis - University of Toronto|1|1
+Photochem Photobiol|2|2
+Photodermatol Photoimmunol Photomed|1|
+Phys Biol|1|
+Physiol Behav|15|5
+Physiol Genomics|200|63
+Physiol Rep|59|9
+Pigment Cell Melanoma Res|17|7
+Pigment Cell Res|2|
+Placenta|21|5
+Plast Reconstr Surg|3|2
+Platelets|1|1
+PLoS Biol|617|441
+PLoS Comput Biol|5|3
+PLoS Curr|5|1
+PLoS Genet|2112|1446
+PLoS Med|6|
+PLoS Negl Trop Dis|6|
+PLoS One|18349|11864
+PLoS Pathog|1748|1509
+PPAR Res|1|
+Prenat Diagn|1|1
+Prion|2|
+Proc Biol Sci|2|2
+Proc Natl Acad Sci U S A|6392|1909
+Proc Soc Exp Biol Med|2|
+Prog Biophys Mol Biol|1|
+Prog Clin Biol Res|2|1
+Prog Neurobiol|2|
+Prog Neuropsychopharmacol Biol Psychiatry|2|2
+Prog Nucleic Acid Res Mol Biol|1|
+Prostaglandins Leukot Essent Fatty Acids|2|1
+Prostate|4|2
+Prostate Cancer Prostatic Dis|2|1
+Protein Cell|12|4
+Protein Expr Purif|3|
+Proteins|2|1
+Protein Sci|4|1
+Proteomics|11|4
+Protoplasma|1|
+Psychiatry Clin Neurosci|1|1
+Psychiatry Res|1|
+Psychoneuroendocrinology|5|2
+Psychopharmacology (Berl)|10|2
+Pulm Circ|3|1
+Pulm Pharmacol Ther|2|2
+Purinergic Signal|3|2
+Q J Microsc Sci|1|
+Radiat Res|4|1
+Radiother Oncol|1|1
+Rambam Maimonides Med J|1|1
+Rare Dis|2|2
+Redox Biol|7|3
+Regul Pept|5|1
+Reprod Biol|1|1
+Reprod Biol Endocrinol|11|1
+Reprod Biomed Online|1|
+Reprod Domest Anim|1|
+Reprod Fertil Dev|6|3
+Reprod Sci|1|1
+Reprod Syst Sex Disord|1|
+Reprod Toxicol|1|
+Reproduction|265|170
+Respir Physiol Neurobiol|6|2
+Respir Res|13|2
+Res Rep Health Eff Inst|1|
+Retrovirology|4|1
+Rev Physiol Biochem Pharmacol|1|1
+Rheumatology (Oxford)|2|1
+Rinsho Hoshasen|1|
+RNA|24|6
+RNA Biol|11|6
+R Soc Open Sci|2|2
+Russian Journal of Developmental Biology|1|1
+Sarcoma|1|
+Saudi J Ophthalmol|1|
+Scand J Gastroenterol|1|1
+Scand J Haematol|1|
+Scand J Immunol|1|
+Schizophr Bull|2|1
+Schizophr Res|1|
+Sci Adv|70|69
+Sci China C Life Sci|1|
+Sci China Life Sci|3|2
+Sci Data|2|2
+Science|693|168
+Scientific info. sheet (http://www.criver.com/files/pdfs/rms/ncg/ncg-mouse-scientific--sheet.aspx)|1|1
+ScientificWorldJournal|2|1
+Sci Immunol|41|41
+Sci Rep|8235|8094
+Sci Signal|572|506
+Sci Transl Med|670|486
+Semin Cancer Biol|99|72
+Semin Immunol|1|
+Semin Reprod Med|1|
+Sex Dev|6|1
+Sheng Wu Hua Xue Yu Sheng Wu Wu Li Xue Bao (Shanghai)|1|
+Shock|2|2
+Sichuan J of Zoology|1|
+SID 5 Research Project Final Report, DEFRA Project Code SE1753|1|
+Signal Transduct Target Ther|2|2
+Singapore Med J|1|
+Skelet Muscle|17|7
+Sleep|7|4
+Small|1|
+Small GTPases|3|1
+Soc Neurosci|1|
+Somat Cell Mol Genet|1|
+Somatosens Mot Res|1|
+Spermatogenesis|1|
+Spine (Phila Pa 1976)|1|
+Springerplus|2|1
+Springer Semin Immunopathol|1|
+Stem Cell Reports|31|24
+Stem Cell Res|12|4
+Stem Cell Res Ther|2|
+Stem Cell Rev|1|
+Stem Cells|691|330
+Stem Cells Dev|28|9
+Stem Cells Int|2|1
+Stem Cells Transl Med|2|1
+Steroids|4|1
+Stress|1|
+Stroke|9|4
+Structure|92|77
+Surgery|1|
+Synapse|6|5
+Teratology|3|
+Tex Rep Biol Med|1|
+The 2015 Annual Meeting for The Association for Research in Vision and Ophthalmology.|1|1
+The Jackson Laboratory, Personal Communication|1|
+The Jackson Laboratory Summer Student Program, Eva M. Eicher, Sponsor|1|
+Theranostics|2|2
+Theriogenology|3|2
+Thorac Cardiovasc Surg Rep|1|1
+Thorax|1|
+Thromb Haemost|8|3
+Thromb Res|4|3
+Thyroid|5|1
+Thyroid Res|1|
+Tissue Cell|1|
+Tissue Eng Part A|4|
+Tohoku J Exp Med|1|1
+Toxicol Appl Pharmacol|229|78
+Toxicol Lett|4|1
+Toxicology|2|2
+Toxicol Pathol|16|11
+Toxicol Res|1|1
+Toxicol Sci|185|38
+Toxins (Basel)|2|2
+Traffic|20|4
+Trans Am Soc Neurochem|1|
+Transgenic Res|156|39
+Transl Oncol|2|2
+Transl Psychiatry|19|13
+Transl Stroke Res|1|1
+Transplantation|6|3
+Transplant Proc|2|
+Transpl Immunol|1|
+Trends Biochem Sci|1|1
+Trends Dev Biol|1|1
+Trends Endocrinol Metab|1|
+Trends Neurosci|1|
+Tumour Biol|1|1
+Ugeskr Laeger|1|
+Unpublished|8|1
+Ups J Med Sci|2|
+Urology|3|1
+Vaccine|3|1
+Vasc Cell|3|1
+Vascul Pharmacol|1|
+Vet Pathol|23|3
+Virchows Arch B Cell Pathol Incl Mol Pathol|1|
+Virol J|2|2
+Virology|14|6
+Viruses|1|1
+Virus Res|1|
+Vision Res|2|
+Vis Neurosci|7|1
+Vitam Horm|2|1
+Wellcome Open Res|1|1
+World J Biol Psychiatry|1|1
+World J Clin Cases|1|
+World J Gastroenterol|7|4
+World J Gastrointest Pathophysiol|1|1
+World J Orthop|1|1
+World Neurosurg|3|3
+Wound Repair Regen|6|
+www.gudmap.org|1|
+Yi Chuan Xue Bao|1|
+Yonsei Med J|1|
+Zhongguo Fei Ai Za Zhi|1|
+Zookeys|1|1
+Zoolog Sci|2|
+Zootaxa|1|1
+Z Vererbungsl|2|
+Zygote|7|1
+|20|
+(1408 rows)
