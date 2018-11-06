@@ -101,15 +101,15 @@ from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
           and a._mgitype_key=1 )
 '''
 
-# list potential queries, best of these are non-overlapping
+# list potential queries, best if these are non-overlapping result sets result sets result sets result sets
 QUERY_LIST = { \
 'discard_after' :  BASE_SELECT +
     '''
     where
     r.creation_date > '10/31/2017'
     and r.isdiscard = 1
-    and r._createdby_key != 1609	-- littriage_discard user on dev
     and r._referencetype_key=31576687 -- peer reviewed article
+    and r._createdby_key != 1609      -- littriage_discard user on dev/prod
     and bd.haspdf=1
     -- order by r.journal, pubmed
     ''',
@@ -127,6 +127,7 @@ QUERY_LIST = { \
      or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
     and r._referencetype_key=31576687 -- peer reviewed article
+    and r._createdby_key != 1609      -- littriage_discard user on dev/prod
     and bd.haspdf=1
     -- order by r.journal, pubmed
     ''',
@@ -145,6 +146,7 @@ QUERY_LIST = { \
      or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
     and r._referencetype_key=31576687 -- peer reviewed article
+    and r._createdby_key != 1609      -- littriage_discard user on dev/prod
     and bd.haspdf=1
     -- order by r.journal, pubmed
     ''',
