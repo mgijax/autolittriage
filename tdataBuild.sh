@@ -37,12 +37,12 @@ echo splittest "$splittest"
 echo doall "$doall"
 
 
-projectHome=/Users/jak/work/autolittriage
+projectHome=~/work/autolittriage
 mgiJournals=$projectHome/journalsMonitored.txt	# mgi journals filel
 tdataGetRaw=$projectHome/tdataGetRaw.py
 tdataJournalDist=$projectHome/tdataJournalDist.py
 dblog=fromdb.log		# log file from tdataGetRaw
-limit="100"			# tdataGetRaw limit (set small for debugging)
+limit="0"			# tdataGetRaw limit (set small for debugging)
 				# "0" = no limit
 
 #######################################
