@@ -16,12 +16,16 @@
 #
 # Use this to get a subset of samples with the same journal distribution as
 # the input. So for instance, to generate a test set.
+#
+# NOTE currently this script is only considering articles from the MGI
+#  monitored journals. So it is not really the distribution across all journals
 # 
 # This only works IF the input set already has the distribution we want.
 # If the input is some other funky/ill-defined distribution, then we'd need
-# to know the fraction of inputs desired for each journal.
+# to know the fraction of inputs desired for each journal, and we'd need a 
+# different script.
 #
-# At the moment this does consider/preserve the distribution of keep/discard
+# At the moment this does NOT consider/preserve the distribution of keep/discard
 # for each journal. We should probably add that.
 #
 import sys
