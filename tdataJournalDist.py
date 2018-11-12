@@ -100,6 +100,7 @@ def getMgiJournals(mgiJournalsFile):
 #----------------------
 def main():
 
+    verbose("Distributing Articles over MGI monitored Journals\n")
     startTime = time.time()
 
     # extend path up multiple parent dirs, hoping we can import sampleDataLib
