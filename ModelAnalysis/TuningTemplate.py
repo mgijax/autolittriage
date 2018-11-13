@@ -5,7 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler
 from sklearn.linear_model import SGDClassifier
 #-----------------------
-args = tl.parseCmdLine()
+args = tl.args
 randomSeeds = tl.getRandomSeeds( { 	# None means generate a random seed
 		'randForSplit'      : args.randForSplit,
 		'randForClassifier' : args.randForClassifier,
@@ -35,18 +35,5 @@ parameters={'vectorizer__ngram_range':[(1,2)],
 	'classifier__penalty':['l2'],
 	}
 p = tl.TextPipelineTuningHelper( pipeline, parameters,
-		    trainingDataDir=args.trainingData,
-		    testSplit=args.testSplit,
-		    gridSearchBeta=args.gridSearchBeta,
-		    gridSearchCV=args.gridSearchCV,
-		    indexOfYes=args.indexOfYes,
-		    randomSeeds=randomSeeds,
-		    ).fit()
-print p.getReports(wIndex=args.wIndex,
-		    tuningIndexFile=args.tuningIndexFile,
-		    wPredictions=args.wPredictions,
-		    predFilePrefix=args.predFilePrefix,
-		    compareBeta=args.compareBeta,
-		    verbose=args.verbose,
-		    classNames=args.classNames,
-		    )
+		    randomSeeds=randomSeeds,         ).fit()
+print p.getReports()
