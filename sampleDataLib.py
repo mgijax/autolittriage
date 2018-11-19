@@ -69,8 +69,8 @@ class SampleRecord (object):
 	    self.knownClassName = None
 
 	self.ID            = str(fields[0])
-	self.year          = str(fields[1])
-	self.creation_date = str(fields[2])
+	self.creation_date = str(fields[1])
+	self.year          = str(fields[2])
 	self.journal       = fields[3]
 	self.title         = fields[4]
 	self.abstract      = fields[5]
@@ -122,10 +122,10 @@ class SampleRecord (object):
 	#else: title = '\n' + self.title
 
 	fields += [ self.ID,
-		    self.year,
 		    self.creation_date,
+		    self.year,
 		    self.journal,
-		    self.title,		# USE TITLE
+		    self.title,	
 		    self.abstract,
 		    self.extractedText,
 		    ]
@@ -134,6 +134,9 @@ class SampleRecord (object):
 
     def getKnownClassName(self):
 	return self.knownClassName
+
+    def getKnownYvalue(self):
+	return CLASS_NAMES.index(self.knownClassName)
 
     def getSampleName(self):
 	return self.ID
@@ -360,11 +363,14 @@ class PredictionReporter (object):
 
 if __name__ == "__main__":
     r = SampleRecord(\
-    '''discard|pmID1|1900|my Journal|My Title|
+    '''keep|pmID1|01/01/1900|1900|my Journal|My Title|
     My Abstract|My text: text https://foo text www.foo.org text text text Reference r1'''
     )
     print r.getKnownClassName()
+    print r.getKnownYvalue()
     print r.getSampleName()
+    print r.getSampleAsText()
+    exit(1)
 #    print r.getJournal()
 #    print r.isReject()
     print r.getDocument()
@@ -382,11 +388,11 @@ if __name__ == "__main__":
 #    rptr = PredictionReporter(r, hasConfidence=True)
 #    print rptr.getPredOutputHeader(),
 #    print rptr.getPredOutput(r, 0, confidence=-0.5)
-    r = SampleRecord(''';discard...|pmID1|1900|10/3/2017|journal|title|abstract|text''')
+    r = SampleRecord(''';discard...|pmID1|10/3/2017|1901|journal|title|abstract|text''')
     print "Reject? %s " % str(r.isReject())
     print "Reason: " +  str(r.getRejectReason())
     print r.getKnownClassName()
-    r = SampleRecord(''';foo...|pmID1|1900|10/3/2017|journal|title|abstract|text''')
+    r = SampleRecord(''';foo...|pmID1|10/3/2017|1902|journal|title|abstract|text''')
     print "Reject? %s " % str(r.isReject())
     print "Reason: " +  str(r.getRejectReason())
     print r.getKnownClassName()
