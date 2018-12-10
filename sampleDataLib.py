@@ -32,7 +32,7 @@ TEXT_PART_SEP = '::::\n'	# separates title, abstract, extr text
 #-----------------------------------
 # Regex's
 miceRegex    = re.compile( r'\bmice\b', flags=re.IGNORECASE)
-urls_re      = re.compile(r'\b(?:https?://|www[.])\S*',re.IGNORECASE)
+urls_re      = re.compile(r'\b(?:https?://|www[.]|doi)\S*',re.IGNORECASE)
 token_re     = re.compile(r'\b([a-z_]\w+)\b',re.IGNORECASE)
 className_re = re.compile(r'\b(\w+)\b')	# valid class names (all alpha numeric)
 
@@ -184,7 +184,7 @@ class SampleRecord (object):
     # ---------------------------
 
     def figureText(self):	# preprocessor
-	self.extractedText = ' '.join(figureText.text2FigText(self.extractedText))
+	self.extractedText = '\n'.join(figureText.text2FigText(self.extractedText))
 	return self
     # ---------------------------
 

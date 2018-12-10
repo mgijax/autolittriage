@@ -21,8 +21,8 @@ PARAGRAPH_BOUNDARY_LEN = len(PARAGRAPH_BOUNDARY)
 NUM_LEADING_WORDS  = 10		# words before 'fig' to grab as fig discu text
 NUM_TRAILING_WORDS = 10		# words after 'fig' to grab as fig discu text
 
-# match word "fig" or "figure"
-figureRe = re.compile(r'\bfig(?:ure)?\b', re.IGNORECASE )
+# match word "fig" or "figure" or "supp...figure"
+figureRe = re.compile(r'\b(?:supp\w*[ ])?fig(?:ure)?\b', re.IGNORECASE )
 #---------------------------------
 
 def text2FigText(text,
@@ -379,6 +379,10 @@ and this is a bit more of the caption.
 Some intervening text. blah1 blah2 blah3 blah4 blah5 blah6
 
 Figure 2: this is caption 2. Also spellbinding
+
+Supplemental Figure 3: this is the caption of a supplemental figure.
+
+Supp Fig 4: here is another supp figure caption
 
 Here is some discussion of figure 1 and discussion of figure 2. This should
 overlap. but, But! But! Blah, this figure 2 discussion should not overlap
