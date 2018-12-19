@@ -91,7 +91,30 @@ SQLSEPARATOR = '||'
 
 # base of query select stmt
 BASE_SELECT =  \
-'''select a.accid pubmed, r.isdiscard, r.year,
+'''
+-- skip articles "indexed" by pm2gene and not reviewed by a curator yet
+-- we don't really know if these are relevant (not good ground truth)
+create temporary table tmp_pm2gene
+as
+select r._refs_key, a.accid pubmed
+from bib_refs r join bib_workflow_status bs
+    on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
+    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+    join acc_accession a
+    on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
+	and a._mgitype_key=1 )
+where 
+    (bs._status_key = 31576673 and bs._group_key = 31576666 and 
+	bs._createdby_key = 1571) -- index for GO by pm2geneload
+
+    and bsv.ap_status in ('Not Routed', 'Rejected')
+    and bsv.gxd_status in ('Not Routed', 'Rejected')
+    and bsv.tumor_status in ('Not Routed', 'Rejected')
+    and bsv.qtl_status in ('Not Routed', 'Rejected')
+||
+create index idx1 on tmp_pm2gene(_refs_key)
+||
+select a.accid pubmed, r.isdiscard, r.year,
     to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
     r.journal, r.title, r.abstract,
     translate(bd.extractedtext, E'\r', ' ') as "text" -- remove ^M
@@ -107,6 +130,7 @@ QUERY_LIST = { \
     '''
     where
     r.creation_date > '10/31/2017'
+    and not exists (select 1 from tmp_pm2gene t where t._refs_key = r._refs_key)
     and r.isdiscard = 1
     and r._referencetype_key=31576687 -- peer reviewed article
     and r._createdby_key != 1609      -- littriage_discard user on dev/prod
@@ -119,6 +143,7 @@ QUERY_LIST = { \
     join bib_status_view bs on (bs._refs_key = r._refs_key)
     where
     r.creation_date > '10/31/2017'
+    and not exists (select 1 from tmp_pm2gene t where t._refs_key = r._refs_key)
     and 
     (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
@@ -138,6 +163,7 @@ QUERY_LIST = { \
     where
     r.creation_date >= '10/1/2016'
     and r.creation_date <= '10/31/2017'
+    and not exists (select 1 from tmp_pm2gene t where t._refs_key = r._refs_key)
     and 
     (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
