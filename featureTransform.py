@@ -59,16 +59,61 @@ class Mapping (object):
 #  the group. So cannot figure out which mapping object to apply
 # Need to ponder all this further....
 
+# tumors and tumor types - map all to "tumor_type"
+# whole words
+wholeWords = [
+	    'tumor',
+	    'tumour',
+	    'hepatoma',
+	    'melanoma',
+	    'teratoma',
+	    'thymoma',
+	    'neoplasia',
+	    'neoplasm',
+	    ]
+# word endings
+endings = [
+	    '[a-z]+inoma',
+	    '[a-z]+gioma',
+	    '[a-z]+ocytoma',
+	    '[a-z]+thelioma',
+	    ]
+# whole words or endings
+wordsOrEndings = [
+	    '[a-z]*adenoma',
+	    '[a-z]*sarcoma',
+	    '[a-z]*lymphoma',
+	    '[a-z]*papilloma',
+	    '[a-z]*leukemia',
+	    '[a-z]*leukaemia',
+	    '[a-z]*blastoma',
+	    '[a-z]*lipoma',
+	    '[a-z]*myoma',
+	    '[a-z]*acanthoma',
+	    '[a-z]*fibroma',
+	    '[a-z]*glioma',
+	    ]
+tumorRe = '|'.join( wholeWords + endings + wordsOrEndings )
+tumorRe = '(?:' + tumorRe + ')s?'	# optional 's'
+
 mappings = { 
     # mapping name: Mapping object
-    'ko'   : Mapping( r'(?P<ko>ko|knock(?:\s|-)outs?)', 'knockout'),
-    'wt'   : Mapping( r'(?P<wt>wt|wild(?:\s|-)types?)', 'wildtype'),
+    'tt'   : Mapping( r'(?P<tt>' + tumorRe + ')', 'tumor_type'),
+
     'mice' : Mapping( r'(?P<mice>mouse|mous|murine)', 'mice'),
+    #'mice' : Mapping( r'(?P<mice>mouse|mous|murine|mice)', ''), # ??
+
+    'ko'   : Mapping( r'(?P<ko>ko|knock(?:ed|s)?(?:\s|-)?outs?)', 'knock_out'),
+    'ki'   : Mapping( r'(?P<ki>knock(?:ed)?(?:\s|-)?ins?)', 'knock_in'),
+    'gt'   : Mapping( r'(?P<gt>gene(?:\s|-)?trap(?:ped|s)?)', 'gene_trap'),
+    'wt'   : Mapping( r'(?P<wt>wt|wild(?:\s|-)?types?)', 'wild_type'),
+    'mut'  : Mapping( r'(?P<mut>\W*-/-\W*)', ' mut_mut '),
+
     'eday' : Mapping( r'(?P<eday>e[ ]?\d\d?|e(?:mbryonic)? day[ ]\d\d?)',
-								'embryonic_day'),
-    'mut'    : Mapping( r'(?P<mut>\W*-/-\W*)', ' mut_mut '),
-    'tumor'  : Mapping( r'(?P<tumor>tumours?)', 'tumor'),
-    'fig'    : Mapping( r'(?P<fig>fig)', 'figure'),
+							    'embryonic_day'),
+    'ee'   : Mapping( r'(?P<ee>(?:(?:[1,2,4,8]|one)(?:\s|-)cell)|blastocysts?)',
+							    'early_embryo'),
+    'fig'  : Mapping( r'(?P<fig>fig)', 'figure'),
     					
     # often refer to fig or panel A1, ...  should this be for all letters?
     # Should we do this at all?
@@ -77,11 +122,11 @@ mappings = {
     }
 
 # combine all the mappings into 1 honking regex string
-# word boundaries around the mapping regex's and or them.
-bigRegex = '|'.join([  r'\b' + m.regex + r'\b' for m in mappings.values() ])
+# OR them and word boundaries around
+#bigRegex = r'\b' + '|'.join([ m.regex for m in mappings.values() ]) + r'\b'
+bigRegex = '|'.join([ r'\b' + m.regex + r'\b' for m in mappings.values() ])
 
 bigRe = re.compile(bigRegex, re.IGNORECASE)
-
 
 def transformText(text):
     """
@@ -111,23 +156,35 @@ def transformText(text):
     return transformed
 #---------------------------------
 
-if __name__ == "__main__":
-    text = "...stuff then ko and knock out mouse and a wt mouse and more text"
-    tests = [
-	    'before e12 after',
-	    'before E 1 after',
-	    'before E day 1 after',
-	    'before embryonic day 7 after',
-	    'before embryonic day 117 after',
-	    'before -/- e12. after',
-	    'before tumours and tumor after',
-	    'before fig s1 fig a23 g6 after',
-	    'before wild type wt Wt wild\ntype wild-types after',
-	    'before knock out ko Ko knock\nout knock-outs after',
-	    ]
+if __name__ == "__main__":	# ad hoc tests
+    if True:
+	text = "...stuff then ko and knock out mouse and a wt mouse and more text"
+	tests = [
+		'before e12 after',
+		'before E 1 after',
+		'before E day 1 after',
+		'before embryonic day 7 after',
+		'before embryonic day 117 after',
+		'before -/- e12. after',
+		'before tumours and tumor after',
+		'before fig s1 fig a23 g6 after',
+		'before wildtypes wildtype wild type wt Wt wild\ntype wild-types after',
+		'before knockout knocksouts knocked out knock out ko Ko knock\nout knock-outs after',
+		'before knockin knockins knocked-in knock-in knocked in knock ins after',
+		'before 1 cell 1-cell one-cell 2 cell 2-cell blastocyst after',
+		'before genetrap genetraps gene trap gene-traps gene-trap gene-trapped gene trapped after',
+		]
 
-    for text in tests:
-	print text
-	print transformText(text)
-	print
-    
+	for text in tests:
+	    print text
+	    print transformText(text)
+	    print
+    if True:
+	tests = [	# tumor tests
+		'adenoma fooadenoma xxxinoma xxxinomas neoplasm neoplasias'
+		]
+
+	for text in tests:
+	    print text
+	    print transformText(text)
+	    print
