@@ -4,10 +4,11 @@
 '''
   Purpose:
 	   run sql to get the curation statuses for documents.
-	   (currently HARD CODED date:  10/31/2017 ..)
+	   (currently HARD CODED date:  10/01/2016 ..)
 
   Outputs:     delimited file to stdout
 '''
+START_DATE='01/01/2015'	# get statuses for papers created after this date
 OutputColumns = [	# this column order is assumed in sampleDataLib.py
     'pubmed',
     'class', 		# "discard" or "keep" (CLASS_NAMES in config file)
@@ -94,12 +95,12 @@ QUERY_LIST = { \
 'query' :  BASE_SELECT +
     '''
     where
-    r.creation_date > '10/31/2017'
+    r.creation_date >= '%s'
     and r._referencetype_key=31576687 -- peer reviewed article
     and r._createdby_key != 1609      -- littriage_discard user on dev/prod
     and bd.haspdf=1
     -- order by r.journal, pubmed
-    ''',
+    ''' % (START_DATE),
 }	# end QUERY_LIST
 #-----------------------------------
 
