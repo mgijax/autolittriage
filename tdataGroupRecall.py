@@ -12,8 +12,9 @@ import time
 import argparse
 import random
 
-DEFAULT_STATUS_FILE     = 'testDocsCurStatus.txt'
+DEFAULT_STATUS_FILE     = 'docStatuses.txt'
 DEFAULT_PREDICTION_FILE = 'SGDlog_test.out'
+PREDFILE_RECORDSEP = '\n'
 
 #-----------------------------------
 
@@ -24,10 +25,15 @@ def parseCmdLine():
     parser.add_argument('statusFile', help='file of paper curation statuses')
     parser.add_argument('predictionFile', help='file of paper predictions')
 
+    parser.add_argument('-l', '--long', dest='longOutput', action='store_true',
+	required=False,
+	help="long output. Write each prediction + paper statuses")
+
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
 	required=False, help="skip helpful messages to stderr")
 
     args = parser.parse_args()
+    args.longOutputFile = sys.stdout
 
     return args
 #----------------------
@@ -42,7 +48,7 @@ class Paper (object):
 	    for the paper.
     """
     def __init__(self, record):
-	FIELDSEP = '|'
+	FIELDSEP = '|'		# should really get this from sampleDataLib
 	(self.pubmed,
 	self.classification,
 	self.ap_status,
@@ -58,14 +64,14 @@ class Prediction (object):
     Is a prediction for a given paper
     Does: knows how to initialize itself from a line from a prediction file
     """
+    FIELDSEP = '\t'		# standard for prediction files
     def __init__(self, record):
-	FIELDSEP = '\t'
 	(self.pubmed,
 	self.trueClass,
 	self.predClass,
 	self.fpFn,
 	self.confidence,
-	self.absValue,) = record.split(FIELDSEP)
+	self.absValue,) = record.split(self.FIELDSEP)
 
 #----------------------
 
@@ -127,14 +133,17 @@ def main():
     totTruePositives = 0
     totPredPositives = 0
 
-    PREDFILE_RECORDSEP = '\n'
     predLines = open(args.predictionFile,'r').read().split(PREDFILE_RECORDSEP)
     del predLines[0]			# header line
     del predLines[-1]			# empty line at end after split()
 
+    if args.longOutput: outputLongHeader()
+
     for predLine in predLines:
 	pred = Prediction(predLine)
 	paper = papers[pred.pubmed]
+
+	if args.longOutput: outputLong(paper, pred)
 
 	if paper.classification == 'keep':	# have a true positive
 	    totTruePositives += 1
@@ -155,6 +164,47 @@ def main():
     print '%-14s selected papers: %5d predicted keep: %5d recall: %5.3f' % \
 		('Totals', totTruePositives, totPredPositives,
 				float(totPredPositives)/totTruePositives)
+# ---------------------
+
+def outputLongHeader():
+    """
+    Write header line for long output file
+    """
+    args.longOutputFile.write( Prediction.FIELDSEP.join( [ \
+		'ID',
+		'True Class',
+		'Pred Class',
+		'FP/FN',
+		'Confidence',
+		'Abs Value',
+		'ap_status',
+		'gxd_status',
+		'go_status',
+		'tumor_status',
+		'qtl_status',
+		] ) + PREDFILE_RECORDSEP )
+# ---------------------
+
+def outputLong( paper,		# Paper record
+		pred,		# Prediction record w/ same pubmed as paper
+		):
+    """
+    Write a combined prediction record with the curation statuses to for
+    each curation group from the paper record.
+    """
+    args.longOutputFile.write( Prediction.FIELDSEP.join( [ \
+		pred.pubmed,
+		pred.trueClass,
+		pred.predClass,
+		pred.fpFn,
+		pred.confidence,
+		pred.absValue,
+		paper.ap_status,
+		paper.gxd_status,
+		paper.go_status,
+		paper.tumor_status,
+		paper.qtl_status,
+		] ) + PREDFILE_RECORDSEP )
 # ---------------------
 
 def verbose(text):
