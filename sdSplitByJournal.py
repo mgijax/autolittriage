@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7 
 #
-# mgiJournalSplit.py
+# sdSplitByJournal.py
 # Takes one or more files of samples and splits the samples into 2 outputs
 #   1) random samples only from monitored journals in the same distribution
 #       as those journals

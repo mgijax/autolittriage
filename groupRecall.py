@@ -12,8 +12,8 @@ import time
 import argparse
 import random
 
-DEFAULT_STATUS_FILE     = 'docStatuses.txt'
-DEFAULT_PREDICTION_FILE = 'SGDlog_test.out'
+DEFAULT_STATUS_FILE     = 'refStatuses.txt'
+DEFAULT_PREDICTION_FILE = '_test_pred.txt'
 PREDFILE_RECORDSEP = '\n'
 
 #-----------------------------------

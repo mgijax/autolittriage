@@ -44,7 +44,7 @@ fi
 #######################################
 # filenames for the extracted figure text input files
 #######################################
-trainFilename=trainingSetFig.txt
+trainFilename=trainSetFig.txt
 testFilename=testSetFig.txt
 valFilename=valSetFig.txt
 

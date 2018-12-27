@@ -62,12 +62,15 @@ def getArgs():
     if args.server == 'adhoc':
 	args.host = 'mgi-adhoc.jax.org'
 	args.db = 'mgd'
-    if args.server == 'prod':
+    elif args.server == 'prod':
 	args.host = 'bhmgidb01.jax.org'
 	args.db = 'prod'
-    if args.server == 'dev':
+    elif args.server == 'dev':
 	args.host = 'bhmgidevdb01.jax.org'
 	args.db = 'prod'
+    else:
+	args.host = args.server + '.jax.org'
+	args.db = args.database
 
     return args
 #-----------------------------------

@@ -8,6 +8,7 @@ discardAfter=discard_after	# discard refs from Nov 2017 to present
 keepAfter=keep_after		# keeper refs from Nov 2017 to present
 keepBefore=keep_before		# keeper refs from before Nov 2017
 				#   (used to balance discard vs. keep)
+statusFile=refStatuses.txt
 
 #######################################
 function Usage() {
@@ -16,11 +17,13 @@ function Usage() {
 
 $0 [--fromdb] [--splittest]
 
-    Build training, validation, and test datasets - starting w/ db
+    Build training, validation, and test datasets - starting from db
+    Also get references curation status file.
     Puts all files into the current directory.
 
     --fromdb	only pull raw files from db.
     		raw files: ${discardAfter}, ${keepAfter}, ${keepBefore}....
+		status file: ${statusFile}
 		Pulls from dev db.
     --splittest	only split out test, validation, and training sets
 	    (default is do all the above)
@@ -34,9 +37,10 @@ ENDTEXT
 #######################################
 projectHome=~/work/autolittriage
 mgiJournals=$projectHome/journalsMonitored.txt	# mgi journals filel
-tdataGetRaw=$projectHome/tdataGetRaw.py
-tdataJournalDist=$projectHome/tdataJournalDist.py
-getRawLog=getRaw.log		# log file from tdataGetRaw
+getRaw=$projectHome/sdGetRaw.py
+splitByJournal=$projectHome/sdSplitByJournal.py
+getStatuses=$projectHome/sdGetStatuses.py
+getRawLog=getRaw.log		# log file from sdGetRaw
 splitTestLog=splitTest.log
 testFraction="0.15"		# 15% of {keep|discard}_after for test set
 valFraction="0.235"		# want 20% {keep|discard}_after
@@ -49,7 +53,7 @@ valFraction="0.235"		# want 20% {keep|discard}_after
 doAll=yes
 doGetRaw=no
 doSplittest=no
-limit="0"			# tdataGetRaw limit (set small for debugging)
+limit="0"			# getRaw limit (set small for debugging)
 				# "0" = no limit
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -68,25 +72,26 @@ done
 if [ "$doGetRaw" == "yes" -o "$doAll" == "yes" ]; then
     echo "getting raw data from db"
     set -x
-    $tdataGetRaw -l $limit --server dev --query $discardAfter > $discardAfter 2>  $getRawLog
-    $tdataGetRaw -l $limit --server dev --query $keepAfter    > $keepAfter    2>> $getRawLog
-    $tdataGetRaw -l $limit --server dev --query $keepBefore   > $keepBefore   2>> $getRawLog
+    $getRaw -l $limit --server dev --query $discardAfter > $discardAfter 2>  $getRawLog
+    $getRaw -l $limit --server dev --query $keepAfter    > $keepAfter    2>> $getRawLog
+    $getRaw -l $limit --server dev --query $keepBefore   > $keepBefore   2>> $getRawLog
+    $getStatuses > $statusFile  2>> $getRawLog
     set +x
 fi
 #######################################
-# from raw files, pull out testSet.txt, valSet.txt, trainingSet.txt
+# from raw files, pull out testSet.txt, valSet.txt, trainSet.txt
 #######################################
 if [ "$doSplittest" == "yes" -o "$doAll" == "yes" ]; then
     echo "splitting test validation training sets"
     set -x
     # random test set + leftovers
-    $tdataJournalDist --mgijournals $mgiJournals -f $testFraction --selectedrefs testSet.txt  --leftoverrefs testLeftovers.txt $discardAfter $keepAfter &> $splitTestLog
+    $splitByJournal --mgijournals $mgiJournals -f $testFraction --selectedrefs testSet.txt  --leftoverrefs testLeftovers.txt $discardAfter $keepAfter &> $splitTestLog
 
     # random validation set from test set leftovers
-    $tdataJournalDist --mgijournals $mgiJournals -f $valFraction --selectedrefs valSet.txt  --leftoverrefs valLeftovers.txt testLeftovers.txt >>$splitTestLog 2>&1
+    $splitByJournal --mgijournals $mgiJournals -f $valFraction --selectedrefs valSet.txt  --leftoverrefs valLeftovers.txt testLeftovers.txt >>$splitTestLog 2>&1
 
-    # trainingSet is valSet leftovers + $keepBefore
+    # trainSet is valSet leftovers + $keepBefore
     # (preprocess w/ no preprocessing steps just intelligently concats files)
-    preprocessSamples.py valLeftovers.txt $keepBefore > trainingSet.txt 2>> $splitTestLog
+    preprocessSamples.py valLeftovers.txt $keepBefore > trainSet.txt 2>> $splitTestLog
     set +x
 fi

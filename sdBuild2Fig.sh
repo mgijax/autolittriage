@@ -37,11 +37,11 @@ fi
 #######################################
 # filenames for the extracted figure text input files
 #######################################
-trainInput=$dataDir/trainingSet.txt
+trainInput=$dataDir/trainSet.txt
 testInput=$dataDir/testSet.txt
 valInput=$dataDir/valSet.txt
 
-trainOutput=$dataDir/trainingSetFig.txt
+trainOutput=$dataDir/trainSetFig.txt
 testOutput=$dataDir/testSetFig.txt
 valOutput=$dataDir/valSetFig.txt
 
