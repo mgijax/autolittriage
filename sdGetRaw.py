@@ -257,8 +257,8 @@ def getStats(args):
     q = OMIT_SAMPLES_SQL + SQLSEPARATOR + selectCount + 'from tmp_omit'
     writeStat("Omitted references (only pm2gene indexed)", q)
 
-    writeStat("Discard since 11/1/2017", selectCount + QUERIES['discard_after'])
-    writeStat("Keep since 11/1/2017",    selectCount + QUERIES['keep_after'])
+    writeStat("Discard after 10/31/2017", selectCount+QUERIES['discard_after'])
+    writeStat("Keep after 10/31/2017",    selectCount + QUERIES['keep_after'])
     writeStat("Keep %s through 10/31/2017" % START_DATE,
 					selectCount + QUERIES['keep_before'])
 
