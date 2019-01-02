@@ -72,7 +72,8 @@ done
 if [ "$doGetRaw" == "yes" -o "$doAll" == "yes" ]; then
     echo "getting raw data from db"
     set -x
-    $getRaw -l $limit --server dev --query $discardAfter > $discardAfter 2>  $getRawLog
+    $getRaw --stats >$getRawLog
+    $getRaw -l $limit --server dev --query $discardAfter > $discardAfter 2>> $getRawLog
     $getRaw -l $limit --server dev --query $keepAfter    > $keepAfter    2>> $getRawLog
     $getRaw -l $limit --server dev --query $keepBefore   > $keepBefore   2>> $getRawLog
     $getStatuses > $statusFile  2>> $getRawLog

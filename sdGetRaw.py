@@ -58,10 +58,14 @@ def getArgs():
         required=False, default='mgd',
         help='which database. Example: mgd (default)')
 
-    parser.add_argument('--query', dest='query', action='store',
-        required=False, default='all', choices=['all', 
-			    'discard_after', 'keep_after', 'keep_before'],
-        help='which subset of the training data to get. Default: "all"')
+    parser.add_argument('--query', dest='queryKey', action='store',
+        required=False, default='all',
+	choices=['all', 'discard_after', 'keep_after', 'keep_before'],
+        help='which subset of the training samples to get. Default: "all"')
+
+    parser.add_argument('--stats', dest='stats', action='store_true',
+        required=False,
+	help="don't get samples, just get counts/stats of samples in db")
 
     parser.add_argument('-l', '--limit', dest='nResults',
 	required=False, type=int, default=0, 		# 0 means ALL
@@ -88,16 +92,20 @@ def getArgs():
     return args
 #-----------------------------------
 
+
+####################
+# SQL fragments used to build up queries
+####################
 SQLSEPARATOR = '||'
+START_DATE = "10/01/2016" 	# earliest date for any sample
 
-# get articles for creation date >= Nov 1, 2017. After lit triage release
-
-# base of query select stmt
-BASE_SELECT =  \
+OMIT_SAMPLES_SQL = \
 '''
--- skip articles "indexed" by pm2gene and not reviewed by a curator yet
--- we don't really know if these are relevant (not good ground truth)
-create temporary table tmp_pm2gene
+-- Build tmp table of samples to omit.
+-- Currently, only one reason to omit:
+-- (1) articles "indexed" by pm2gene and not reviewed by a curator yet
+--     we don't really know if these are relevant (not good ground truth)
+create temporary table tmp_omit
 as
 select r._refs_key, a.accid pubmed
 from bib_refs r join bib_workflow_status bs
@@ -107,46 +115,56 @@ from bib_refs r join bib_workflow_status bs
     on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
 	and a._mgitype_key=1 )
 where 
-    (bs._status_key = 31576673 and bs._group_key = 31576666 and 
-	bs._createdby_key = 1571) -- index for GO by pm2geneload
+    (
+	(bs._status_key = 31576673 and bs._group_key = 31576666 and 
+	    bs._createdby_key = 1571) -- index for GO by pm2geneload
 
-    and bsv.ap_status in ('Not Routed', 'Rejected')
-    and bsv.gxd_status in ('Not Routed', 'Rejected')
-    and bsv.tumor_status in ('Not Routed', 'Rejected')
-    and bsv.qtl_status in ('Not Routed', 'Rejected')
-||
-create index idx1 on tmp_pm2gene(_refs_key)
-||
+	and bsv.ap_status in ('Not Routed', 'Rejected')
+	and bsv.gxd_status in ('Not Routed', 'Rejected')
+	and bsv.tumor_status in ('Not Routed', 'Rejected')
+	and bsv.qtl_status in ('Not Routed', 'Rejected')
+	and r.creation_date >= '%s'
+    )
+''' % (START_DATE)   + SQLSEPARATOR + \
+'''
+create index idx1 on tmp_omit(_refs_key)
+'''
+
+# SQL for sample fields to select
+BASE_SELECT_FIELDS =  \
+'''
 select a.accid pubmed, r.isdiscard, r.year,
     to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
     r.journal, r.title, r.abstract,
     translate(bd.extractedtext, E'\r', ' ') as "text" -- remove ^M
+'''
+
+# SQL for Joins & common where clause components
+BASE_SELECT =  \
+'''
 from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
      join acc_accession a on
          (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
           and a._mgitype_key=1 )
+    join bib_status_view bs on (bs._refs_key = r._refs_key)
+where
+    r._createdby_key != 1609          -- not littriage_discard user
+    and r._referencetype_key=31576687 -- peer reviewed article
+    and bd.haspdf=1
+    and not exists (select 1 from tmp_omit t where t._refs_key = r._refs_key)
+    and r.isreviewarticle != 1
 '''
 
-# list potential queries, best if these are non-overlapping result sets result sets result sets result sets
-QUERY_LIST = { \
+# Dict of where clause components for specific queries,
+#  these should be non-overlapping result sets
+QUERIES = { \
 'discard_after' :  BASE_SELECT +
     '''
-    where
-    r.creation_date > '10/31/2017'
-    and not exists (select 1 from tmp_pm2gene t where t._refs_key = r._refs_key)
     and r.isdiscard = 1
-    and r._referencetype_key=31576687 -- peer reviewed article
-    and r._createdby_key != 1609      -- littriage_discard user on dev/prod
-    and bd.haspdf=1
-    -- order by r.journal, pubmed
+    and r.creation_date > '10/31/2017' -- After lit triage release
     ''',
-
 'keep_after' :  BASE_SELECT +
     '''
-    join bib_status_view bs on (bs._refs_key = r._refs_key)
-    where
-    r.creation_date > '10/31/2017'
-    and not exists (select 1 from tmp_pm2gene t where t._refs_key = r._refs_key)
     and 
     (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
@@ -154,19 +172,10 @@ QUERY_LIST = { \
      or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
-    and r._referencetype_key=31576687 -- peer reviewed article
-    and r._createdby_key != 1609      -- littriage_discard user on dev/prod
-    and bd.haspdf=1
-    -- order by r.journal, pubmed
+    and r.creation_date > '10/31/2017' -- After lit triage release
     ''',
-
 'keep_before' :  BASE_SELECT +
     '''
-    join bib_status_view bs on (bs._refs_key = r._refs_key)
-    where
-    r.creation_date >= '10/1/2016'
-    and r.creation_date <= '10/31/2017'
-    and not exists (select 1 from tmp_pm2gene t where t._refs_key = r._refs_key)
     and 
     (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
@@ -174,36 +183,48 @@ QUERY_LIST = { \
      or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
-    and r._referencetype_key=31576687 -- peer reviewed article
-    and r._createdby_key != 1609      -- littriage_discard user on dev/prod
-    and bd.haspdf=1
-    -- order by r.journal, pubmed
-    ''',
-}	# end QUERY_LIST
+    and r.creation_date <= '10/31/2017' -- before lit triage release
+    and r.creation_date >= '%s'
+    ''' % START_DATE,
+}	# end QUERIES
 #-----------------------------------
 
-def getQueries(args):
+def buildGetSamplesSQL(args):
     """
-    Return list of sql queries to run
+    Assemble SQL statements (strings) to run to get samples from db.
+    Return list of SQL statements.
     """
-    if args.query == 'all':
-	queries = QUERY_LIST.values()
+    # list of keys in QUERIES to run
+    if args.queryKey == 'all':
+	queryKeys = QUERIES.keys()
     else:
-	queries = [ QUERY_LIST[args.query] ]
+	queryKeys = [ args.queryKey ]
 
-    if args.nResults > 0:
-	limitText = "\nlimit %d\n" % args.nResults
-	final = []
-	for q in queries:
-	    final.append( q + limitText )
-    else: final = queries
+    # Assemble queries
+    finalQueries = []
+    for i, qk in enumerate(queryKeys):
+	if i == 0:		# first select
+	    fullSQL = OMIT_SAMPLES_SQL + SQLSEPARATOR
+	else: fullSQL = ''
 
-    return final
+	fullSQL += BASE_SELECT_FIELDS + QUERIES[qk]
+
+	if args.nResults > 0: fullSQL += "\nlimit %d\n" % args.nResults
+
+	finalQueries.append(fullSQL)
+
+    return finalQueries
 #-----------------------------------
 
 def process():
     """ Main routine"""
     args = getArgs()
+
+    if False:	# debug SQL
+	for i, sql in enumerate(buildGetSamplesSQL(args)):
+	    print "%d:" % i
+	    print sql
+	exit(1)
 
     db.set_sqlServer  ( args.host)
     db.set_sqlDatabase( args.db)
@@ -215,9 +236,47 @@ def process():
 							(args.host, args.db))
     startTime = time.time()
 
+    if args.stats: getStats(args)
+    else: getSamples(args)
+
+    if args.verbose:
+	sys.stderr.write( "Total time: %8.3f seconds\n\n" % \
+						    (time.time()-startTime))
+#-----------------------------------
+
+def getStats(args):
+    '''
+    Get counts of sample records from db and write them to stdout
+    '''
+    selectCount = 'select count(*) as num\n'
+
+    sys.stdout.write(time.ctime() + '\n')
+
+    # Count of records in the omit temp table
+    # Do this 1st so tmp table exists for the other queries
+    q = OMIT_SAMPLES_SQL + SQLSEPARATOR + selectCount + 'from tmp_omit'
+    writeStat("Omitted references (only pm2gene indexed)", q)
+
+    writeStat("Discard since 11/1/2017", selectCount + QUERIES['discard_after'])
+    writeStat("Keep since 11/1/2017",    selectCount + QUERIES['keep_after'])
+    writeStat("Keep %s through 10/31/2017" % START_DATE,
+					selectCount + QUERIES['keep_before'])
+
+#-----------------------------------
+def writeStat(label, q):
+    results = db.sql( string.split(q, SQLSEPARATOR), 'auto')
+    num = results[-1][0]['num']
+    sys.stdout.write( "%7d\t%s\n" % (num, label))
+#-----------------------------------
+
+def getSamples(args):
+    '''
+    Run SQL to get samples from DB and output them to stdout
+    '''
+    # output header line
     sys.stdout.write( FIELDSEP.join(OutputColumns) + RECORDSEP )
 
-    for i, q in enumerate(getQueries(args)):
+    for i, q in enumerate(buildGetSamplesSQL(args)):
 	qStartTime = time.time()
 
 	results = db.sql( string.split(q, SQLSEPARATOR), 'auto')
@@ -225,21 +284,19 @@ def process():
 	if args.verbose:
 	    sys.stderr.write( "Query %d SQL time: %8.3f seconds\n\n" % \
 						(i, time.time()-qStartTime))
-	nResults = writeResults(results[-1]) # db.sql returns list of rslt lists
+	nResults = writeSamples(results[-1]) # db.sql returns list of rslt lists
 
 	if args.verbose:
-	    sys.stderr.write( "%d references processed\n\n" % (nResults) )
+	    sys.stderr.write( "%d references retrieved\n\n" % (nResults) )
+    return
 
-    if args.verbose:
-	sys.stderr.write( "Total time: %8.3f seconds\n\n" % \
-						    (time.time()-startTime))
 #-----------------------------------
 
-def writeResults( results	# list of records (dicts)
+def writeSamples( results	# list of records (dicts)
     ):
     """
-    # write records to stdout
-    # return count of records written
+    Write records to stdout
+    Return count of records written
     """
     for r in results:
 	if r['isdiscard'] == 1:
