@@ -258,5 +258,12 @@ Dec 21, 2018
     detect. If they are relevant to any other group, they are easier to detect.
     This seems less true for GXD AP FN (just by eyeball).:w
     
-    
+    Talked with Debbie about Tumor recall. She says tumor is the only group
+    that still "chooses" review papers. So there are possibly tumor selected
+    review papers that are not being recognized by the classifier.
+    I will work on removing review papers from the sample set and see what
+    happens.
 
+Dec 27, 2018
+    Lots of file renaming for sanity sake.
+    

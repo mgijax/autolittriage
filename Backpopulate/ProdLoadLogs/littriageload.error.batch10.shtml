@@ -1,0 +1,105 @@
+
+<!-- saved from url=(0094)http://prodwww.informatics.jax.org/data/loads/mgi/littriageload/logs/littriageload.error.shtml -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body><br>Start Date/Time: Wed Nov 14 21:27:13 2018
+<br>**********<br>
+Literature Triage Counts<br>
+Successful PDF's processed (All New_Newcurrent curator &amp; PDF download directories): 4806<br>
+
+Records with Supplemental data added: 24<br>
+
+Records with Updated PDF's: 1<br>
+
+Records with Updated NLM information: 2<br>
+
+Records with GOA information: 1<br>
+
+Records with Duplicates: 3<br>
+
+Records with DOI or Pubmed Ids added: 1<br>
+
+Records with Mismatched titles: 3<br>
+
+New Failed PDF's in Needs_Review folder: 0<br><br>
+
+**********<br>
+Literature Triage Level 0 Errors : duplicate PDF file name<br><br>
+<b>1: same filename in more than one folder</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 1 Errors : parse DOI ID from PDF files<br><br>
+<b>1: not in PDF format</b><br><br>
+
+<br>
+
+<b>2: cannot extract/find DOI ID</b><br><br>
+
+<br>
+
+<b>3: duplicate published refs (same DOI ID)</b><br><br>
+
+<br>
+
+<b>4: cannot extract PMID</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 2 Errors : parse PubMed IDs from PubMed API<br><br>
+
+<b>1: DOI ID maps to multiple pubmed IDs</b><br><br>
+
+<br>
+
+<b>2: DOI ID not found in pubmed</b><br><br>
+
+<br>
+
+<b>3: error getting medline record</b><br><br>
+
+<br>
+
+<b>4: missing data from required field for DOI ID</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 3 Errors : check MGI for errors<br><br>
+
+<b>1: PubMed ID/DOI ID is associated with different MGI references</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 4 Errors : Supplemental/Update PDF<br><br>
+
+<b>1: MGI ID in filename does not match reference in MGI</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 5 Errors : Update NLM information<br><br>
+
+<b>1: MGI ID not found or no pubmedID</b><br><br>
+
+<br>
+
+<b>2: journal/title/doi ID do not match</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 6 Errors : Erratum/corrections/retractions<br><br>
+
+<b>1: Medline publication type = erratum, correction, or retraction</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 7 Errors : Possible mismatch citation - citation title not found in extracted text<br><br>
+
+MGI:6252517<br>
+MGI:6254495<br>
+MGI:6254501<br>
+</body></html>

@@ -1,0 +1,127 @@
+
+<!-- saved from url=(0094)http://prodwww.informatics.jax.org/data/loads/mgi/littriageload/logs/littriageload.error.shtml -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body><br>Start Date/Time: Mon Nov  5 21:20:30 2018
+<br>**********<br>
+Literature Triage Counts<br>
+Successful PDF's processed (All New_Newcurrent curator &amp; PDF download directories): 5114<br>
+
+Records with Supplemental data added: 0<br>
+
+Records with Updated PDF's: 1<br>
+
+Records with Updated NLM information: 13<br>
+
+Records with GOA information: 0<br>
+
+Records with Duplicates: 8<br>
+
+Records with DOI or Pubmed Ids added: 0<br>
+
+Records with Mismatched titles: 10<br>
+
+New Failed PDF's in Needs_Review folder: 4<br><br>
+
+**********<br>
+Literature Triage Level 0 Errors : duplicate PDF file name<br><br>
+<b>1: same filename in more than one folder</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 1 Errors : parse DOI ID from PDF files<br><br>
+<b>1: not in PDF format</b><br><br>
+
+<br>
+
+<b>2: cannot extract/find DOI ID</b><br><br>
+
+<br>
+
+<b>3: duplicate published refs (same DOI ID)</b><br><br>
+
+<br>
+
+<b>4: cannot extract PMID</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 2 Errors : parse PubMed IDs from PubMed API<br><br>
+
+<b>1: DOI ID maps to multiple pubmed IDs</b><br><br>
+
+10.1371/journal.pone.0012860, 27683438<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC2942895.pdf">/data/littriage/needs_review/littriage_discard/PMC2942895.pdf</a><br><br>
+
+10.1371/journal.pone.0012860, 20877462<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC2942895.pdf">/data/littriage/needs_review/littriage_discard/PMC2942895.pdf</a><br><br>
+
+<br>
+
+<b>2: DOI ID not found in pubmed</b><br><br>
+
+10.1371/journal.pone.0009357.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC2827539.pdf">/data/littriage/needs_review/littriage_discard/PMC2827539.pdf</a><br><br>
+
+10.1210/en.2018-00770/5144208<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/mnk/en201800770.pdf">/data/littriage/needs_review/mnk/en201800770.pdf</a><br><br>
+
+10.73.221.6/hmdd<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5015063.pdf">/data/littriage/needs_review/littriage_discard/PMC5015063.pdf</a><br><br>
+
+<br>
+
+<b>3: error getting medline record</b><br><br>
+
+<br>
+
+<b>4: missing data from required field for DOI ID</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 3 Errors : check MGI for errors<br><br>
+
+<b>1: PubMed ID/DOI ID is associated with different MGI references</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 4 Errors : Supplemental/Update PDF<br><br>
+
+<b>1: MGI ID in filename does not match reference in MGI</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 5 Errors : Update NLM information<br><br>
+
+<b>1: MGI ID not found or no pubmedID</b><br><br>
+
+<br>
+
+<b>2: journal/title/doi ID do not match</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 6 Errors : Erratum/corrections/retractions<br><br>
+
+<b>1: Medline publication type = erratum, correction, or retraction</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 7 Errors : Possible mismatch citation - citation title not found in extracted text<br><br>
+
+MGI:6222209<br>
+MGI:6223409<br>
+MGI:6223762<br>
+MGI:6224060<br>
+MGI:6224229<br>
+MGI:6224776<br>
+MGI:6224846<br>
+MGI:6225097<br>
+MGI:6225664<br>
+MGI:6225801<br>
+</body></html>

@@ -1,0 +1,398 @@
+
+<!-- saved from url=(0094)http://prodwww.informatics.jax.org/data/loads/mgi/littriageload/logs/littriageload.error.shtml -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body><br>Start Date/Time: Tue Oct 30 20:58:25 2018
+<br>**********<br>
+Literature Triage Counts<br>
+Successful PDF's processed (All New_Newcurrent curator &amp; PDF download directories): 4944<br>
+
+Records with Supplemental data added: 114<br>
+
+Records with Updated PDF's: 0<br>
+
+Records with Updated NLM information: 2<br>
+
+Records with GOA information: 15<br>
+
+Records with Duplicates: 23<br>
+
+Records with DOI or Pubmed Ids added: 0<br>
+
+Records with Mismatched titles: 47<br>
+
+New Failed PDF's in Needs_Review folder: 118<br><br>
+
+**********<br>
+Literature Triage Level 0 Errors : duplicate PDF file name<br><br>
+<b>1: same filename in more than one folder</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 1 Errors : parse DOI ID from PDF files<br><br>
+<b>1: not in PDF format</b><br><br>
+
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks643.PMC3479164.pdf">/data/littriage/needs_review/littriage_discard/gks643.PMC3479164.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks424.PMC3467031.pdf">/data/littriage/needs_review/littriage_discard/gks424.PMC3467031.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks639.PMC3479163.pdf">/data/littriage/needs_review/littriage_discard/gks639.PMC3479163.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks565.PMC3458532.pdf">/data/littriage/needs_review/littriage_discard/gks565.PMC3458532.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks585.PMC3458542.pdf">/data/littriage/needs_review/littriage_discard/gks585.PMC3458542.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks614.PMC3458558.pdf">/data/littriage/needs_review/littriage_discard/gks614.PMC3458558.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks590.PMC3458544.pdf">/data/littriage/needs_review/littriage_discard/gks590.PMC3458544.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks610.PMC3424585.pdf">/data/littriage/needs_review/littriage_discard/gks610.PMC3424585.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks601.PMC3467041.pdf">/data/littriage/needs_review/littriage_discard/gks601.PMC3467041.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/gks591.PMC3458545.pdf">/data/littriage/needs_review/littriage_discard/gks591.PMC3458545.pdf</a><br>
+<br>
+
+<b>2: cannot extract/find DOI ID</b><br><br>
+
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/7527668_g.pdf">/data/littriage/needs_review/littriage_goa/7527668_g.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/7565679_g.pdf">/data/littriage/needs_review/littriage_goa/7565679_g.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/7961995_g.pdf">/data/littriage/needs_review/littriage_goa/7961995_g.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/8400282_g.pdf">/data/littriage/needs_review/littriage_goa/8400282_g.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/1203590.pdf">/data/littriage/needs_review/littriage_goa/1203590.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/8629002_g.pdf">/data/littriage/needs_review/littriage_goa/8629002_g.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/8630736_g.pdf">/data/littriage/needs_review/littriage_goa/8630736_g.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/8615781.pdf">/data/littriage/needs_review/littriage_goa/8615781.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/9111318_g.pdf">/data/littriage/needs_review/littriage_goa/9111318_g.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4249945.pdf">/data/littriage/needs_review/littriage_discard/PMC4249945.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5939574.pdf">/data/littriage/needs_review/littriage_discard/PMC5939574.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4888374.pdf">/data/littriage/needs_review/littriage_discard/PMC4888374.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4292906.pdf">/data/littriage/needs_review/littriage_discard/PMC4292906.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4494739.pdf">/data/littriage/needs_review/littriage_discard/PMC4494739.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3774518.pdf">/data/littriage/needs_review/littriage_discard/PMC3774518.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3563090.pdf">/data/littriage/needs_review/littriage_discard/PMC3563090.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3102769.pdf">/data/littriage/needs_review/littriage_discard/PMC3102769.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3049940.pdf">/data/littriage/needs_review/littriage_discard/PMC3049940.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5576512.pdf">/data/littriage/needs_review/littriage_discard/PMC5576512.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4838203.pdf">/data/littriage/needs_review/littriage_discard/PMC4838203.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4644103.pdf">/data/littriage/needs_review/littriage_discard/PMC4644103.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4567040.pdf">/data/littriage/needs_review/littriage_discard/PMC4567040.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4285568.pdf">/data/littriage/needs_review/littriage_discard/PMC4285568.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3416925.pdf">/data/littriage/needs_review/littriage_discard/PMC3416925.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3375857.pdf">/data/littriage/needs_review/littriage_discard/PMC3375857.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC2829121.pdf">/data/littriage/needs_review/littriage_discard/PMC2829121.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4099521.pdf">/data/littriage/needs_review/littriage_discard/PMC4099521.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4684146.pdf">/data/littriage/needs_review/littriage_discard/PMC4684146.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3905166.pdf">/data/littriage/needs_review/littriage_discard/PMC3905166.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3666084.pdf">/data/littriage/needs_review/littriage_discard/PMC3666084.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3842597.pdf">/data/littriage/needs_review/littriage_discard/PMC3842597.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3580285.pdf">/data/littriage/needs_review/littriage_discard/PMC3580285.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3657167.pdf">/data/littriage/needs_review/littriage_discard/PMC3657167.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3391683.pdf">/data/littriage/needs_review/littriage_discard/PMC3391683.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3314997.pdf">/data/littriage/needs_review/littriage_discard/PMC3314997.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3315003.pdf">/data/littriage/needs_review/littriage_discard/PMC3315003.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3314971.pdf">/data/littriage/needs_review/littriage_discard/PMC3314971.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3524456.pdf">/data/littriage/needs_review/littriage_discard/PMC3524456.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3163272.pdf">/data/littriage/needs_review/littriage_discard/PMC3163272.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3245892.pdf">/data/littriage/needs_review/littriage_discard/PMC3245892.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3115024.pdf">/data/littriage/needs_review/littriage_discard/PMC3115024.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3003154.pdf">/data/littriage/needs_review/littriage_discard/PMC3003154.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC2954316.pdf">/data/littriage/needs_review/littriage_discard/PMC2954316.pdf</a><br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5010038.pdf">/data/littriage/needs_review/littriage_discard/PMC5010038.pdf</a><br>
+<br>
+
+<b>3: duplicate published refs (same DOI ID)</b><br><br>
+
+10.1371/journal.pbio.1001352<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3383746.pdf">/data/littriage/needs_review/littriage_discard/PMC3383746.pdf</a><br>
+duplicate of: littriage_discard/PMC3383738.pdf<br><br>
+
+10.1371/journal.pgen<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4022471.pdf">/data/littriage/needs_review/littriage_discard/PMC4022471.pdf</a><br>
+duplicate of: littriage_discard/PMC4256198.pdf<br><br>
+
+10.1371/journal.pgen<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4006704.pdf">/data/littriage/needs_review/littriage_discard/PMC4006704.pdf</a><br>
+duplicate of: littriage_discard/PMC4256198.pdf<br><br>
+
+<br>
+
+<b>4: cannot extract PMID</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 2 Errors : parse PubMed IDs from PubMed API<br><br>
+
+<b>1: DOI ID maps to multiple pubmed IDs</b><br><br>
+
+<br>
+
+<b>2: DOI ID not found in pubmed</b><br><br>
+
+10.1371/journal.pbio.1001533.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3621666.pdf">/data/littriage/needs_review/littriage_discard/PMC3621666.pdf</a><br><br>
+
+10.1371/journal.pgen.1004780.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4222722.pdf">/data/littriage/needs_review/littriage_discard/PMC4222722.pdf</a><br><br>
+
+10.1371/journal.pbio.1002022.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4267715.pdf">/data/littriage/needs_review/littriage_discard/PMC4267715.pdf</a><br><br>
+
+10.1371/journal.pbio.1001913.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4106720.pdf">/data/littriage/needs_review/littriage_discard/PMC4106720.pdf</a><br><br>
+
+10.1371/journal.pbio.1001567.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3660253.pdf">/data/littriage/needs_review/littriage_discard/PMC3660253.pdf</a><br><br>
+
+10.1371/journal.pbio.1001834.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3979644.pdf">/data/littriage/needs_review/littriage_discard/PMC3979644.pdf</a><br><br>
+
+10.1371/journal.pbio.1001359.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3393652.pdf">/data/littriage/needs_review/littriage_discard/PMC3393652.pdf</a><br><br>
+
+10.1371/journal.pgen<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4256198.pdf">/data/littriage/needs_review/littriage_discard/PMC4256198.pdf</a><br><br>
+
+10.1371/journal.pbio.1001924.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4122348.pdf">/data/littriage/needs_review/littriage_discard/PMC4122348.pdf</a><br><br>
+
+10.1371/journal.pbio.1001953.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4172425.pdf">/data/littriage/needs_review/littriage_discard/PMC4172425.pdf</a><br><br>
+
+10.1371/journal.pgen.1003788.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3764188.pdf">/data/littriage/needs_review/littriage_discard/PMC3764188.pdf</a><br><br>
+
+10.1371/journal.pbio.1001802.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3934817.pdf">/data/littriage/needs_review/littriage_discard/PMC3934817.pdf</a><br><br>
+
+10.1002/9780470015902<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3441421.pdf">/data/littriage/needs_review/littriage_discard/PMC3441421.pdf</a><br><br>
+
+10.1371/journal.pbio.1001584.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3678992.pdf">/data/littriage/needs_review/littriage_discard/PMC3678992.pdf</a><br><br>
+
+10.1371/journal.pbio.1001990.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4227634.pdf">/data/littriage/needs_review/littriage_discard/PMC4227634.pdf</a><br><br>
+
+10.1371/journal.pbio.1001068.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3101193.pdf">/data/littriage/needs_review/littriage_discard/PMC3101193.pdf</a><br><br>
+
+10.1371/journal.pbio.1001366.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3404118.pdf">/data/littriage/needs_review/littriage_discard/PMC3404118.pdf</a><br><br>
+
+10.1371/journal.pbio.1001664.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3782418.pdf">/data/littriage/needs_review/littriage_discard/PMC3782418.pdf</a><br><br>
+
+10.1371/journal.pbio.1001718.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3841095.pdf">/data/littriage/needs_review/littriage_discard/PMC3841095.pdf</a><br><br>
+
+10.1371/journal.pbio.1001484.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3576411.pdf">/data/littriage/needs_review/littriage_discard/PMC3576411.pdf</a><br><br>
+
+10.1371/journal.pbio.1001559.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3653788.pdf">/data/littriage/needs_review/littriage_discard/PMC3653788.pdf</a><br><br>
+
+10.1371/journal.pbio.1001543.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3635862.pdf">/data/littriage/needs_review/littriage_discard/PMC3635862.pdf</a><br><br>
+
+10.1371/journal.pbio.1001370.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3409127.pdf">/data/littriage/needs_review/littriage_discard/PMC3409127.pdf</a><br><br>
+
+10.1371/journal.pbio.1001628.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3742458.pdf">/data/littriage/needs_review/littriage_discard/PMC3742458.pdf</a><br><br>
+
+10.1371/journal.pbio.1001167.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3186798.pdf">/data/littriage/needs_review/littriage_discard/PMC3186798.pdf</a><br><br>
+
+10.1371/journal.pgen.1004724.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4222688.pdf">/data/littriage/needs_review/littriage_discard/PMC4222688.pdf</a><br><br>
+
+10.1371/journal.pbio.1001023.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3043088.pdf">/data/littriage/needs_review/littriage_discard/PMC3043088.pdf</a><br><br>
+
+10.1371/journal.pbio.1001349.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3383734.pdf">/data/littriage/needs_review/littriage_discard/PMC3383734.pdf</a><br><br>
+
+10.1107/S09074449090473372010:1-<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4077998.pdf">/data/littriage/needs_review/littriage_discard/PMC4077998.pdf</a><br><br>
+
+10.1371/journal.pbio.1001215.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3232188.pdf">/data/littriage/needs_review/littriage_discard/PMC3232188.pdf</a><br><br>
+
+10.1371/journal.pbio.1001872.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4035265.pdf">/data/littriage/needs_review/littriage_discard/PMC4035265.pdf</a><br><br>
+
+10.1371/journal.pbio.1001175.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3196489.pdf">/data/littriage/needs_review/littriage_discard/PMC3196489.pdf</a><br><br>
+
+10.1371/journal.pbio.1001003.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC2998444.pdf">/data/littriage/needs_review/littriage_discard/PMC2998444.pdf</a><br><br>
+
+10.1002/stem.01385<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3813980.pdf">/data/littriage/needs_review/littriage_discard/PMC3813980.pdf</a><br><br>
+
+10.1016/S0006-291X(02)02866-8<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/12504103_g.pdf">/data/littriage/needs_review/littriage_goa/12504103_g.pdf</a><br><br>
+
+10.1371/journal.pbio.1001355.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3383731.pdf">/data/littriage/needs_review/littriage_discard/PMC3383731.pdf</a><br><br>
+
+10.1371/journal.pbio.1001846.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4004533.pdf">/data/littriage/needs_review/littriage_discard/PMC4004533.pdf</a><br><br>
+
+10.1371/journal.pbio.1001794.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3928048.pdf">/data/littriage/needs_review/littriage_discard/PMC3928048.pdf</a><br><br>
+
+10.1371/journal.pbio.1001875.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4043488.pdf">/data/littriage/needs_review/littriage_discard/PMC4043488.pdf</a><br><br>
+
+10.1371/journal.pbio.1001380.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3424249.pdf">/data/littriage/needs_review/littriage_discard/PMC3424249.pdf</a><br><br>
+
+10.1371/journal.pgen.1003009.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3469448.pdf">/data/littriage/needs_review/littriage_discard/PMC3469448.pdf</a><br><br>
+
+10.1002/21,<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3744766.pdf">/data/littriage/needs_review/littriage_discard/PMC3744766.pdf</a><br><br>
+
+10.1371/journal.pbio.1001270.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3283549.pdf">/data/littriage/needs_review/littriage_discard/PMC3283549.pdf</a><br><br>
+
+10.1371/journal.pbio.1002001.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4236005.pdf">/data/littriage/needs_review/littriage_discard/PMC4236005.pdf</a><br><br>
+
+10.1371/journal.pbio.1001919.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4122336.pdf">/data/littriage/needs_review/littriage_discard/PMC4122336.pdf</a><br><br>
+
+10.1371/journal.pbio.1001816.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3958336.pdf">/data/littriage/needs_review/littriage_discard/PMC3958336.pdf</a><br><br>
+
+10.1530/REP-12-0435<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3607486.pdf">/data/littriage/needs_review/littriage_discard/PMC3607486.pdf</a><br><br>
+
+10.1371/journal.pbio.1001693.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3812117.pdf">/data/littriage/needs_review/littriage_discard/PMC3812117.pdf</a><br><br>
+
+10.1371/journal.pbio.1001507.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3595208.pdf">/data/littriage/needs_review/littriage_discard/PMC3595208.pdf</a><br><br>
+
+10.4049/jimmunol.166.9.5675<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/11313408_g.pdf">/data/littriage/needs_review/littriage_goa/11313408_g.pdf</a><br><br>
+
+10.1371/journal.pbio.1001029.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3057952.pdf">/data/littriage/needs_review/littriage_discard/PMC3057952.pdf</a><br><br>
+
+10.1371/journal.pgen.1004268.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3974665.pdf">/data/littriage/needs_review/littriage_discard/PMC3974665.pdf</a><br><br>
+
+10.3908/wormatlas.1.24<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3661369.pdf">/data/littriage/needs_review/littriage_discard/PMC3661369.pdf</a><br><br>
+
+10.1371/journal.pbio.1001408.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3472991.pdf">/data/littriage/needs_review/littriage_discard/PMC3472991.pdf</a><br><br>
+
+10.1371/journal.pbio.1001865.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC4028177.pdf">/data/littriage/needs_review/littriage_discard/PMC4028177.pdf</a><br><br>
+
+10.1074/jbc.270.19.11055<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_goa/7538110_g.pdf">/data/littriage/needs_review/littriage_goa/7538110_g.pdf</a><br><br>
+
+10.1016/S08966273(03)00633-0<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3121664.pdf">/data/littriage/needs_review/littriage_discard/PMC3121664.pdf</a><br><br>
+
+10.1371/journal.pbio.1001053.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3082518.pdf">/data/littriage/needs_review/littriage_discard/PMC3082518.pdf</a><br><br>
+
+10.1371/journal.pbio.1001004.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3001900.pdf">/data/littriage/needs_review/littriage_discard/PMC3001900.pdf</a><br><br>
+
+10.1371/journal.pbio.1001483.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3576409.pdf">/data/littriage/needs_review/littriage_discard/PMC3576409.pdf</a><br><br>
+
+10.1371/journal.pbio.1001774.g001<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC3897374.pdf">/data/littriage/needs_review/littriage_discard/PMC3897374.pdf</a><br><br>
+
+<br>
+
+<b>3: error getting medline record</b><br><br>
+
+<br>
+
+<b>4: missing data from required field for DOI ID</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 3 Errors : check MGI for errors<br><br>
+
+<b>1: PubMed ID/DOI ID is associated with different MGI references</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 4 Errors : Supplemental/Update PDF<br><br>
+
+<b>1: MGI ID in filename does not match reference in MGI</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 5 Errors : Update NLM information<br><br>
+
+<b>1: MGI ID not found or no pubmedID</b><br><br>
+
+<br>
+
+<b>2: journal/title/doi ID do not match</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 6 Errors : Erratum/corrections/retractions<br><br>
+
+<b>1: Medline publication type = erratum, correction, or retraction</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 7 Errors : Possible mismatch citation - citation title not found in extracted text<br><br>
+
+MGI:6209951<br>
+MGI:6210044<br>
+MGI:6210144<br>
+MGI:6210170<br>
+MGI:6210323<br>
+MGI:6210604<br>
+MGI:6210851<br>
+MGI:6211016<br>
+MGI:6211098<br>
+MGI:6211260<br>
+MGI:6211263<br>
+MGI:6211424<br>
+MGI:6211465<br>
+MGI:6211487<br>
+MGI:6211780<br>
+MGI:6211799<br>
+MGI:6211937<br>
+MGI:6211944<br>
+MGI:6212104<br>
+MGI:6212181<br>
+MGI:6212312<br>
+MGI:6212526<br>
+MGI:6212560<br>
+MGI:6212602<br>
+MGI:6212682<br>
+MGI:6212691<br>
+MGI:6214074<br>
+MGI:6212819<br>
+MGI:6213120<br>
+MGI:6213217<br>
+MGI:6213326<br>
+MGI:6213458<br>
+MGI:6213488<br>
+MGI:6213524<br>
+MGI:6213818<br>
+MGI:6213959<br>
+MGI:6213978<br>
+MGI:6214000<br>
+MGI:6214113<br>
+MGI:6214128<br>
+MGI:6214130<br>
+MGI:6214138<br>
+MGI:6214418<br>
+MGI:6214457<br>
+MGI:6214674<br>
+MGI:6214759<br>
+MGI:6214770<br>
+</body></html>

@@ -1,0 +1,192 @@
+
+<!-- saved from url=(0094)http://prodwww.informatics.jax.org/data/loads/mgi/littriageload/logs/littriageload.error.shtml -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body><br>Start Date/Time: Wed Oct 31 21:35:56 2018
+<br>**********<br>
+Literature Triage Counts<br>
+Successful PDF's processed (All New_Newcurrent curator &amp; PDF download directories): 5024<br>
+
+Records with Supplemental data added: 27<br>
+
+Records with Updated PDF's: 0<br>
+
+Records with Updated NLM information: 1<br>
+
+Records with GOA information: 12<br>
+
+Records with Duplicates: 4<br>
+
+Records with DOI or Pubmed Ids added: 0<br>
+
+Records with Mismatched titles: 10<br>
+
+New Failed PDF's in Needs_Review folder: 4<br><br>
+
+**********<br>
+Literature Triage Level 0 Errors : duplicate PDF file name<br><br>
+<b>1: same filename in more than one folder</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 1 Errors : parse DOI ID from PDF files<br><br>
+<b>1: not in PDF format</b><br><br>
+
+<br>
+
+<b>2: cannot extract/find DOI ID</b><br><br>
+
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5155379.pdf">/data/littriage/needs_review/littriage_discard/PMC5155379.pdf</a><br>
+<br>
+
+<b>3: duplicate published refs (same DOI ID)</b><br><br>
+
+<br>
+
+<b>4: cannot extract PMID</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 2 Errors : parse PubMed IDs from PubMed API<br><br>
+
+<b>1: DOI ID maps to multiple pubmed IDs</b><br><br>
+
+10.27.80.93/arn/),, 30358736<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30337096<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30319056<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30311128<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30284470<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30283397<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30275269<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30257410<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30248059<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30226848<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30222550<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30216820<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30208379<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30193721<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30190318<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30184441<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30151579<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30142425<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30133034<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+10.27.80.93/arn/),, 30078936<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_discard/PMC5159821.pdf">/data/littriage/needs_review/littriage_discard/PMC5159821.pdf</a><br><br>
+
+<br>
+
+<b>2: DOI ID not found in pubmed</b><br><br>
+
+<br>
+
+<b>3: error getting medline record</b><br><br>
+
+<br>
+
+<b>4: missing data from required field for DOI ID</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 3 Errors : check MGI for errors<br><br>
+
+<b>1: PubMed ID/DOI ID is associated with different MGI references</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 4 Errors : Supplemental/Update PDF<br><br>
+
+<b>1: MGI ID in filename does not match reference in MGI</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 5 Errors : Update NLM information<br><br>
+
+<b>1: MGI ID not found or no pubmedID</b><br><br>
+
+<br>
+
+<b>2: journal/title/doi ID do not match</b><br><br>
+
+MGI:6203631,30011373<br>
+Journal/NLM: Am J Respir Cell Mol Biol<br>
+Journal/MGD: Am J Respir Cell Mol Biol<br>
+Title/NLM: Ager-CreER(T2): A New Genetic Tool for Studying Lung Alveolar Development, Homeostasis, and Repair.<br>
+Title/MGD: Ager-CreERT2: A New Genetic Tool for Studying Lung
+Alveolar Development, Homeostasis, and Repair<br>
+DOI/NLM: 10.1165/rcmb.2018-0125OC<br>
+DOI/MGD: 10.1165/rcmb.2018-0125OC<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_NLM_refresh/6203631_J265836.pdf">/data/littriage/needs_review/littriage_NLM_refresh/6203631_J265836.pdf</a><br><br>
+
+MGI:6199448,30279196<br>
+Journal/NLM: Dis Model Mech<br>
+Journal/MGD: Dis Model Mech<br>
+Title/NLM: Aberrant cerebellar Purkinje cell activity as the cause of motor attacks in a mouse model of episodic ataxia type 2.<br>
+Title/MGD: Aberrant cerebellar Purkinje cell activity as the cause of motor attacks in a mouse model of episodic ataxia type 2<br>
+DOI/NLM: 10.1242/dmm.034181<br>
+DOI/MGD: 10.1242/dmm.034181<br>
+<a href="http://prodwww.informatics.jax.org/data/littriage/needs_review/littriage_NLM_refresh/6199448_J265093.pdf">/data/littriage/needs_review/littriage_NLM_refresh/6199448_J265093.pdf</a><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 6 Errors : Erratum/corrections/retractions<br><br>
+
+<b>1: Medline publication type = erratum, correction, or retraction</b><br><br>
+
+<br>
+
+**********<br>
+Literature Triage Level 7 Errors : Possible mismatch citation - citation title not found in extracted text<br><br>
+
+MGI:6215565<br>
+MGI:6215687<br>
+MGI:6215967<br>
+MGI:6216250<br>
+MGI:6216891<br>
+MGI:6217019<br>
+MGI:6217320<br>
+MGI:6218574<br>
+MGI:6218943<br>
+MGI:6219651<br>
+</body></html>
