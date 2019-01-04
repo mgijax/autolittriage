@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7 
 #
-# Compute individual curation group recall values for a given
+# Compute individual curation group precision & recall values for a given
 #  file of curation statuses and a given file of predictions.
 #
 # Output to stdout.
@@ -31,6 +31,9 @@ def parseCmdLine():
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
 	required=False, help="skip helpful messages to stderr")
+
+    parser.add_argument('--test', dest='dotests', action='store_true',
+	required=False, help="run informal tests and quit, other args ignored")
 
     args = parser.parse_args()
     args.longOutputFile = sys.stdout
@@ -72,7 +75,6 @@ class Prediction (object):
 	self.fpFn,
 	self.confidence,
 	self.absValue,) = record.split(self.FIELDSEP)
-
 #----------------------
 
 class CurationGroup (object):
@@ -82,27 +84,85 @@ class CurationGroup (object):
 	    keep track of the number of papers selected, ...
     """
     def __init__(self, statusFieldName):
-	""" statusFieldName = 'ap_status' or 'gxd_status' ..."""
+	"""
+	    statusFieldName is sort of the name of this curation group,
+	    But we assume it matches status field name in a Paper object.
+	    So statusFieldName = 'ap_status' or 'gxd_status' ...
+	"""
 	self.statusFieldName = statusFieldName
-	self.numSelected = 0		# number of papers that are selected
-					#  for this curation group
-	self.numPredPositives = 0	# number of papers selected for this
-					#  group that are predicted as keepers 
-    def selectedVsPredicted(self, paper, prediction):
-	status = paper.__getattribute__(self.statusFieldName)
-	if status in ['chosen', 'indexed', 'full-coded']:
-	    self.numSelected += 1
-	    if prediction.predClass == "keep":
-		self.numPredPositives += 1
+	self.numTP = 0		# num positives for this group = numTP + numFP
+	self.numFP = 0
+	self.numTN = 0		# num negatives for this group = numTN + numFN
+	self.numFN = 0
+    #----------------------
 
-    def getNumSelected(self):	return self.numSelected
-    def getNumPredPositives(self):	return self.numPredPositives
+    def isGroupPositive(self, paper):
+	""" Return true if this paper is known to be selected for this group
+	"""
+	status = paper.__getattribute__(self.statusFieldName)
+#	if status in ['chosen', 'indexed', 'full-coded'] \
+#	    and paper.classification != 'discard':         return True
+	if status in ['chosen', 'indexed', 'full-coded']:  return True
+	else: return False
+    #----------------------
+
+    def isGroupNegative(self, paper):
+	""" Return true if this paper is known to not be selected for this group
+	    Note that a paper can be neither GroupPositive nor GroupNegative
+	"""
+	status = paper.__getattribute__(self.statusFieldName)
+	if paper.classification == 'discard' or status == 'rejected':
+	    return True
+	else: return False
+    #----------------------
+
+    def decideGroupPosNeg(self, paper, pred):
+	""" Determine if this paper is a TP, FP, TN, FN or none of these
+		for this group.
+	    Return one of "TP", "FP", "TN", "FN" or "  "
+	    Also increment the correct count for this group.
+	"""
+	retVal = "  "		# assume it is none for this group
+	if self.isGroupPositive(paper):
+	    if pred.predClass == "keep":
+		retVal = "TP"
+		self.numTP += 1
+	    else:
+		retVal = "FN"
+		self.numFN += 1
+	elif self.isGroupNegative(paper):
+	    if pred.predClass == "discard":
+		retVal = "TN"
+		self.numTN += 1
+	    else:
+		retVal = "FP"
+		self.numFP += 1
+	return retVal
+    #----------------------
+
     def getName(self):		return self.statusFieldName
-#----------------------
+    def getNumTP(self):		return self.numTP
+    def getNumFP(self):		return self.numFP
+    def getNumTN(self):		return self.numTN
+    def getNumFN(self):		return self.numFN
+    def getNumPositive(self):	return self.getNumTP() + self.getNumFN()
+    def getNumNegative(self):	return self.getNumTN() + self.getNumFP()
+
+    def getNumSupport(self):
+	""" number of papers that are either pos or neg for this group"""
+	return self.getNumPositive() + self.getNumNegative()
+
+    def getPrecision(self):
+	return float(self.numTP) / float(self.numTP + self.numFP)
+
+    def getRecall(self):
+	return float(self.numTP) / float(self.numTP + self.numFN)
+
+#-end CurationGroup ---------------------
 
 def getPapers(papersFile):
     """ Read the file of papers and their curation statuses.
-	Return {pubmed: Paper object, ...}
+	Return dict {pubmed: Paper object, ...}
     """
     RECORDSEP = '\n'
     rcds = open(papersFile,'r').read().split(RECORDSEP)	# read/split all rcds
@@ -130,8 +190,8 @@ def main():
 		    ]
     papers = getPapers(args.statusFile)
 
-    totTruePositives = 0
-    totPredPositives = 0
+#    totTruePositives = 0
+#    totPredPositives = 0
 
     predLines = open(args.predictionFile,'r').read().split(PREDFILE_RECORDSEP)
     del predLines[0]			# header line
@@ -143,27 +203,48 @@ def main():
 	pred = Prediction(predLine)
 	paper = papers[pred.pubmed]
 
-	if args.longOutput: outputLong(paper, pred)
+#	if paper.classification == 'keep':	# have a true positive
+#	    totTruePositives += 1
+#	    if pred.predClass == 'keep':	# have a pred positive
+#		totPredPositives += 1
 
-	if paper.classification == 'keep':	# have a true positive
-	    totTruePositives += 1
-	    if pred.predClass == 'keep':	# have a pred positive
-		totPredPositives += 1
-
+	posNegs = []			# TP/FP/TN/FN for each cur group
 	for cg in curationGroups:
-	    cg.selectedVsPredicted(paper, pred)
+	    posNegs.append(cg.decideGroupPosNeg(paper, pred))
 
-    print "Recall for papers selected by each curation group"
+	if args.longOutput: outputLong(paper, pred, posNegs)
+
+
+    print "Curation Groups Summary"
+    print'%-14s %5s %5s %5s %5s %5s %5s %5s %5s %5s' % \
+	("Group",
+	"#Pos",
+	"#Neg",
+	"#Supp",
+	"TP",
+	"FP",
+	"TN",
+	"FN",
+	"Prec",
+	"Recall",
+	)
     for cg in curationGroups:
-	predPositives = cg.getNumPredPositives()
-	truePositives = cg.getNumSelected()
-	print '%-14s selected papers: %5d predicted keep: %5d recall: %5.3f' % \
-		    (cg.getName(), truePositives, predPositives,
-				    float(predPositives)/truePositives)
+	print'%-14s %5d %5d %5d %5d %5d %5d %5d %5.3f %5.3f' % \
+	    (cg.getName(),
+	    cg.getNumPositive(),
+	    cg.getNumNegative(),
+	    cg.getNumSupport(),
+	    cg.getNumTP(),
+	    cg.getNumFP(),
+	    cg.getNumTN(),
+	    cg.getNumFN(),
+	    cg.getPrecision(),
+	    cg.getRecall(),
+	    )
 
-    print '%-14s selected papers: %5d predicted keep: %5d recall: %5.3f' % \
-		('Totals', totTruePositives, totPredPositives,
-				float(totPredPositives)/totTruePositives)
+#    print '%-14s selected papers: %5d predicted keep: %5d recall: %5.3f' % \
+#		('Totals', totTruePositives, totPredPositives,
+#				float(totPredPositives)/totTruePositives)
 # ---------------------
 
 def outputLongHeader():
@@ -178,15 +259,21 @@ def outputLongHeader():
 		'Confidence',
 		'Abs Value',
 		'ap_status',
+		'ap_FP/FN',
 		'gxd_status',
+		'gxd_FP/FN',
 		'go_status',
+		'go_FP/FN',
 		'tumor_status',
+		'tumor_FP/FN',
 		'qtl_status',
+		'qtl_FP/FN',
 		] ) + PREDFILE_RECORDSEP )
 # ---------------------
 
 def outputLong( paper,		# Paper record
 		pred,		# Prediction record w/ same pubmed as paper
+		posNegs,	# one "TP/FP/..." per each group, in order
 		):
     """
     Write a combined prediction record with the curation statuses to for
@@ -200,10 +287,15 @@ def outputLong( paper,		# Paper record
 		pred.confidence,
 		pred.absValue,
 		paper.ap_status,
+		posNegs[0],
 		paper.gxd_status,
+		posNegs[1],
 		paper.go_status,
+		posNegs[2],
 		paper.tumor_status,
+		posNegs[3],
 		paper.qtl_status,
+		posNegs[4],
 		] ) + PREDFILE_RECORDSEP )
 # ---------------------
 
@@ -211,5 +303,51 @@ def verbose(text):
     if args.verbose: sys.stderr.write(text)
 # ---------------------
 
+def runTests():		# some adhoc tests
+    g = CurationGroup('ap_status')
+    pred1 = Prediction("1234	discard	keep	TN	0.1	0.1")
+
+    paper1 = Paper("1234|keep|routed|gxd|go|tumor|qtl")
+    print "groupPositive: " + str(g.isGroupPositive(paper1))
+    print "groupNegative: " + str(g.isGroupNegative(paper1))
+    print "Prediction: %s\tPosNeg: '%s'\n" % (pred1.predClass, g.decideGroupPosNeg(paper1, pred1))
+
+    paper1 = Paper("1234|discard|routed|gxd|go|tumor|qtl")
+    print "groupPositive: " + str(g.isGroupPositive(paper1))
+    print "groupNegative: " + str(g.isGroupNegative(paper1))
+    print "Prediction: %s\tPosNeg: '%s'\n" % (pred1.predClass, g.decideGroupPosNeg(paper1, pred1))
+
+    paper1 = Paper("1234|discard|chosen|gxd|go|tumor|qtl")
+    print "groupPositive: " + str(g.isGroupPositive(paper1))
+    print "groupNegative: " + str(g.isGroupNegative(paper1))
+    print "Prediction: %s\tPosNeg: '%s'\n" % (pred1.predClass, g.decideGroupPosNeg(paper1, pred1))
+
+    paper1 = Paper("1234|keep|rejected|gxd|go|tumor|qtl")
+    print "groupPositive: " + str(g.isGroupPositive(paper1))
+    print "groupNegative: " + str(g.isGroupNegative(paper1))
+    print "Prediction: %s\tPosNeg: '%s'\n" % (pred1.predClass, g.decideGroupPosNeg(paper1, pred1))
+
+    paper1 = Paper("1234|keep|full-coded|gxd|go|tumor|qtl")
+    print "groupPositive: " + str(g.isGroupPositive(paper1))
+    print "groupNegative: " + str(g.isGroupNegative(paper1))
+    print "Prediction: %s\tPosNeg: '%s'\n" % (pred1.predClass, g.decideGroupPosNeg(paper1, pred1))
+
+    print "TP: %d" % g.getNumTP()
+    print "FP: %d" % g.getNumFP()
+    print "TN: %d" % g.getNumTN()
+    print "FN: %d" % g.getNumFN()
+    print
+
+    print "numPos: %d" % g.getNumPositive()
+    print "numNeg: %d" % g.getNumNegative()
+    print "numSupport: %d" % g.getNumSupport()
+    print
+
+    print "Precision: %f" % g.getPrecision()
+    print "Recall: %f" % g.getRecall()
+
+
 if __name__ == "__main__":
-    main()
+    if sys.argv > 0 and sys.argv[1] == "--test": runTests()
+    else: main()
+
