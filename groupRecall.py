@@ -61,24 +61,30 @@ class Paper (object):
 
 class Prediction (object):
     """
-    Is a prediction for a given paper
+    Is:   a prediction for a given paper
     Does: knows how to initialize itself from a line from a prediction file
     """
     FIELDSEP = '\t'		# standard for prediction files
     def __init__(self, record):
+	components = record.split(self.FIELDSEP)
 	(self.pubmed,
 	self.trueClass,
 	self.predClass,
 	self.fpFn,
-	self.confidence,
-	self.absValue,) = record.split(self.FIELDSEP)
+	) = components[:4]
+	if len(components) == 6:   # if predictions have a confidence & abs val
+	    (self.confidence,
+	    self.absValue,) = components[4:]
+	else:			# just dummy values
+	    self.confidence = 0
+	    self.absValue   = 0
 
 #----------------------
 
 class CurationGroup (object):
-    """ IS a curation group, e.g, AP, GO, ...
-	HAS simple counts of the number of papers selected for the group, etc.
-	DOES check if a paper has been selected for the curation group, 
+    """ IS:   a curation group, e.g, AP, GO, ...
+	HAS:  simple counts of the number of papers selected for the group, etc.
+	DOES: check if a paper has been selected for the curation group, 
 	    keep track of the number of papers selected, ...
     """
     def __init__(self, statusFieldName):
