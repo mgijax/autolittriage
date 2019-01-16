@@ -276,6 +276,15 @@ class SampleRecord (object):
 	self.abstract = self.abstract[:20].replace('\n',' ')
 	self.extractedText = self.extractedText[:20].replace('\n',' ') + '\n'
 	return self
+    # ---------------------------
+
+    def removeText(self):	# preprocessor
+	# for debugging, so you can see a sample info easily
+	
+	self.title = self.title[:10].replace('\n',' ')
+	self.abstract = 'abstract'
+	self.extractedText = 'text\n'
+	return self
 # end class SampleRecord ------------------------
 
 class PredictionReporter (object):
