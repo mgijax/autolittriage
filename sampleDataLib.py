@@ -140,6 +140,9 @@ class SampleRecord (object):
 
     def getSampleName(self):
 	return self.ID
+    def getSampleID(self):	return self.getSampleName()
+    def getID(self):		return self.getSampleName()
+    def getName(self):		return self.getSampleName()
 
     def getJournal(self):
 	return self.journal
