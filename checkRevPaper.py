@@ -31,6 +31,9 @@ def parseCmdLine():
     #parser.add_argument('statusFile', help='file of paper curation statuses')
     #parser.add_argument('predictionFile', help='file of paper predictions')
 
+    parser.add_argument('--test', dest='justTest', action='store_true',
+	required=False, help="just run test code")
+
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
 	required=False, help="skip helpful messages to stderr")
 
@@ -108,7 +111,7 @@ def getPapers(papersFile):
 def main():
     papers = getPapers(sys.stdin)
 
-#    testnum = 2000
+#    testnum = 4000
 #    papers = papers[:testnum]
     setPubmedReview(papers)
     setTextCheckReview(papers)
@@ -194,12 +197,15 @@ def looksLikeReview(paper):
 				#  consider when searching for eoabstract.
 				#  We search up to
 				#  len(title)+len(abstract)+EXTRA_WORDS
+    NO_EOABSTRACT_N = 500	# If no end of abstract is found,
+    				#   use this + len(title) + len(abstract)
+				#   as the extracted text to look for "review"
     WORDS_BEYOND_ABSTRACT = 10	# After finding eoabstract in extracted text,
     				#  add this many words from the eoabstract
-				#  when searching for "review"
+				#  when looking for "review"
 
 		    # words in text that make us think it is a review
-    reviewWords = [ 'review', 'minireview', 'mini-review']
+    reviewWords = [ 'review', 'minireview', 'mini-review', 'commentary']
 
     pmid	= paper.getSampleName()
 
@@ -223,47 +229,56 @@ def looksLikeReview(paper):
     #     set iEndAbstract to idx in extTextWords of 1st endAbstractWord
     iEndAbstract = sublistFind(extTextWords, endAbstractWords)
 
-    if iEndAbstract == -1:	# didn't find words from end of abstract
-	return False, 'did not find end of abstract', ''
-
-    # (3) Found end of abstract,
-    # add a few words from end of abstract to include in search for "review"
-    iLastExtTextWord = iEndAbstract + ABSTRACT_WORDS_TO_MATCH
+    # (3) set iLastExtTextWord as the limit of number of extTextWords to
+    #     bother looking for "review" in
+    #     (iLastExtTextWord is actually the 1st word to NOT look at)
+    if iEndAbstract == -1:	# Didn't find words from end of abstract
+				# just use a guess for how much ext text to use
+	iLastExtTextWord = len(title) + len(abstract) + NO_EOABSTRACT_N
+	reason = 'no EOabstract. '
+    else:			# Did find end of abstract
+				# add a few words from end to include in
+				#      looking for "review"
+	iLastExtTextWord = iEndAbstract + ABSTRACT_WORDS_TO_MATCH
+	reason = ''
 
     # (4) See if we find one of the "review" words
     for revword in reviewWords:
-	iReview = sublistFind(extTextWords, [revword], 0, iLastExtTextWord)
-	if iReview != -1: break		# found a review word
+	# should check for exceptions and loop to skip them
+	try:
+	    iReview = extTextWords.index(revword, 0, iLastExtTextWord)
+	except:			# review word not found
+	    iReview = -1
+	    continue		# look for next
+	else:			# found review word
+	    break
 
     # (5) prepare return values
     if iReview == -1:
 	isReview = False
-	reason = 'review word not found in 1st %d' % iLastExtTextWord
+	reason += 'review word not found in 1st %d' % iLastExtTextWord
 	surroundingText = ''
     else:			# review word found
 	if isReviewException(extTextWords, iReview, revword):
 	    isReview = False
-	    reason = "review word exception"
+	    reason += "review word exception"
 	else:			# no exception
 	    isReview = True
-	    reason = "%s found at %d" % (revword, iReview)
+	    reason += "%s found at %d" % (revword, iReview)
 
 	# capture words surrounding the revword
 	if iReview == 0:
 	    prev1 = '-'		# no prev word to revword
 	    prev2 = '-'		# no prev prev word to revword
 	elif iReview == 1:
-	    prev1 = extTextWords[1]
+	    prev1 = extTextWords[0]
 	    prev2 = '-'		# no prev prev word to revord
 	else:			# have at least 2 previous words
 	    prev1 = extTextWords[iReview -1]
 	    prev2 = extTextWords[iReview -2]
 	surroundingText = "%s %s %s %s" % (prev2, prev1, revword,
 						extTextWords[iReview+1])
-#	if revword == "review" and iReview > 0 \
-#		and extTextWords[iReview -1] == 'for':
-#	    reason = "for review at %d" % iReview
-#	else:
+
     return isReview, reason, surroundingText
 # ---------------------
 
@@ -275,7 +290,7 @@ def isReviewException( extTextWords, iReview, revword):
     """
 
     exceptionPrevWords = ['for', '(for', 'merit', '(merit', 'peer',
-							    'institutional']
+						'institutional', 'ethical']
     if iReview > 0 and extTextWords[iReview -1] in exceptionPrevWords:
 	return True		# FOUND EXCEPTION
 
@@ -284,7 +299,8 @@ def isReviewException( extTextWords, iReview, revword):
 	and extTextWords[iReview -1] == 'and':	# have 2 previous words
 	return True		# FOUND EXCEPTION
 
-    elif extTextWords[iReview +1].startswith('board'):
+    elif extTextWords[iReview +1].startswith('board') or \
+	 extTextWords[iReview +1].startswith('committee'):
 	return True		# FOUND EXCEPTION
     
     return False
@@ -340,4 +356,42 @@ def verbose(text):
 # ---------------------
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) == 1 or sys.argv[1] != '--test':
+	main()
+    else:		# run test code
+	p = Paper("""
+	discard|12345|1/1/1900|1900|my_journal|some title|
+	this is a rather short but interesting abstract|
+	and here is a stunning body blah blah blah blah
+	""")
+	print looksLikeReview(p)
+
+	p = Paper("""
+	discard|12345|1/1/1900|1900|my_journal|some title|
+	this is a rather short but interesting abstract|
+	a review word and here is stunning extracted text blah blah blah blah
+	""")
+	print looksLikeReview(p)
+
+	p = Paper("""
+	discard|12345|1/1/1900|1900|my_journal|some title|
+	this is a rather short but interesting abstract|
+	a exception review board and here is stunning extracted text blah blah
+	""")
+	print looksLikeReview(p)
+
+	p = Paper("""
+	discard|12345|1/1/1900|1900|my_journal|some title|
+	this is last 5 words of abstract|
+	minireview word & here is extracted text last 5 words of abstract
+	blah blah blah
+	""")
+	print looksLikeReview(p)
+
+	p = Paper("""
+	discard|12345|1/1/1900|1900|my_journal|some title|
+	this is last 5 words of abstract|
+	a for review word and here is extracted text last 5 words of abstract
+	blah blah blah
+	""")
+	print looksLikeReview(p)
