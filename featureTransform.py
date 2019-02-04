@@ -8,8 +8,9 @@ These transformations are intended to reduce dimensionality of the feature set
 (i.e., lower the number of features) AND by collapsing different forms of tokens
 that mean the same thing (or for which the different forms are not relevant for
 classification), we should improve the classifier's accuracy.
+To some degree, this is becoming a poor man's named entity recognizer.
 
-Transformations include
+The kinds of transformations include
     a) mapping/collapsing different tokens to a common one, e.g.,
 	e1, e2, e3, ... --> embryonic_day
 	ko, knock out   --> knockout
@@ -17,7 +18,7 @@ Transformations include
     b) deleting certain tokens that seem meaningless e.g., 
 	a1, a2, ... (these are typically in text referring to Figure a, panel 1)
 
-# Try to do this with only one pass through the text...
+Do this with regex and only one pass through the text...
 
 #######################################################################
 """
@@ -25,41 +26,8 @@ Transformations include
 import sys
 import re
 
-def debug(text):
-    if False: sys.stdout.write(text)
-
-#---------------------------------
-
-def findMatchingGroup(m):
-    gd = m.groupdict()
-    for k in gd.keys():
-	if gd[k] != None:
-	    return (k, m.start(k), m.end(k))
-    return (None, None, None)	# shouldn't happen
-#---------------------------------
-
-class Mapping (object):
-    def __init__(self, regex, replacement):
-	self.regex = regex
-	self.replacement = replacement
-
-# dictionary of named mappings. Each mapping has a reg expr to find and a
-# string to replace the text matching that reg expr.
-# Thoughts:
-# Might be better to define a dictionary of strings to map to the replacement
-#   string.
-#   This would mean more dictionary entries, one for each possible string rather
-#   than a regex to match all the possible strings.
-# BUT I'm worried about all the string slicing making lots of copies of
-#  substrings as we process as strings may be long and there may be 10's of
-#  thousands of strings to process.
-# Using dictionary of mappings: cannot figure out how to split the source string
-#  on the matching regex's AND know which regex matched. The regex.split()
-#  method only returns the matching text, not the matching match object nor
-#  the group. So cannot figure out which mapping object to apply
-# Need to ponder all this further....
-
-# tumors and tumor types - map all to "tumor_type"
+##############################################
+# Tumors and tumor types regex - map all to "tumor_type"
 # whole words
 wholeWords = [
 	    'tumor',
@@ -96,6 +64,8 @@ wordsOrEndings = [
 tumorRe = '|'.join( wholeWords + endings + wordsOrEndings )
 tumorRe = '(?:' + tumorRe + ')s?'	# optional 's'
 
+##############################################
+# Cell line names regex, all map to "cell_line"
 cellLinePrefixes = [
 	    'B-?16', 	# includes 'B16',
 	    'DA',
@@ -284,14 +254,25 @@ cellLineNames = [ \
 	    ]
 cellLineRe = '|'.join([ p for p in cellLineNames ])
 
+##############################################
+class Mapping (object):
+    """
+    Is a mapping between a regular expression and the text that should replace
+    any text that matches the regex.
+    """
+    def __init__(self, regex, replacement):
+	self.regex = regex
+	self.replacement = replacement
+
+##############################################
+# Define the dictionary of named Mappings.
 mappings = { 
-    # mapping name: Mapping object
+    # { name: Mapping object }
     'tt'   : Mapping( r'(?P<tt>' + tumorRe + ')', 'tumor_type'),
     'cl'   : Mapping( r'(?P<cl>' + cellLinePreRe + ')', 'cell_line'),
     'cn'   : Mapping( r'(?P<cn>' + cellLineRe + ')', 'cell_line'),
 
     'mice' : Mapping( r'(?P<mice>mouse|mous|murine)', 'mice'),
-    #'mice' : Mapping( r'(?P<mice>mouse|mous|murine|mice)', ''), # ??
 
     'ko'   : Mapping( r'(?P<ko>ko|knock(?:ed|s)?(?:\s|-)?outs?)', 'knock_out'),
     'ki'   : Mapping( r'(?P<ki>knock(?:ed)?(?:\s|-)?ins?)', 'knock_in'),
@@ -305,19 +286,25 @@ mappings = {
 							    'early_embryo'),
     'fig'  : Mapping( r'(?P<fig>fig)', 'figure'),
     					
-    # often refer to fig or panel A1, ...  should this be for all letters?
+    # Remove "A1", "A2", "B1", ...
+    # Text often refers to fig or panel "A1", etc.,
+    # Should this be for all letters? I've only picked a few I've seen in papers
     # Should we do this at all?
     # (note e is part of embryonic day above)
     'letdig' : Mapping( r'(?P<letdig>[abcdfghs]\d)', ''),
     }
 
-# combine all the mappings into 1 honking regex string
-# OR them and word boundaries around
-#bigRegex = r'\b' + '|'.join([ m.regex for m in mappings.values() ]) + r'\b'
+##############################################
+# Combine all the mappings into 1 honking regex string
+#   OR them together with word boundaries around
+# (For some reason factoring out the word boundaries (r'\b') doesn't work right:
+#   bigRegex = r'\b' + '|'.join([ m.regex for m in mappings.values() ]) + r'\b'
+#  Have not looked into why.)
 bigRegex = '|'.join([ r'\b' + m.regex + r'\b' for m in mappings.values() ])
 
 bigRe = re.compile(bigRegex, re.IGNORECASE)
 
+##############################################
 def transformText(text):
     """
     Return the transformed text based on the transformations defined above.
@@ -325,7 +312,7 @@ def transformText(text):
     toTransform = text
     transformed = ''
 
-    debug( "initial: '%s'\n" % toTransform)
+#    debug( "initial: '%s'\n" % toTransform)
 
     while (True):		# loop for each regex match
 	m = bigRe.search(toTransform)
@@ -333,21 +320,39 @@ def transformText(text):
 
 	key, start, end = findMatchingGroup(m)
 
-	debug( 'matching group: %s, %d, %d' % (key, start, end) + '\n')
+#	debug( 'matching group: %s, %d, %d' % (key, start, end) + '\n')
+	# Would doing this w/o slicing toTransform be faster?
 	transformed += toTransform[:start] + mappings[key].replacement
 	toTransform = toTransform[end:]
-	debug( "transformed '%s'" % transformed + '\n')
-	debug( "toTransform '%s'" % toTransform + '\n')
-	debug('\n')
+#	debug( "transformed '%s'" % transformed + '\n')
+#	debug( "toTransform '%s'" % toTransform + '\n')
+#	debug('\n')
 
     transformed += toTransform
-    debug("final string '%s'" % transformed + '\n')
+#    debug("final string '%s'" % transformed + '\n')
 
     return transformed
 #---------------------------------
 
+def findMatchingGroup(m):
+    """
+    Given an re.Match object, m,
+    Find the key (name) of its group that actually matched.
+    Return the key & start & end coords of the matching string
+    """
+    gd = m.groupdict()		# dict of groups in m
+    for k in gd.keys():
+	if gd[k] != None:	# the one that matched something
+	    return (k, m.start(k), m.end(k))
+    return (None, None, None) # shouldn't happen since some group should match
+#---------------------------------
+
+def debug(text):
+    if False: sys.stdout.write(text)
+#---------------------------------
+
 if __name__ == "__main__":	# ad hoc tests
-    if False:
+    if True:
 	text = "...stuff then ko and knock out mouse and a wt mouse and more text"
 	tests = [
 		'before e12 after',
