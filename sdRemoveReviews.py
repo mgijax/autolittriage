@@ -30,6 +30,10 @@ def parseCmdLine():
         required=True, 
         help='file containing review articles indications')
 
+    parser.add_argument('--notextpred', dest='includeTextPred',
+	action='store_false', required=False,
+	help="do not use text predictions for review status (only pubmed)")
+
 #    parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
 #	required=False, help="skip helpful messages to stderr")
 
@@ -66,7 +70,7 @@ class ReviewChecker (object):
     Reads review indication's file, builds dictionary.
     Provides isReview(pmid) method
     """
-    def __init__(self, file):
+    def __init__(self, file, includeTextPred=True):
 	""" Read article review predictions file
 	    Build dict {pmid: ReviewRcd}
 	"""
@@ -84,13 +88,17 @@ class ReviewChecker (object):
 	for rcdLine in rcds:
 	    rcd = ReviewRcd(rcdLine)
 	    self.reviewRcds[rcd.pubmedID] = rcd
+
+	self.includeTextPred = includeTextPred
     #----------------------
 
     def isReview(self, pubmedID):
 	pmid = str(pubmedID)
 	if self.reviewRcds.has_key(pmid):
 	    rcd = self.reviewRcds[pmid]
-	    return rcd.mgiReview or rcd.pubmedReview or rcd.textCheckReview
+	    isRev = rcd.mgiReview or rcd.pubmedReview or \
+			(rcd.textCheckReview and self.includeTextPred)
+	    return isRev
 	else:
 	    return False
 
@@ -108,7 +116,7 @@ def main():
 
     #############
     # Get review indications file
-    revChecker = ReviewChecker(args.reviewFile)
+    revChecker = ReviewChecker(args.reviewFile, args.includeTextPred)
 
     #############
     # Get sample lib
