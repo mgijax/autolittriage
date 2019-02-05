@@ -1,5 +1,5 @@
 #!/bin/bash
-# get raw data files and do random training/validation/test set splits
+# get raw data files
 
 #######################################
 # filenames for raw data pulled from db
@@ -16,10 +16,11 @@ function Usage() {
 #######################################
     cat - <<ENDTEXT
 
-$0 [--getraw] [--findrevs] [--rmrevs] [--splittest] [--doall]
+$0 [--getraw] [--findrevs] [--rmrevs] [--doall]
 
-    Build training, validation, and test datasets - starting from db
-    Also get references curation status file.
+    Get raw sample files from the db.
+    Possibly remove review papers.
+    Get references curation status file.
     Puts all files into the current directory.
 
     --getraw	Only pull raw files from db.
@@ -28,7 +29,6 @@ $0 [--getraw] [--findrevs] [--rmrevs] [--splittest] [--doall]
 		Pulls from dev db.
     --findrevs	Run analysis to find review papers from pubmed & text analysis
     --rmrevs	Remove review papers from raw files
-    --splittest	Only split out test, validation, and training sets
     --doall	Do all the above (default)
 
     --limit	limit on sql query results (default = no limit)
@@ -43,19 +43,12 @@ projectHome=~/work/autolittriage
 getRaw=$projectHome/sdGetRaw.py
 findReviews=$projectHome/sdFindReviews.py
 removeReviews=$projectHome/sdRemoveReviews.py
-splitByJournal=$projectHome/sdSplitByJournal.py
+#removeRevOpts=""
+removeRevOpts="--notextpred"
 getStatuses=$projectHome/sdGetStatuses.py
-
-mgiJournals=$projectHome/journalsMonitored.txt	# mgi journals file
 
 getRawLog=getRaw.log		# log file from sdGetRaw
 reviewsLog=reviews.log
-splitTestLog=splitTest.log
-
-testFraction="0.15"		# 15% of {keep|discard}_after for test set
-valFraction="0.235"		# want 20% {keep|discard}_after
-				#  since we are pulling from test leftovers
-				#  this is 20%/(1-15%) = .235 of test leftovers
 
 #######################################
 # cmdline options
@@ -64,7 +57,6 @@ doAll=yes
 doGetRaw=no
 doFindRevs=no
 doRmRevs=no
-doSplittest=no
 limit="0"			# getRaw record limit, "0" = no limit
 				#(set small for debugging)
 while [ $# -gt 0 ]; do
@@ -74,7 +66,6 @@ while [ $# -gt 0 ]; do
     --getraw)    doGetRaw=yes;doAll=no; shift; ;;
     --findrevs)  doFindRevs=yes;doAll=no; shift; ;;
     --rmrevs)    doRmRevs=yes;doAll=no; shift; ;;
-    --splittest) doSplittest=yes;doAll=no; shift; ;;
     --limit)     limit="$2"; shift; shift; ;;
     -*|--*) echo "invalid option $1"; Usage ;;
     *) break; ;;
@@ -109,29 +100,12 @@ fi
 if [ "$doRmRevs" == "yes" -o "$doAll" == "yes" ]; then
     echo "removing review articles from the raw sample files"
     date >>$reviewsLog
+    echo "options: $removeRevOpts -r $revStatusFile" >>$reviewsLog
     for f in $discardAfter $keepAfter $keepBefore; do
 	newName=${f}_withReviews
 	set -x
 	mv $f $newName
-	$removeReviews -r $revStatusFile $newName > $f 2>> $reviewsLog
+	$removeReviews $removeRevOpts -r $revStatusFile $newName > $f 2>> $reviewsLog
 	set +x
     done
-fi
-#######################################
-# from raw files, pull out testSet.txt, valSet.txt, trainSet.txt
-#######################################
-if [ "$doSplittest" == "yes" -o "$doAll" == "yes" ]; then
-    echo "splitting test validation training sets"
-    date >$splitTestLog
-    set -x
-    # random test set + leftovers
-    $splitByJournal --mgijournals $mgiJournals -f $testFraction --selectedrefs testSet.txt  --leftoverrefs testLeftovers.txt $discardAfter $keepAfter >>$splitTestLog 2>&1
-
-    # random validation set from test set leftovers
-    $splitByJournal --mgijournals $mgiJournals -f $valFraction --selectedrefs valSet.txt  --leftoverrefs valLeftovers.txt testLeftovers.txt >>$splitTestLog 2>&1
-
-    # trainSet is valSet leftovers + $keepBefore
-    # (preprocess w/ no preprocessing steps just intelligently concats files)
-    preprocessSamples.py valLeftovers.txt $keepBefore > trainSet.txt 2>> $splitTestLog
-    set +x
 fi
