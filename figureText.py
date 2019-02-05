@@ -4,6 +4,9 @@
 #######################################################################
 Author:  Jim
 Routines for extracting figure related text from articles
+Treating tables as figures too.
+As we refer to "figure caption" or "figure text", we mean "tables" and
+"table text" too.
 
 Main function (example):
     for b in text2FigText(text)
@@ -18,236 +21,39 @@ import re
 PARAGRAPH_BOUNDARY = '\n\n'	# defines a paragraph boundary
 PARAGRAPH_BOUNDARY_LEN = len(PARAGRAPH_BOUNDARY)
 
-NUM_LEADING_WORDS  = 10		# words before 'fig' to grab as fig discu text
-NUM_TRAILING_WORDS = 10		# words after 'fig' to grab as fig discu text
-
-# match word "fig" or "figure" or "supp...figure"
-figureRe = re.compile(r'\b(?:supp\w*[ ])?fig(?:ure)?\b', re.IGNORECASE )
+# match word "fig" or "figure" or "supp...figure" or "table" or "tables"
+figureRe = re.compile(r'\b(?:(?:supp\w*[ ])?fig(?:ure)?|tables?)\b',
+								re.IGNORECASE)
 #---------------------------------
 
 def text2FigText(text,
-		numLeading=NUM_LEADING_WORDS,
-		numTrailing=NUM_TRAILING_WORDS,
     ):
     """
-    Take text and return list of the non-overlapping "figure" text blurbs in it.
-    The Figure text is after or around "fig(ure)" (case insensitive):
-
-    If "fig(ure)" is at start of a paragraph, it is a caption
-	so figure text goes from there to end of the paragraph
-
-    FOR NOW, JUST DOING CAPTION TEXT
-    If "fig(ure)" is NOT at start of a paragraph, it is discussion text
-	so figure text goes from numLeading words before to numTrailing
-	words after
-	("word" = alphanumeric string, currently does not include '_')
-	(Other Options to Consider
-	    stop at paragraph boundaries
-	    or take whole paragraphs or whole sentence,
-	)
-    Assumes: all figure text blurbs are NOT at beginning or end of text.
-	    I.e., start after text[0] and end before text[len-1]
-	    (otherwise, certain text indexing errors are possible)
+    Return list of paragraphs in text that talk about figures or tables
     """
-    start = 0			# position to start match from 
-    prevBlurb = None		# most recent figure caption/discussion blurb
-    figBlurbs = []		# list of figure text blurbs found
+    figParagraphs = []		# list of fig paragraphs to return
+    eoText = len(text)		# index of 1st char not in text
 
-    while True:		# do searches for figure text until there are no more
-	figMatch = figureRe.search(text, start)
-	if not figMatch: break
+    startPara = 0
 
-	figWordStart = figMatch.start(0)
-	figWordEnd   = figMatch.end(0)
+    while startPara != eoText:
 
-	if atParaStart(text, figWordStart):	# caption
-	    figBlurbStart = figWordStart
-	    figBlurbEnd   = findParaEnd(text, figWordStart)
-	    start = figBlurbEnd +1	# continue search after para
+	endPara = text.find(PARAGRAPH_BOUNDARY, startPara \
+						    + PARAGRAPH_BOUNDARY_LEN)
+	if endPara == -1:	# must be no more paragraph ends, at text end
+	    endPara = eoText
 
-	else: 					# fig discussion text
-	    figBlurbStart = findnWordsBefore(text, numLeading, figWordStart-1)
-	    figBlurbEnd   = findnWordsAfter( text, numTrailing, figWordEnd+1)
-	    start = figWordEnd +1	# continue search for after "figure"
-	    				# since may find refs to other figures
-					# with more trailing text to include
-	    continue	# for now, skip fig discusison text, just do captions
-	
-	figBlurb = TextBlurb(text, start=figBlurbStart, end=figBlurbEnd)
-	if len(figBlurbs) == 0:		# 1st blurb
-	    prevBlurb = figBlurb
-	    figBlurbs.append(prevBlurb)
-	else:				# merge to prev, or add to figBlurbs
-	    if not prevBlurb.mergeIfOverlap(figBlurb):
-		figBlurbs.append(figBlurb)
-		prevBlurb = figBlurb
+	# just change to figureRe.match() to only match table/figure legends
+	if figureRe.search(text, startPara, endPara):
+	    figParagraphs.append( text[ startPara:endPara ] )
 
+	startPara = endPara
 
-    return [ fg.getText() for fg in figBlurbs ]
-# ------------------------------
+    return figParagraphs
 
-def atParaStart(text, start):
-    """ Return True if text[start] is the start of a paragraph
-    """
-    if text[start-PARAGRAPH_BOUNDARY_LEN:start] == PARAGRAPH_BOUNDARY:
-	return True
-    return False
-# ------------------------------
- 
-def findParaEnd(text, start):
-    """
-    Starting at text[start], find the end of the containing paragraph.
-    Return the index in text of the last char of that paragraph
-	(the char before PARAGRAPH_BOUNDARY)
-    """
-    eop = text.find(PARAGRAPH_BOUNDARY, start)	# idx of 1st char of boundary
-    if eop == -1: 		# hmm, end of text before eop, what to do
+#---------------------------------
 
-	# find (up to) 100 words after and call that the paragraph end.
-	# could go to end of text instead?
-	eop = findnWordsAfter(text, 100, start)
-    else:
-	eop -= 1		# adjust to last char of paragraph
-
-    return eop
-# ------------------------------
-
-def findnWordsAfter(text, n, start):
-    """
-    Starting at text[ start ],
-    Return the index of the end of the nth word after that.
-    If there are fewer than n words after start, return the index of the end
-      of the last one.
-    Future: could stop at paragraph boundaries, but keep it simple for now
-    """
-    indexOfLast = len(text) -1
-    i = start			# i = spot to begin search for next word
-    for w in range(n):
-	wordEnd = findWordEnd(text, i)
-	if wordEnd == -1 or wordEnd == indexOfLast:
-	    return indexOfLast
-	i = wordEnd +1
-
-    return wordEnd
-# ------------------------------
-
-def findnWordsBefore(text, n, start):
-    """
-    Starting at text[ start ],
-    Return the index of the start of the nth word before that.
-    If there are fewer than n words before start, return the index of the start
-      of the last one.
-    Future: could stop at paragraph boundaries, but keep it simple for now
-    """
-    indexOfFirst = 0
-    i = start			# i = spot to begin search for prev word
-    for w in range(n):
-	wordStart = findWordStart(text, i)
-	if wordStart == -1 or wordStart == indexOfFirst:
-	    return indexOfFirst
-	i = wordStart -1
-
-    return wordStart
-# ------------------------------
-def findWordEnd(text, start):
-    """
-    Starting at text[start],
-    Find the end of the nearest word and return the index of that character.
-    "Words" are contiguous strings of letters, digits.
-    If there are no word ends in text after start, return -1
-    Assumes: 0 <= start < len(text)
-    e.g., 
-    findWordEnd("this is text", 2) returns 3
-    findWordEnd("this is text", 3) returns 3
-    findWordEnd("this, is-text", 4) returns 7
-    findWordEnd("this, is", 4) returns 7
-    """
-    i = start
-    lastIndex = len(text) -1
-    # if not in a word, find start of next one
-    while( i < lastIndex and not text[i].isalnum()):
-	i += 1
-
-    if not text[i].isalnum(): return -1 	# didn't find word start
-
-    # find end of this word
-    while( i < lastIndex and text[i].isalnum()):
-	if not text[i+1].isalnum():
-	    break
-	i += 1
-    return i
-# ------------------------------
-
-def findWordStart(text, start):
-    """
-    Starting at text[start],
-    Find the beginning of the nearest word and return the index of that char.
-    "Words" are contiguous strings of letters, digits.
-    If there are no word beginnings in text before start, return -1
-    Assumes: 0 <= start < len(text)
-    e.g., 
-    findWordStart("this is text", 2) returns 0
-    findWordStart("this is text", 5) returns 5
-    findWordStart("this, is-text", 4) returns 0
-    findWordStart("this, is", 7) returns 6
-    """
-    i = start
-    earliestIndex = 0
-    # if not in a word, find end of prev one
-    while( i > earliestIndex and not text[i].isalnum()):
-	i -= 1
-
-    if not text[i].isalnum(): return -1		# didn't find word end
-
-    # find end of this word
-    while( i > earliestIndex and text[i].isalnum()):
-	if not text[i-1].isalnum():
-	    break
-	i -= 1
-    return i
-# ------------------------------
-
-class TextBlurb (object):
-    """
-    Is:   a substring of a piece of text
-    Has:  the text string, the start and end index of the substring
-    Does: support merging of textBlurbs
-    """
-    def __init__(self, text, start=0, end=None):
-	"""
-	Assumes: 0 <= end < len(text) (if not None)
-		 0 <= start < len(text)
-	"""
-	self.text  = text
-	self.start = start
-	if end == None: end = len(text)-1
-	self.end   = end
-
-    def getText(self):
-	return self.text[self.start:self.end+1]
-
-    def overlaps(self, other):
-	""" Return True if other and self overlap
-	"""
-	if  (self.text == other.text) and \
-	    ((self.start  <= other.start and self.end >= other.start) or \
-	     (other.start <= self.start  and other.end >= self.start)):
-	    return True
-	return False
-
-    def mergeIfOverlap(self, otherBlurb):
-	""" Merge otherBlurb into self if they overlap
-	    Return True if we did merge, False otherwise
-	"""
-	if self.overlaps(otherBlurb):
-	    self.start = min(self.start, otherBlurb.start)
-	    self.end   = max(self.end, otherBlurb.end)
-	    return True
-	return False
-# end class TextBlurb --------------------
-
-
-if __name__ == "__main__":
+if __name__ == "__main__": 	# ad hoc test code
     testdoc = """
 in large part, through CMA, as genetic
 blockage of this pathway almost completely abolished lysosomal
@@ -309,64 +115,10 @@ tau-P301L via LE and exosomes, other systems contribute to tau-P301L
 
 
 """
-    # Random, disorganized tests
-    if False:
-	text2FigText(testdoc)
-    if False:
-	e = findWordEnd("it is...", 1)
-	print e
-	e = findnWordsAfter("..it is here..", 2, 2)
-	print e
-	e = findnWordsAfter("text", 50, 0)
-	print e
-	e = findnWordsAfter("text", 50, 3)
-	print e
-	e = findnWordsAfter("text..", 50, 3)
-	print e
-    if False:
-	e = findWordStart("..it is...", 4)
-	print e
-	e = findnWordsBefore("..it is here...", 2, 9)
-	print e
-	e = findnWordsBefore("text", 50, 3)
-	print e
-	e = findnWordsBefore("..text..", 50, 4)
-	print e
-    if False:
-	text = ";;some.. text!"
-	s = 0
-	e = findWordEnd(text, s)
-	print "word end: %d  '%s'" % (e,  text[s:e+1])
-
-	s = 2
-	e = findWordEnd(text, s)
-	print "word end: %d  '%s'" % (e,  text[s:e+1])
-
-	s = 5
-	e = findWordEnd(text, s)
-	print "word end: %d  '%s'" % (e,  text[s:e+1])
-
-	s = 6
-	e = findWordEnd(text, s)
-	print "word end: %d  '%s'" % (e,  text[s:e+1])
-
-	s = 13
-	e = findWordEnd(text, s)
-	print "word end: %d  '%s'" % (e,  text[s:e+1])
-    if False:
-	b1 = TextBlurb("some text", start=1, end=3)
-
-	b2 = TextBlurb("some text", start=0, end=0)
-	print "Overlap should false: " + str(b1.overlaps(b2))
-	b2 = TextBlurb("some text", start=4, )
-	print "Overlap should false: " + str(b1.overlaps(b2))
-	b2 = TextBlurb("some text", start=0, end=1 )
-	print "Overlap should true: " + str(b1.overlaps(b2))
-	b2 = TextBlurb("some text", start=0, end=5 )
-	print "Overlap should true: " + str(b1.overlaps(b2))
-
-	b1.mergeIfOverlap(b2)
-	print b1.getText()
+    if True:
+	blurbs = text2FigText(testdoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
     if True:
 	simpleTestDoc = """
 start of text. Fig 1 is really interesting, I mean it. Really.
@@ -376,19 +128,54 @@ Some intervening text. blah1 blah2 blah3 blah4 blah5 blah6
 Figure 1: this is the caption 1. I really like it too.
 and this is a bit more of the caption.
 
-Some intervening text. blah1 blah2 blah3 blah4 blah5 blah6
+Some intervening text. this is suitable and should not match. Nor should 
+gofigure
+
+Some text about tables. blah blah.
+
+Table: the start of a table
 
 Figure 2: this is caption 2. Also spellbinding
 
 Supplemental Figure 3: this is the caption of a supplemental figure.
 
-Supp Fig 4: here is another supp figure caption
-
-Here is some discussion of figure 1 and discussion of figure 2. This should
-overlap. but, But! But! Blah, this figure 2 discussion should not overlap
+here is a supp figure mention
 
 And here is the end of this amazing document. Really it is over
 """
-	blurbs = text2FigText(simpleTestDoc, numLeading=50, numTrailing=50)
+	blurbs = text2FigText(simpleTestDoc)
 	for b in blurbs:
-	    print "**** %s ****" % b
+	    print "****|%s|****" % b
+    if True:	# boundary conditions
+	simpleTestDoc = "no paragraph start but figure\n\n"
+	blurbs = text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
+
+	simpleTestDoc = "\n\nno paragraph end figure"
+	blurbs = text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
+
+	simpleTestDoc = "no paragraph start or end figure"
+	blurbs = text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
+
+	simpleTestDoc = ""
+	print "empty string"
+	blurbs = text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
+
+	simpleTestDoc = "s"
+	print "one character"
+	blurbs = text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
+
+	simpleTestDoc = "\n\n"
+	print "only para boundary"
+	blurbs = text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
