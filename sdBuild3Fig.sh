@@ -8,10 +8,11 @@ function Usage() {
 #######################################
     cat - <<ENDTEXT
 
-$0 --datadir dir 
+$0 --datadir dir --subdir subdir
 
     Apply -p figureText option for training/text/val files.
     Files to preprocess are in dir
+    Processed output files go into subdir
 ENDTEXT
     exit 5
 }
@@ -20,17 +21,19 @@ ENDTEXT
 #######################################
 
 dataDir=""
+subDir=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
     -h|--help) Usage ;;
     --datadir) dataDir="$2"; shift; shift; ;;
+    --subdir)  subDir="$2"; shift; shift; ;;
     -*|--*) echo "invalid option $1"; Usage ;;
     *) break; ;;
     esac
 done
 
-if [ "$dataDir" == "" ]; then
+if [ "$dataDir" == "" -o "$subDir" == "" ]; then
     Usage
 fi
 
@@ -41,9 +44,9 @@ trainInput=$dataDir/trainSet.txt
 testInput=$dataDir/testSet.txt
 valInput=$dataDir/valSet.txt
 
-trainOutput=$dataDir/trainSetFig.txt
-testOutput=$dataDir/testSetFig.txt
-valOutput=$dataDir/valSetFig.txt
+trainOutput=$dataDir/$subDir/trainSet.txt
+testOutput=$dataDir/$subDir/testSet.txt
+valOutput=$dataDir/$subDir/valSet.txt
 
 figTextOpt="-p figureText"
 

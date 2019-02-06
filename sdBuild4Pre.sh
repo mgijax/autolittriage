@@ -7,7 +7,7 @@ function Usage() {
 #######################################
     cat - <<ENDTEXT
 
-$0 --datadir dir --procdir subdir [-- preprocess_options...]
+$0 --datadir dir --subdir subdir [-- preprocess_options...]
 
     Apply preprocessing options for training/text/val files.
     Files to preprocess are in dir
@@ -23,13 +23,13 @@ ENDTEXT
 #######################################
 
 dataDir=""
-processDir=""
+subDir=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
     -h|--help) Usage ;;
     --datadir) dataDir="$2"; shift; shift; ;;
-    --procdir) processDir="$2"; shift; shift; ;;
+    --subdir) subDir="$2"; shift; shift; ;;
     --)        shift; break ;;
     -*|--*) echo "invalid option $1"; Usage ;;
     *) break; ;;
@@ -37,24 +37,24 @@ while [ $# -gt 0 ]; do
 done
 # remaining args, $*, are the preprocess params
 
-if [ "$dataDir" == "" -o "$processDir" == "" ]; then
+if [ "$dataDir" == "" -o "$subDir" == "" ]; then
     Usage
 fi
 
 #######################################
 # filenames for the extracted figure text input files
 #######################################
-trainFilename=trainSetFig.txt
-testFilename=testSetFig.txt
-valFilename=valSetFig.txt
+trainFilename=trainSet.txt
+testFilename=testSet.txt
+valFilename=valSet.txt
 
 trainInput=$dataDir/$trainFilename
 testInput=$dataDir/$testFilename
 valInput=$dataDir/$valFilename
 
-trainOutput=$dataDir/$processDir/$trainFilename
-testOutput=$dataDir/$processDir/$testFilename
-valOutput=$dataDir/$processDir/$valFilename
+trainOutput=$dataDir/$subDir/$trainFilename
+testOutput=$dataDir/$subDir/$testFilename
+valOutput=$dataDir/$subDir/$valFilename
 
 set -x
 preprocessSamples.py $* $testInput  >  $testOutput
