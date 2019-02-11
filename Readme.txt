@@ -152,7 +152,7 @@ Dec 10, 2018
 	precision and recall: 61 and 92
 	interestingly "tumor_typ" is a highly negative term (???)
 
-Dec 11, 2018
+Dec 11, 2018 SGDlog
     I want to see how well the relevance automation works for papers
     selected by the different groups.
 
@@ -180,7 +180,7 @@ Dec 11, 2018
     and make sure they match the distributions of all the data since Oct 2017.
     (it looks like they do for curation group selection)
 
-Dec 12, 2018
+Dec 12, 2018 SGDlog
     Looking at papers indexed for GO by pm2geneload that have not been deemed
     relevant by any curator...
 	select distinct a.accid pubmed
@@ -201,7 +201,7 @@ Dec 12, 2018
     because we don't know for sure that these are really MGI relevant.
     (1758 is about 3.5% of our sample papers)
 
-dec 19, 2018
+dec 19, 2018 SGDlog
     Changed tdataGetRaw.py to skip the pm2gene references as above.
     Used that to grab updated date in Data/dec19.
 
@@ -223,7 +223,7 @@ dec 19, 2018
     the training and validation sets. To get these, need a longer time frame
     of paper statuss. Need to update tdataGetStatus.py for earlier date range
 
-Dec 20, 2018
+Dec 20, 2018 SGDlog
     changed tdataGetStatus.py as above. Interesting, a little worse:
     Recall for papers selected by each curation group (FOR TRAINING SET PREDS)
     ap_status      selected papers: 17877 predicted keep: 16976 recall: 0.950
@@ -247,7 +247,7 @@ Dec 20, 2018
     However it does seem that tumor papers are harder to recognize (hence more
     false negatives).
 
-Dec 21, 2018
+Dec 21, 2018 SGDlog
     Updated tdataGroupRecall.py to optionally output rows that combine a
     paper's prediction with it curation statuses.
     So you can look at tumor FN or AP FN, etc.
@@ -264,6 +264,408 @@ Dec 21, 2018
     I will work on removing review papers from the sample set and see what
     happens.
 
-Dec 27, 2018
+Dec 27, 2018 SGDlog
     Lots of file renaming for sanity sake.
     
+Jan 2, 2019 SGDlog
+    Refactored sdGetRaw.py to break out SQL parts to simply queries and support
+    getting sample record counts.
+    Counts of samples OMITTING review articles
+    Wed Jan  2 14:37:28 2019
+       1407	Omitted references (only pm2gene indexed)
+      27439	Discard since 11/1/2017
+      18709	Keep since 11/1/2017
+       7793	Keep 10/01/2016 through 10/31/2017
+
+    Counts of samples INCLUDING review articles
+    Wed Jan  2 14:38:21 2019
+       1407	Omitted references (only pm2gene indexed)
+      29235	Discard since 11/1/2017
+      18914	Keep since 11/1/2017
+       7839	Keep 10/01/2016 through 10/31/2017
+
+    So there are ~2000 review articles that are discards,
+    and ~200 that are keep
+    Omitting these helps overall P/R and tumor R some.
+	Without review articles: (compare to Dec 20 above)
+    Recall for papers selected by each curation group
+    ap_status      selected papers:  1710 predicted keep:  1634 recall: 0.956
+    gxd_status     selected papers:   183 predicted keep:   182 recall: 0.995
+    go_status      selected papers:  1755 predicted keep:  1661 recall: 0.946
+    tumor_status   selected papers:   147 predicted keep:   115 recall: 0.782
+    qtl_status     selected papers:     3 predicted keep:     1 recall: 0.333
+    Totals         selected papers:  2127 predicted keep:  1970 recall: 0.926
+	Here is overall P/R for Dec 20 (w/ review papers) vs. Jan 2 (without)
+    2018/12/20-13-46-18     PRF2,F1 0.63    0.92    0.84    0.75    SGDlog.py
+    2019/01/02-16-08-32     PRF2,F1 0.65    0.93    0.85    0.76    SGDlog.py
+
+Jan 3, 2019 SGDlog
+    Realized that I CAN compute a precision value for individual curation
+    groups. I can get papers that are "negative" for a given group by counting
+    "discard" papers and papers that are rejected by the group. These should
+    be ground truth negatives for the group.
+
+    I'll convert groupRecall.py to output both, and output sets of FN and FP
+    for each group so we can easily look at examples for each group that
+    are wrongly predicted. (will rename the script too!)
+
+    Hmmm. need to think about this more, I thought it made sense, but now I'm
+    not so sure. (SEE JAN 4)
+
+Jan 4, 2019 SGDlog
+    Group Recall question:
+	How many relevant papers will my group miss? (neg stmt)
+	Really: what fraction of papers predicted "discard" should be selected
+	    by my group? (neg stmt)
+	Really: what fraction of group selected papers will be predicted "keep"
+	    (i.e., will we look at) (pos stmt)
+	To answer:
+	    GRecall = group selected predicted keep / group selected
+
+	    In terms of TP and TN:
+	    GTP = predicted_keep(restricted to group selected)
+	    		# (group selected => ground truth pos)
+	    GFN = predicted_discard(restricted to group selected)
+	    GTP + GFN = group selected
+	    GRecall = GTP/(GTP + GFN) = GTP/(group selected)
+
+    Group Precision question:
+	How many papers will my group look at that we don't want? (neg stmt)
+	Really:  what fraction of papers predicted "keep" will be
+	    rrelevant to my group? (neg stmt)
+	    (reject or will be skipped by 2nd triage report)
+	Really:  what fraction of papers my group looks at will be
+	    relevant to my group? (pos stmt)
+	    (selected by my group)
+	    BUT "what papers my group looks at" also dependes on the group's
+		2ndary triage selection report. So if we cannot take that
+		into account, I'm not sure how useful this is.
+	To answer:
+	    GPrecision = group selected predicted keep / predicted keep
+
+	    In terms of TP and TN:
+	    GTP as above + predicted_keep(restricted to group selected)
+	    GFP = predicted_keep(restricted to not group selected)
+		    kind of murky,
+		    does "not group selected" = rejected
+						or (rejected or true discard)?
+		So what does GTP + GFP include?
+
+	    GPrecision = GTP/(GTP + GFP)
+
+	GOING TO PUNT ON THIS FOR NOW.
+
+	Looking at Tumor FN's. Send a small batch to Debbie.
+	Looking at a few (general) FP. Send a few to Debbie to look at.
+
+Jan 7-8, 2019 SGDlog
+    Debbie and Sue looked at a few tumor FN and general FP examples from the
+    most recent SGDlog runs.
+    Debbie: of 5 tumor FN examples from the
+	29414305 (“mouse” “mice” do not occur in any of the used text fields)
+	27760307 (has “mouse”)
+	28430874 (no “mouse” “mice”)
+	28647610
+	28740119
+	all 5 are actually review papers, not marked as review in MGI - 3 ARE
+	marked as review in pubmed, 2 not.
+	So there are some papers in MGI that have not been marked as review
+	when they are in pubmed. These should be found and corrected.
+	So for these examples, if we correctly filter out review papers, they
+	would not be in the sample set and not be FN
+	(additional FN that are reviews: 28412456, 20977690)
+    Debbie/Sue looked at 4 FP
+	28414311
+	25362208
+	27317833
+	28887218
+	the 1st 3 should not have been discarded (they are actually TP)
+	the last is a zebrafish paper, so a correct FP
+    Sent some more examples, and ones that are not review papers.
+
+    ALSO started looking at randomforest classifier. Promising results, but
+    overfitting badly. Looking at ways to stop that.
+
+Jan 9, 2019
+    Play w/ n_estimators, max_features, max_samples_split.
+
+    Changed textTuningLib .fit() method to predict on the val set BEFORE
+    retraining the bestEstimator on training + val sets.
+    This SHOULD make the results on the val set similar to the test set.
+    But for RF, the val set is getting similar results as the training set.
+    Very weird (this was also happening when I was predicting the val set
+    after retraining on training + val).
+    I don't understand it.
+	- looked at SGDlog.log, it has the expected behavior: val results like
+	    test, even when predicting val on the retrained model
+	- looked at the way val and test sets were generated to see if they
+	    were somehow different, but their journal distributions are very
+	    close
+    So, there is something weird about RF and the val set.
+
+Jan 10, 2019
+    Learned,
+    (1) with the gridsearch "refit" parameter, default is to retrain on
+    the full train + val sets or train (without removed cv folds).
+    So we don't need to retrain.
+    (2) if when we predict val set on the trained estimator, it scores like
+    the training set, probably is evidence of overfitting - adding the val
+    set to train on makes it learn the val set same as rest of the train
+    set. If the val set scores like test set (or intermediate), then things
+    seem good.
+
+    Restructured textTuningLib gridsearch to not redundantly retrain.
+
+    Finally found params the stop overfitting:
+	'classifier__n_estimators': [50],
+	'classifier__max_depth': [15],
+	'classifier__min_samples_split': [75,],
+    Need to try to improve P & R now (R actually)
+
+Jan 14, 2019
+    trying various params for RandomForestClassifier.
+    See https://docs.google.com/spreadsheets/d/1UpMNN4Qj1Ty9pYiQ4ZBspq2fef2qTeybHZMDc35Que8/edit#gid=1765328280
+    Seems playing with Min_samples_leaf is easiest way to control overfitting.
+    Seems unnecessary to go beyond 50 estimators.
+    Using: 25 (or 5) max_samples_leaf and 50 estimators gives
+	P: 83   R: 87  with not too bad overfitting.
+	Group recall:
+    Recall for papers selected by each curation group
+    ap_status      selected papers:  1710 predicted keep:  1553 recall: 0.908
+    gxd_status     selected papers:   183 predicted keep:   177 recall: 0.967
+    go_status      selected papers:  1755 predicted keep:  1576 recall: 0.898
+    tumor_status   selected papers:   147 predicted keep:   115 recall: 0.782
+    qtl_status     selected papers:     3 predicted keep:     1 recall: 0.333
+    Totals         selected papers:  2127 predicted keep:  1849 recall: 0.869
+
+    I don't see how to get much better w/ random forest - but this is pretty
+    good!
+
+Jan 15, 2019
+    looking into MGI vs. pubmed review status.
+    Started checkRevPaper.py, ran into problems with NCBIutilsLib.py regarding
+    getting xml vs. json vs. medline outputs from pubmed.
+    Figured out rettype vs. retmode parameters to eutils summary and fetch
+    cmds. Subtle confusion.
+
+Jan 16, 2019
+    checkRevPaper.py working for comparing "Review" setting in MGI vs. pubmed.
+    Found flakeyness @ pubmed. Sometimes data for a pubmed ID will work time,
+    later, the same ID gets an error, later it works again...
+
+    initial finding:
+    Out of 53938 papers, review in pubmed but not MGI: 2109
+    (these are of the sample set which excluded MGI "review" papers)
+    Some IDs got kicked out by pubmed.
+
+    Starting to work on detecting review papers by finding "review" in text
+    near the beginning of doc.
+
+Jan 18, 2019
+    have initial version of text searching for "review". Finding the end of
+    the abstract is a bit challenging.
+    Taking the last 5 words of the abstract,
+    searching for this words upto len(title) + len(abstact) + N words in
+    the extracted - I didn't want to convert the whole extracted text into a
+    list of words, but maybe I should not worry about that. Or at least make
+    N very big.
+    Cannot find the end of the abstract for some papers for various reasong:
+	1) words/terms are not extracted exactly right, e.g., foo-blah may
+	    be extracted as fooblah
+	2) N is not big enough - this seems biggest culprit, setting N=2000 
+	    removes lots examples.
+	3) multiple columns or other weird text flows may not put the abstract
+	    text first. Other paragraphs may come 1st
+	BUT still out of 1000 papers, we don't find end of abstract about 120
+	times
+    Ok, code cleaned up, looking at 2000 papers (not marked as review in MGI)
+	Papers examined: 2000
+	Marked  review in pubmed but not MGI: 106
+	Appears review via text but not MGI: 93
+	Appears review via text AND in MGI: 0
+	Appears review via text AND in pubmed: 59
+
+Jan 25, 2019
+    Remembering where I left off. Cleaned up checkRevPaper.py.
+    Added basicLib.py to autolittriage.
+    Ran checkRevPaper.py on all the raw sample files (discard_after, keep_*).
+	Papers examined: 53943
+	Marked  review in pubmed but not MGI: 2128
+	Appears review via text but not MGI: 3279
+	Appears review via text AND in MGI: 0
+	Appears review via text AND in pubmed: 1394
+    So approx 10% of potential review papers are NOT marked as review in MGI
+    (if we believe the text heuristic)
+
+    Put into google spreadsheet:
+    https://docs.google.com/spreadsheets/d/1UpMNN4Qj1Ty9pYiQ4ZBspq2fef2qTeybHZMDc35Que8/edit#gid=1956366526
+
+    Spot checking some.
+	* some "review found at ..." are matching "received/sent for review"
+	    at PNAS. Probably should keep "review" if preceeded by "for"
+    
+    Need to write a script to remove any review docs from the raw input before
+    we do sdSplitByJournal.py.
+
+Jan 28, 2019
+    After further clean up of checkRevPaper.py - in particular adding a bunch
+    of exceptions where "review" does not mean a review paper,
+    (Biochim_Biophys_Acta and PNAS were worst offenders) we get:
+	Papers examined: 53943
+	Marked  review in pubmed but not MGI: 2128
+	Appears review via text but not MGI: 1672
+	Appears review via text AND in MGI: 0
+	Appears review via text AND in pubmed: 1382
+    So this is 2418 additional "review" papers found ~5% of the sample set.
+    Could be significant. (maybe?)
+
+    NOTE in 5785 articles, we couldn't find end of abstract, we we did not
+    search for "review". So there could be a chunk of review papers here.
+    Would have to work harder to see if any could be gleened from this set.
+
+    Wrote rmReviews.py to read in the review predictions file and use it
+	to remove review papers from sample data files
+    
+    Removes ~2400 review papers from full sample set
+
+    Running RF on FULL sample set:
+    Recall for papers selected by each curation group
+    ap_status      selected papers:  1710 predicted keep:  1553 recall: 0.908
+    gxd_status     selected papers:   183 predicted keep:   177 recall: 0.967
+    go_status      selected papers:  1755 predicted keep:  1576 recall: 0.898
+    tumor_status   selected papers:   147 predicted keep:   115 recall: 0.782
+    qtl_status     selected papers:     3 predicted keep:     1 recall: 0.333
+    Totals         selected papers:  2127 predicted keep:  1849 recall: 0.869
+    2019/01/14-14-07-40     PRF2,F1 0.82    0.87    0.86    0.85    RF.py
+
+    Running RF on review removed sample set:
+    Recall for papers selected by each curation group
+    ap_status      selected papers:  1635 predicted keep:  1476 recall: 0.903
+    gxd_status     selected papers:   183 predicted keep:   170 recall: 0.929
+    go_status      selected papers:  1747 predicted keep:  1541 recall: 0.882
+    tumor_status   selected papers:   152 predicted keep:   116 recall: 0.763
+    qtl_status     selected papers:     3 predicted keep:     2 recall: 0.667
+    Totals         selected papers:  2111 predicted keep:  1818 recall: 0.861
+    2019/01/28-17-22-41     PRF2,F1 0.83    0.86    0.85    0.84    RF.py
+
+    SO all recalls and other metrics dropped. Doesn't seem to help.
+    Might need to retune RF params
+
+Jan 29, 2019
+    SGDlog on full sample set (from Dec 19)
+    Recall for papers selected by each curation group (FOR TEST SET PREDS)
+    ap_status      selected papers:  1664 predicted keep:  1592 recall: 0.957
+    gxd_status     selected papers:   163 predicted keep:   160 recall: 0.982
+    go_status      selected papers:  1789 predicted keep:  1696 recall: 0.948
+    tumor_status   selected papers:   187 predicted keep:   142 recall: 0.759
+    qtl_status     selected papers:     4 predicted keep:     4 recall: 1.000
+    Totals         selected papers:  2153 predicted keep:  1989 recall: 0.924
+    2018/12/19-17-07-12     PRF2,F1 0.63    0.92    0.84    0.75    SGDlog.py
+
+    Running SGDlog on the review removed sample set:
+    Recall for papers selected by each curation group
+    ap_status      selected papers:  1635 predicted keep:  1546 recall: 0.946
+    gxd_status     selected papers:   183 predicted keep:   179 recall: 0.978
+    go_status      selected papers:  1747 predicted keep:  1626 recall: 0.931
+    tumor_status   selected papers:   152 predicted keep:   120 recall: 0.789
+    qtl_status     selected papers:     3 predicted keep:     2 recall: 0.667
+    Totals         selected papers:  2111 predicted keep:  1937 recall: 0.918
+    2019/01/29-08-48-28     PRF2,F1 0.64    0.92    0.85    0.76    SGDlog.py
+
+    SO slight overall improvement, a little tumor recall improvement, but
+    others dropped a tad.
+
+    SO: do I try to improve the review detection code?
+    Ideas:
+	* (DONE) if we cannot find end of abstract text, just use
+	    len(title) + len(abstract) + N as the area to search for "review"
+	    words (probably most bang for buck as ~5800 samples don't find
+	    eoabstract.
+	* (DONE) add "commentary" to list of review words (seems PNAS
+	    uses this word).
+	    = NEED to EVALUATE THIS MORE
+	* after discovering a "review" word exception, keep going to see if
+	    we find a true "review" word later
+Jan 30, 2019
+    Spent some time evaluating "commentary" as a review word.
+    Generally, looks good. There are a few exceptions to program in
+    "see commentary".
+    Asked Jackie and Debbie if they think 'commentary' is worth excluding.
+
+    Added find/remove reviews functionality to sdBuild1Get.sh
+
+Feb 4, 2019
+    Cleaned up and commented featureTransform.py
+
+    Decided I should verify my gut assumption that working with the full
+    extracted text (instead of just fig legend text) would be too hard to work
+    with.
+
+    (vectorizerPlay.py)
+    I tried just vectorizing the training set (40803 docs) - full extracted
+    text. I thought it would run out of memory, but it didn't (actual training
+    might).
+    Took 1 hour, 24k features
+
+    So if I tried to tune using the full text, it would take multiple hours per
+    run.
+
+    Just title+abs+figure legends:
+    Took 4 minutes (or less?) and 3542 features
+
+    Changed figureText.py to include *any* paragraph that includes "figure" or 
+    "table". This increases the previous "only figure legend" text by about
+    3.5 times. The full text is 2.5 times bigger.
+    In Data/jan2/Leg_para/Proc1
+    Vectorizing: 9357 features, 16 minutes
+
+Feb 5, 2019
+    Title+abs+figure paragraphs:
+    preprocessed -p  removeURLsCleanStem
+    running SGDlog.py on it
+       Test  keep       0.75      0.87      0.81      2127
+    improved precision around 10 points. Recall down a bit, but haven't tuned
+    Tumor recall still around 78
+
+    To keep all the versions of sample files straight, came up with a new
+    dir structure. Need to change sdBuild* scripts to conform
+
+    NEXT step:
+	change figuretext.py to be a script itself with options (just legends,
+	legends + paragraphs, legends + words)
+	change sdBuild3Fig.sh to use the new figuretext.py instead of
+	preprocess
+	(basically separating the concepts of "informative text extraction"
+	from preprocessing)
+
+	SO have levels: 
+	    sample article subset (raw or raw_no_reviews)
+		what about no "mice" - depends on ref section removal
+	    splitting into test/train/validation sets
+	    informative text extraction
+		figure text
+		could include ref section removal
+	    text preprocessing (featuretransform, ...)
+
+	    (have to ponder. the boundaries get murky)
+
+	Idea:
+	    remove MGI or pubmed "reviews" from sample set
+	    try figure/table legends + words in paragraphs (not whole
+		paragraphs)
+	    fix "cell line" transformation
+	    tune from there
+	Currently:
+	    refactoring figureText.py to support figure legends, figure
+	    paragraphs, and figure words
+	Refactoring Ideas:
+	    * trying different preprocessing options are not configurable,
+		e.g., different fig text extraction algorithms - which
+		extraction algorithm to call requires code changes.
+		- should write a sampleDataLib builder that would be given
+		  some option (maybe from config or cmd line) and instantiate
+		  Samples from that Builder, which injects the correct object/
+		  function.
+		- would require a fair amount of refactoring, and should think
+		  about this pattern in other places
+		- postponing for now.

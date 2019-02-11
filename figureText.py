@@ -4,123 +4,190 @@
 #######################################################################
 Author:  Jim
 Routines for extracting figure related text from articles
-Treating tables as figures too.
-As we refer to "figure caption" or "figure text", we mean "tables" and
+We treat tables as figures too.
+As we refer to "figure caption" or "figure text" or "fig", we mean "tables" and
 "table text" too.
 
-Main function (example):
-    for b in text2FigText(text)
+Example:
+    converter = Text2FigConverter()
+    for b in converter.text2FigText(text)
 	print b  # a chunk of text that contains figure related text
+
 #######################################################################
 """
 
 import re
+
+class Text2FigConverter (object):
+    """
+    IS an object that knows how to convert pieces of text into lists
+       of strings that are figure/table legends and/or (parts of) paragraphs
+       that refer to figures/tables.
+    DOES: text2FigText('some text')
+
+    3 flavors of conversion are supported:
+	(1) just figure/table legends - paragraph starts with "figure"...
+	(2) legends plus the text of any paragraph that contains "figure"...
+	(3) legends plus n words around the reference to a fig/tbl (so not
+	    the whole paragraph, just words close to "figure")
+    """
+
+    def __init__(self,
+		conversionType='legend', # which flavor above:
+					# 'legend', 'paragraph', 'close words'
+		numWords=50,		# if 'close words', how many close words
+					#  to include on each side of "fig"
+		):
+	self.conversionType = conversionType
+	self.numWords = numWords
+
+
+    def text2FigText(self, text,
+	):
+	"""
+	Return list of figure/table text blurbs in text
+	"""
+	if self.conversionType == 'legend':
+	    return text2FigText_Legend(text)
+	elif self.conversionType == 'paragraph':
+	    return text2FigText_LegendAndParagraph(text)
+	elif self.conversionType == 'close words':
+	    return text2FigText_LegendAndWords(text,self.numWords)
+	else:
+	    raise AttributeError("invalid text2fig conversion type '%s'\n" % \
+						    self.conversionType)
 
 #---------------------------------
 
 PARAGRAPH_BOUNDARY = '\n\n'	# defines a paragraph boundary
 PARAGRAPH_BOUNDARY_LEN = len(PARAGRAPH_BOUNDARY)
 
-# match word "fig" or "figure" or "supp...figure" or "table" or "tables"
-figureRe = re.compile(r'\b(?:(?:supp\w*[ ])?fig(?:ure)?|tables?)\b',
-								re.IGNORECASE)
-#---------------------------------
+# match a word "figure" or "table" in various forms
+#  i.e.,  "fig" or "figure" or "figures" or "table" or "tables"
+figureRe = re.compile(r'\b(?:fig(?:ure)?|table)s?\b', re.IGNORECASE)
 
-def text2FigText(text,
+# match a word that can begin a figure or table legend.
+#   i.e., "fig" or "figure" or "supp...figure" or "table"
+#   Note no plurals
+legendRe = re.compile(r'(?:(?:supp\w*[ ])?fig(?:ure)?|table)\b', re.IGNORECASE)
+
+#---------------------------------
+def figParagraphIterator(text,		# text (string) to search for paragraphs
+			onlyLegends=False,	# only fig/tbl start paragraphs
+						# vs. All paras that reference
+						#   figs/tbls
     ):
     """
-    Return list of paragraphs in text that talk about figures or tables
+    iterate through the paragraphs of 'text' that contain reference to a 
+    figure or table
     """
-    figParagraphs = []		# list of fig paragraphs to return
     eoText = len(text)		# index of 1st char not in text
 
-    startPara = 0
+    startPara = 0		# index 1st char of potential para start
 
-    while startPara != eoText:
+    while startPara < eoText:
 
 	endPara = text.find(PARAGRAPH_BOUNDARY, startPara \
 						    + PARAGRAPH_BOUNDARY_LEN)
 	if endPara == -1:	# must be no more paragraph ends, at text end
 	    endPara = eoText
 
-	# just change to figureRe.match() to only match table/figure legends
-	if figureRe.search(text, startPara, endPara):
-	    figParagraphs.append( text[ startPara:endPara ] )
+	if onlyLegends: 
+	    if legendRe.match(text, startPara, endPara):
+		yield text[startPara : endPara].strip()
+	elif figureRe.search(text, startPara, endPara):
+		yield text[startPara : endPara].strip()
 
-	startPara = endPara
+	startPara = endPara + PARAGRAPH_BOUNDARY_LEN
 
-    return figParagraphs
-
+    return
 #---------------------------------
 
+def text2FigText_Legend(text,
+    ):
+    """
+    Return list of paragraphs in text that are figure or table legends
+    (paragraph starts with "fig" or "table")
+    """
+    return list( figParagraphIterator(text, onlyLegends=True) )
+#---------------------------------
+
+def text2FigText_LegendAndParagraph(text,
+    ):
+    """
+    Return list of paragraphs in text that talk about figures or tables
+    (includes legends)
+    """
+    return list( figParagraphIterator(text) )
+#---------------------------------
+
+def text2FigText_LegendAndWords(text, numWords=50,
+    ):
+    """
+    Return list of (full) legends and parts of paragraphs that talk about
+      figures or tables
+    The "parts" are defined by 'numWords' words surrounding figure/table
+      references
+    """
+    figParagraphs = []
+
+    for p in figParagraphIterator(text):
+	if legendRe.match(p):		# have figure/table legend
+	    figParagraphs.append(p)
+	else:				# not legend, get parts
+	    figParagraphs += getFigureBlurbs(p, numWords)
+
+    return figParagraphs
+#---------------------------------
+
+def getFigureBlurbs(text, numWords=50,
+    ):
+    """
+    Search through text for references to figures/tables.
+    Return a list of text blurbs consisting of numWords around those references
+    """
+    blurbs = []
+    pieces = figureRe.split(text)	# chunks before, after, between "fig"
+    numPieces = len(pieces)
+    if numPieces == 0: return []
+    
+    # 1st, leading piece
+    words = pieces[0].split()		# split 1st piece into words[]
+    blurbs.append( ' '.join(words[-numWords:]) )
+
+    # for pieces between fig/tbl words
+    for i in range(1, numPieces-1):
+	words = pieces[i].split()	# split the piece into words[]
+
+	# Have '...fig intervening text fig...', piece[i] is intervening text
+	# Could have two blurbs:  words[:numWords] and words[-numWords:]
+	# But if these two blurbs overlap, really only one blurb:
+	#   the whole intervening text
+
+	if numWords > len(words)/2:	# have overlap
+	    blurbs.append( ' '.join(words) )	# use the whole piece
+	else:					# have two blurbs in piece
+	    blurbs.append( ' '.join(words[:numWords]) )
+	    blurbs.append( ' '.join(words[-numWords:]) )
+
+    # last, trailing piece
+    words = pieces[numPieces-1].split()		# split last piece into words[]
+    blurbs.append( ' '.join(words[:numWords]) )
+
+    return blurbs
+
+#---------------------------------
 if __name__ == "__main__": 	# ad hoc test code
-    testdoc = """
-in large part, through CMA, as genetic
-blockage of this pathway almost completely abolished lysosomal
-degradation of WT tau and led to its accumulation (Fig. 1a,b; GAPDH
-is shown as an example of a well-characterized CMA substrate (Aniento
-et al., 1993) known to accumulate intracellularly
-Tau-A152T displayed very similar degradation
-dynamics, although this mutation slightly reduced tau''s rates of
-lysosomal degradation (20% inhibition) when compared with WT tau
-(Fig. 1a,b). Blockage of CMA in cells expressing tau-A152T also resulted
-in significant accumulation of this variant and ablated its lysosomal
-degradation, suggesting preferential degradation
-mutation severely impaired lysosomal uptake of tau by CMA, resulting in
-
-Fig. 1 Contribution of CMA to degradation of disease-related mutant tau proteins. (a) Immunoblots for the indicated proteins of the mouse neuroblastoma cell line Neuro2a (N2a) control or knockdown for LAMP2A (siL2A) expressing under the control of a tetracycline promoter tau wild-type (WT) or tau mutated at residues A152T or P301L.
-    Cells were treated with doxycycline to activate protein expression for 72 h and, where indicated, NH4Cl 20 mM and leupeptin 100 lM (N/L) were added during the last 4 h of
-    incubation. LC3-II levels are shown as positive control of the effect of the inhibitors. GAPDH is shown as an example of well-characterized CMA substrate. Actin is shown for
-    normalization purposes (note that lower relative contribution of actin in the same amount of total protein loaded is a consequence of the accumulation of proteins no longer
-    degraded when CMA is blocked). (b) Quantification of tau levels normalized to actin. Values are expressed relative to those in untreated control cells that were given an
-    arbitrary value of 1. n = 5. Differences after adding N/L (*), upon siRNA (#) or of the mutant tau proteins relative to WT () were significant for *,#,P < 0.05 and **,
-    ##,P < 0.01. (c) Immunoblots for tau of isolated CMA-active lysosomes, pretreated or not with protease inhibitors (PI) for 10 min at 4 C and then incubated with the
-    indicated tau proteins at 37 C for 20 min. Inpt: input (0.1 lg). (d) Quantification of binding (left) and uptake (right) of tau proteins by the CMA-active lysosomes. Values are
-    indicated in ng, and were calculated from the densitometric quantification of a known amount of purified protein. n = 5. (e) Immunoblot for tau proteins incubated under
-    the same condition as in c but with CMA-inactive (A) lysosomes. Input = 0.1 lg. All values are mean AE SEM. Differences with hTau40 WT were significant for *P < 0.05.
-
-To further elucidate the contribution of CMA to the degradation of
-the two mutants in the absence of any other proteolytic system, we used
-a well-established in vitro system that allows to recapitulate different
-CMA steps (binding and translocation of substrates) using isolated intact
-lysosomes (Kaushik & Cuervo, 2009). We presented lysosomes with
-either purified WT, A152T, or P301L tau and incubated them in the
-presence or absence of protease inhibitors to block tau degradation
-(Fig. 1c,d). This allows determining lysosomal binding of tau as the
-amount of tau at the end of the incubation associated with the group of
-lysosomes not pretreated with protease inhibitors, as internalized tau
-would be rapidly degraded. Uptake of tau was calculated by the
-difference between the amount of tau associated with lysosomes
-
-could be secreted into exosomes. However, intracellular levels of tauP301L are not affected by disruption of multivesicular body/exosome
-formation. It is possible that instead of our proposed release of
-
- 2017 The Authors. Aging Cell published by the Anatomical Society and John Wiley & Sons Ltd.
-
-Autophagy and pathogenic tau proteins, B. Caballero et al. 13 of 17
-
-Fig. 7 Effect of oxidation and pseudophosphorylation on the degradation of tau by selective autophagic pathways. (a) Immunoblots for tau of isolated CMA-active
-lysosomes, pretreated or not with protease inhibitors (PI) for 10 min at 4 C and then incubated with tau with cysteine 291 and 322 replaced by alanine (hTau40 C291A/
-C322A), or with mutations S199E+S292E+T214E (AT8 site), plus T212E+S214E (AT100) plus S396E+S404E (PHF-1) (to yield htau40 AT8/AT100/PHF-1), with serine 262, 293,
-324, and 356 replaced by glutamic acid (4xKXGE) (to mimic hyperphosphorylation) or with alanine (4xKXGA) (to disrupt phosphorylation). Proteins were added at the
-indicated concentrations and incubations were performed at 37 C for 20 min. Inpt: input. (b) Quantification of binding (left) and uptake (right) of the tau proteins by the
-CMA-active lysosomes. Values are indicated in ng, calculated from the densitometric quantification of a known amount of purified protein. n = 3. (c) Immunoblot of tau
-proteins incubated under the same condition as in b but with rat CMA-inactive (A) lysosomes. (d) Immunoblots for tau in isolated rat late endosomes pretreated or not with
-protease inhibitors (PI) for 10 min at 4 C and then incubated with the indicated tau proteins (0.5 lg) at 37 C for 30 min. (e) Quantification of binding, association, and
-uptake/degradation of tau proteins by the late endosomes. Values are indicated as percentage of the input, calculated from the densitometric quantification of a known
-amount of purified protein. n = 3. All values are mean AE SEM. Differences with hTau40 WT (*) or between the mutants (#) were significant for *P < 0.05 and **P < 0.001.
-(f) Scheme of the steps of CMA disrupted for each of the indicated tau variants. 1. Targeting; 2. binding; 3. internalization; and 4. degradation. (g) Scheme of the steps of
-e-MI disrupted for each of the indicated tau variants. 1. Targeting; 2. binding; 3. internalization; and 4. degradation.
-tau-P301L via LE and exosomes, other systems contribute to tau-P301L
-
-
+    testDoc = """
+table paragraph 2 has a legend figure 1 blah0 blah1 blah2 blah3 blah4 fig 2 and more fig
 """
-    if True:
-	blurbs = text2FigText(testdoc)
+    if True:	# getFigureBlurbs()
+	print " getFigureBlurbs()"
+	blurbs = getFigureBlurbs(testDoc, numWords=2)
 	for b in blurbs:
 	    print "****|%s|****" % b
-    if True:
-	simpleTestDoc = """
+
+    simpleTestDoc = """
 start of text. Fig 1 is really interesting, I mean it. Really.
 
 Some intervening text. blah1 blah2 blah3 blah4 blah5 blah6
@@ -130,6 +197,8 @@ and this is a bit more of the caption.
 
 Some intervening text. this is suitable and should not match. Nor should 
 gofigure
+
+Figures can be helpful, but this is not a figure legend.
 
 Some text about tables. blah blah.
 
@@ -143,39 +212,62 @@ here is a supp figure mention
 
 And here is the end of this amazing document. Really it is over
 """
-	blurbs = text2FigText(simpleTestDoc)
+    if True:	# Legend and Paragraphs
+	print
+	print "Text2FigConverter Legends and Paragraphs"
+	blurbs = Text2FigConverter(conversionType="paragraph").text2FigText(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
-    if True:	# boundary conditions
+
+	print
+	print "Text2FigConverter Legends and Words"
+	blurbs = Text2FigConverter(conversionType="close words", numWords=5).text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
+
+	print
+	print "Text2FigConverter Just Legends"
+	blurbs = Text2FigConverter().text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print "****|%s|****" % b
+
+    if False:
+	print "Should raise error"
+	c = Text2FigConverter(conversionType='foo').text2FigText('text')
+
+
+    if True:	# boundary conditions - Legend and Paragraphs
+	print
+	print "Boundary conditions in Legends and paragraphs"
 	simpleTestDoc = "no paragraph start but figure\n\n"
-	blurbs = text2FigText(simpleTestDoc)
+	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
 
 	simpleTestDoc = "\n\nno paragraph end figure"
-	blurbs = text2FigText(simpleTestDoc)
+	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
 
 	simpleTestDoc = "no paragraph start or end figure"
-	blurbs = text2FigText(simpleTestDoc)
+	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
 
 	simpleTestDoc = ""
 	print "empty string"
-	blurbs = text2FigText(simpleTestDoc)
+	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
 
 	simpleTestDoc = "s"
 	print "one character"
-	blurbs = text2FigText(simpleTestDoc)
+	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
 
 	simpleTestDoc = "\n\n"
 	print "only para boundary"
-	blurbs = text2FigText(simpleTestDoc)
+	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
