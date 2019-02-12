@@ -25,6 +25,11 @@ CLASS_NAMES  = eval( cp.get("CLASS_NAMES", "y_class_names") )
 
 TEXT_PART_SEP = '::::\n'	# separates title, abstract, extr text
 
+FIG_CONVERSION        = cp.get("DEFAULT", "FIG_CONVERSION")
+FIG_CONVERSION_NWORDS = cp.getint("DEFAULT", "FIG_CONVERSION_NWORDS")
+figConverter = figureText.Text2FigConverter(conversionType=FIG_CONVERSION,
+						numWords=FIG_CONVERSION_NWORDS)
+
 # As is the sklearn convention we use
 #  y_true to be the index of the known class of a sample (from training set)
 #  y_pred is the index of the predicted class of a sample/record
@@ -132,38 +137,21 @@ class SampleRecord (object):
 	return FIELDSEP.join( fields) + RECORDSEP
     #----------------------
 
-    def getKnownClassName(self):
-	return self.knownClassName
+    def getKnownClassName(self): return self.knownClassName
+    def getKnownYvalue(self):	return CLASS_NAMES.index(self.knownClassName)
 
-    def getKnownYvalue(self):
-	return CLASS_NAMES.index(self.knownClassName)
-
-    def getSampleName(self):
-	return self.ID
+    def getSampleName(self):	return self.ID
     def getSampleID(self):	return self.getSampleName()
     def getID(self):		return self.getSampleName()
     def getName(self):		return self.getSampleName()
 
-    def getJournal(self):
-	return self.journal
-
-    def getTitle(self):
-	return self.title
-
-    def getAbstract(self):
-	return self.abstract
-
-    def getExtractedText(self):
-	return self.extractedText
-
-    def getDocument(self):
-	return self.constructDoc()
-
-    def isReject(self):
-	return self.rejected
-
-    def getRejectReason(self):
-	return self.rejectReason
+    def getJournal(self):	return self.journal
+    def getTitle(self):		return self.title
+    def getAbstract(self):	return self.abstract
+    def getExtractedText(self): return self.extractedText
+    def getDocument(self):	return self.constructDoc()
+    def isReject(self):		return self.rejected
+    def getRejectReason(self):	return self.rejectReason
 
     #----------------------
     # "Preprocessor" functions.
@@ -176,7 +164,6 @@ class SampleRecord (object):
 #	return self
     # ---------------------------
 
-
     def rejectIfNoMice(self):	# preprocessor
 				# might
 	if not miceRegex.search(self.title + self.abstract +
@@ -187,7 +174,8 @@ class SampleRecord (object):
     # ---------------------------
 
     def figureText(self):	# preprocessor
-	self.extractedText = '\n'.join(figureText.text2FigText(self.extractedText))
+	self.extractedText = '\n'.join( \
+			    figConverter.text2FigText(self.extractedText))
 	return self
     # ---------------------------
 
@@ -373,7 +361,7 @@ class PredictionReporter (object):
 	return self.rptFieldSep.join(cols) + '\n'
 # end class PredictionReporter ----------------
 
-if __name__ == "__main__":
+if __name__ == "__main__":	# ad hoc test code:0
     r = SampleRecord(\
     '''keep|pmID1|01/01/1900|1900|my Journal|My Title|
     My Abstract|My text: text https://foo text www.foo.org text text text Reference r1'''
