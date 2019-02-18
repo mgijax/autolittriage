@@ -1,6 +1,6 @@
 #!/bin/bash
 # wrapper to
-#  Apply preprocessing step to extract figure text from training/val/test sets
+#  Apply preprocessing step to extract figure text from raw sample files
 #  (and save these files)
 
 #######################################
@@ -10,7 +10,7 @@ function Usage() {
 
 $0 --datadir dir --subdir subdir
 
-    Apply -p figureText option for training/text/val files.
+    Apply -p figureText option for discard and keep raw sample files.
     Files to preprocess are in dir
     Processed output files go into subdir
 ENDTEXT
@@ -40,24 +40,14 @@ fi
 #######################################
 # filenames for the extracted figure text input files
 #######################################
-trainInput=$dataDir/trainSet.txt
-testInput=$dataDir/testSet.txt
-valInput=$dataDir/valSet.txt
-
-trainOutput=$dataDir/$subDir/trainSet.txt
-testOutput=$dataDir/$subDir/testSet.txt
-valOutput=$dataDir/$subDir/valSet.txt
+discardAfter=discard_after
+keepAfter=keep_after
+keepBefore=keep_Before
 
 figTextOpt="-p figureText"
 
-set -x
-preprocessSamples.py $figTextOpt $testInput  >  $testOutput
-preprocessSamples.py $figTextOpt $trainInput  >  $trainOutput
-set +x
-if [ -f $valInput ]; then	# could be no validation file...
+for f in $discardAfter $keepAfter $keepBefore; do
     set -x
-    preprocessSamples.py $figTextOpt $valInput > $valOutput
+    preprocessSamples.py $figTextOpt $dataDir/$f  >  $dataDir/$subDir/$f
     set +x
-else
-    echo no validation set: $valInput
-fi
+done

@@ -9,7 +9,7 @@ function Usage() {
 
 $0 --datadir dir --subdir subdir [-- preprocess_options...]
 
-    Apply preprocessing options for training/text/val files.
+    Apply preprocessing options for raw sample files.
     Files to preprocess are in dir
     Store resulting files in dir/subdir
     Preprocess options are typically:  -p removeURLsCleanStem
@@ -42,28 +42,14 @@ if [ "$dataDir" == "" -o "$subDir" == "" ]; then
 fi
 
 #######################################
-# filenames for the extracted figure text input files
+# filenames to preprocess
 #######################################
-trainFilename=trainSet.txt
-testFilename=testSet.txt
-valFilename=valSet.txt
+discardAfter=discard_after
+keepAfter=keep_after
+keepBefore=keep_Before
 
-trainInput=$dataDir/$trainFilename
-testInput=$dataDir/$testFilename
-valInput=$dataDir/$valFilename
-
-trainOutput=$dataDir/$subDir/$trainFilename
-testOutput=$dataDir/$subDir/$testFilename
-valOutput=$dataDir/$subDir/$valFilename
-
-set -x
-preprocessSamples.py $* $testInput  >  $testOutput
-preprocessSamples.py $* $trainInput > $trainOutput
-set +x
-if [ -f $valInput ]; then	# could be no validation file...
+for f in $discardAfter $keepAfter $keepBefore; do
     set -x
-    preprocessSamples.py $* $valInput > $valOutput
+    preprocessSamples.py $* $dataDir/$f  >  $dataDir/$subDir/$f
     set +x
-else
-    echo no validation set: $valInput
-fi
+done
