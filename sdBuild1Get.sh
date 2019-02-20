@@ -4,10 +4,8 @@
 #######################################
 # filenames for raw data pulled from db
 #######################################
-discardAfter=discard_after	# discard refs from Nov 2017 to present
-keepAfter=keep_after		# keeper refs from Nov 2017 to present
-keepBefore=keep_before		# keeper refs from before Nov 2017
-				#   (used to balance discard vs. keep)
+rawFiles="discard_after keep_after keep_before keep_tumor"
+
 statusFile=refStatuses.txt	# reference curation statuses
 revStatusFile=reviewStatus.txt	# reference review statuses
 
@@ -24,7 +22,7 @@ $0 [--getraw] [--findrevs] [--rmrevs] [--doall]
     Puts all files into the current directory.
 
     --getraw	Only pull raw files from db.
-    		raw files: ${discardAfter}, ${keepAfter}, ${keepBefore}....
+    		raw files: $rawFiles
 		status file: ${statusFile}
 		Pulls from dev db.
     --findrevs	Run analysis to find review papers from pubmed & text analysis
@@ -78,9 +76,9 @@ if [ "$doGetRaw" == "yes" -o "$doAll" == "yes" ]; then
     echo "getting raw data from db"
     set -x
     $getRaw --stats >$getRawLog
-    $getRaw -l $limit --server dev --query $discardAfter > $discardAfter 2>> $getRawLog
-    $getRaw -l $limit --server dev --query $keepAfter    > $keepAfter    2>> $getRawLog
-    $getRaw -l $limit --server dev --query $keepBefore   > $keepBefore   2>> $getRawLog
+    for f in $rawFiles; do
+	$getRaw -l $limit --server dev --query $f > $f 2>> $getRawLog
+    done
     $getStatuses > $statusFile  2>> $getRawLog
     set +x
 fi
@@ -91,7 +89,7 @@ if [ "$doFindRevs" == "yes" -o "$doAll" == "yes" ]; then
     echo "creating file containing article review statuses"
     date >>$reviewsLog
     set -x
-    cat $discardAfter $keepAfter $keepBefore | $findReviews >$revStatusFile 2>> $reviewsLog
+    cat $rawFiles | $findReviews >$revStatusFile 2>> $reviewsLog
     set +x
 fi
 #######################################
@@ -101,8 +99,8 @@ if [ "$doRmRevs" == "yes" -o "$doAll" == "yes" ]; then
     echo "removing review articles from the raw sample files"
     date >>$reviewsLog
     echo "options: $removeRevOpts -r $revStatusFile" >>$reviewsLog
-    for f in $discardAfter $keepAfter $keepBefore; do
-	newName=${f}_withReviews
+    for f in $rawFiles ; do
+	newName=withReviews_${f}
 	set -x
 	mv $f $newName
 	$removeReviews $removeRevOpts -r $revStatusFile $newName > $f 2>> $reviewsLog

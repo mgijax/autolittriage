@@ -60,7 +60,8 @@ def getArgs():
 
     parser.add_argument('--query', dest='queryKey', action='store',
         required=False, default='all',
-	choices=['all', 'discard_after', 'keep_after', 'keep_before'],
+	choices=['all', 'discard_after', 'keep_after', 'keep_before',
+		    'keep_tumor'],
         help='which subset of the training samples to get. Default: "all"')
 
     parser.add_argument('--stats', dest='stats', action='store_true',
@@ -97,7 +98,10 @@ def getArgs():
 # SQL fragments used to build up queries
 ####################
 SQLSEPARATOR = '||'
-START_DATE = "10/01/2016" 	# earliest date for any sample
+LIT_TRIAGE_DATE = "10/31/2017"		# when we switched to new lit triage
+START_DATE = "10/01/2016" 		# earliest date for refs to get
+					#  before lit Triage
+TUMOR_START_DATE = "07/01/2013"		# date to get add'l tumor papers from
 
 OMIT_SAMPLES_SQL = \
 '''
@@ -161,8 +165,8 @@ QUERIES = { \
 'discard_after' :  BASE_SELECT +
     '''
     and r.isdiscard = 1
-    and r.creation_date > '10/31/2017' -- After lit triage release
-    ''',
+    and r.creation_date > '%s' -- After lit triage release
+    ''' % LIT_TRIAGE_DATE,
 'keep_after' :  BASE_SELECT +
     '''
     and 
@@ -172,20 +176,29 @@ QUERIES = { \
      or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
-    and r.creation_date > '10/31/2017' -- After lit triage release
-    ''',
+    and r.creation_date > '%s' -- After lit triage release
+    ''' % LIT_TRIAGE_DATE,
 'keep_before' :  BASE_SELECT +
     '''
     and 
-    (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+    (
+	(bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
+	 or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
+	 or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
+	 or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
+	 or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+	)
+	and r.creation_date >= '%s' -- after start date
+	and r.creation_date <= '%s' -- before lit triage release
     )
-    and r.creation_date <= '10/31/2017' -- before lit triage release
-    and r.creation_date >= '%s'
-    ''' % START_DATE,
+    ''' % (START_DATE, LIT_TRIAGE_DATE, ),
+'keep_tumor' :  BASE_SELECT +
+    '''
+    and 
+     bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+     and r.creation_date >= '%s' -- after tumor start date
+     and r.creation_date <= '%s' -- before start date
+    ''' % ( TUMOR_START_DATE, START_DATE, ),
 }	# end QUERIES
 #-----------------------------------
 
@@ -257,11 +270,16 @@ def getStats(args):
     q = OMIT_SAMPLES_SQL + SQLSEPARATOR + selectCount + 'from tmp_omit'
     writeStat("Omitted references (only pm2gene indexed)", q)
 
-    writeStat("Discard after 10/31/2017", selectCount+QUERIES['discard_after'])
-    writeStat("Keep after 10/31/2017",    selectCount + QUERIES['keep_after'])
-    writeStat("Keep %s through 10/31/2017" % START_DATE,
+    writeStat("Discard after %s" % LIT_TRIAGE_DATE,
+					selectCount + QUERIES['discard_after'])
+    writeStat("Keep after %s" % LIT_TRIAGE_DATE,
+					selectCount + QUERIES['keep_after'])
+
+    writeStat("Keep %s through %s" % (START_DATE, LIT_TRIAGE_DATE),
 					selectCount + QUERIES['keep_before'])
 
+    writeStat("Tumor papers %s through %s" % (TUMOR_START_DATE, START_DATE),
+					selectCount + QUERIES['keep_tumor'])
 #-----------------------------------
 def writeStat(label, q):
     results = db.sql( string.split(q, SQLSEPARATOR), 'auto')
