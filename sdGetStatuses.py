@@ -4,11 +4,10 @@
 '''
   Purpose:
 	   run sql to get the curation statuses for documents.
-	   (currently HARD CODED date:  10/01/2016 ..)
 
   Outputs:     delimited file to stdout
 '''
-START_DATE='01/01/2015'	# get statuses for papers created after this date
+START_DATE='01/01/2010'	# get statuses for papers created after this date
 OutputColumns = [	# this column order is assumed in sampleDataLib.py
     'pubmed',
     'class', 		# "discard" or "keep" (CLASS_NAMES in config file)
