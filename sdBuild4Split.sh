@@ -51,20 +51,26 @@ fi
 #######################################
 # from raw files, pull out testSet.txt, valSet.txt, trainSet.txt
 #######################################
-discardAfter=$rawDir/discard_after
-keepAfter=$rawDir/keep_after
-keepBefore=$rawDir/keep_before
+		# files containing samples after lit triage started,
+		# pull random samples from these for test/validation sets
+after="$rawDir/discard_after $rawDir/keep_after" 
+
+		# files containing keeper refs from before lit triage started
+		# these are additional keepers to balance the set of discards
+		#  from after lit triage started
+before="$rawDir/keep_before" 
+#before="$rawDir/keep_before $rawDir/keep_tumor"  # when we've split out tumor
 
 echo "splitting test validation training sets"
 date >$splitTestLog
 set -x
 # random test set + leftovers
-$splitByJournal --mgijournals $mgiJournals -f $testFraction --selectedrefs testSet.txt  --leftoverrefs LeftoversTest.txt $discardAfter $keepAfter >>$splitTestLog 2>&1
+$splitByJournal --mgijournals $mgiJournals -f $testFraction --selectedrefs testSet.txt  --leftoverrefs LeftoversTest.txt $after >>$splitTestLog 2>&1
 
 # random validation set from test set leftovers
 $splitByJournal --mgijournals $mgiJournals -f $valFraction --selectedrefs valSet.txt  --leftoverrefs LeftoversVal.txt LeftoversTest.txt >>$splitTestLog 2>&1
 
-# trainSet is valSet leftovers + $keepBefore
+# trainSet is valSet leftovers + $before
 # (preprocess w/ no preprocessing steps just intelligently concats files)
-preprocessSamples.py LeftoversVal.txt $keepBefore > trainSet.txt 2>> $splitTestLog
+preprocessSamples.py LeftoversVal.txt $before > trainSet.txt 2>> $splitTestLog
 set +x

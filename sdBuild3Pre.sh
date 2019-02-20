@@ -44,11 +44,9 @@ fi
 #######################################
 # filenames to preprocess
 #######################################
-discardAfter=discard_after
-keepAfter=keep_after
-keepBefore=keep_Before
+files="discard_after keep_after keep_before"
 
-for f in $discardAfter $keepAfter $keepBefore; do
+for f in $files; do
     set -x
     preprocessSamples.py $* $dataDir/$f  >  $dataDir/$subDir/$f
     set +x
