@@ -240,6 +240,8 @@ def looksLikeReview(paper):
 	reason = ''
 
     # (4) See if we find one of the "review" words
+    # NOTE BUG HERE: extTextWords were space-delimited above, so they may have
+    #      punctuation that will prevent them from matching reviewWords.
     for revword in reviewWords:
 	# should check for exceptions and loop to skip them
 	try:
