@@ -42,6 +42,7 @@ getRaw=$projectHome/sdGetRaw.py
 findReviews=$projectHome/sdFindReviews.py
 removeReviews=$projectHome/sdRemoveReviews.py
 #removeRevOpts=""
+# skip removing articles that appear to be "review" only by text analysis
 removeRevOpts="--notextpred"
 getStatuses=$projectHome/sdGetStatuses.py
 

@@ -1,6 +1,11 @@
 #!/usr/bin/env python2.7 
 #
-# Look for review papers
+# Read a file describing articles from the database (including extracted text)
+# (1) assume the articles are not "is Review" in MGI
+# (2) get their Pubmed "is review" status
+# (3) do some text analysis of the extracted text to predict if the article
+#     looks like a review
+# (4) output report comparing MGI, Pubmed, text analysis "is review" statuses
 # Read from stdin
 # Output to stdout.
 #
@@ -15,10 +20,6 @@ import simpleURLLib as surl
 import NCBIutilsLib as eulib
 from basicLib import sublistFind
 
-DEFAULT_STATUS_FILE     = 'refStatuses.txt'
-DEFAULT_PREDICTION_FILE = '_test_pred.txt'
-PREDFILE_RECORDSEP = '\n'
-
 #-----------------------------------
 
 def parseCmdLine():
@@ -27,12 +28,8 @@ def parseCmdLine():
     '''Compare paper Review status from MGI/Pubmed/text heuristic.
     Read doc sample records from stdin. Output to stdout'''
     )
-
-    #parser.add_argument('statusFile', help='file of paper curation statuses')
-    #parser.add_argument('predictionFile', help='file of paper predictions')
-
     parser.add_argument('--test', dest='justTest', action='store_true',
-	required=False, help="just run test code")
+	required=False, help="just run test code at end of this module")
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
 	required=False, help="skip helpful messages to stderr")
@@ -78,7 +75,7 @@ class Paper (sdlib.SampleRecord):
 					#  rcd if we start getting rev papers
 	self.pubmedReview    = False	# Review status in pubmed
 	self.textCheckReview = False	# Review prediction from text heuristic
-	self.textCheckNote = ''		#  Reason/note from heuristic
+	self.textCheckNote   = ''	#  Reason/note from heuristic
 	self.textCheckText   = ''	# Additional, surrounding text
 
 #----------------------
@@ -111,10 +108,10 @@ def getPapers(papersFile):
 def main():
     papers = getPapers(sys.stdin)
 
-#    testnum = 4000
-#    papers = papers[:testnum]
+    testnum = 40		# for debugging
+    papers = papers[:testnum]
     setPubmedReview(papers)
-    setTextCheckReview(papers)
+#    setTextCheckReview(papers)	# skip for now
     outputResults(papers)
 
 # ---------------------
