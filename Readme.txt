@@ -669,3 +669,59 @@ Feb 5, 2019
 		- would require a fair amount of refactoring, and should think
 		  about this pattern in other places
 		- postponing for now.
+
+Feb 17, 2019
+    Idea: recall for Tumor is bad because the number of Tumor papers in the
+	training set is too small, it is swamped by the other samples (and
+	maybe these papers are just harder to recognize.
+
+	So try adding an additional set of papers selected for Tumor for
+	the "keep_before" set. Try 1000 or so. See what happens. - changes
+	to sdGetRaw.py
+	Here are counts before these changes:
+
+	Hitting database bhmgidevdb01.jax.org prod as mgd_public
+	Sun Feb 17 16:44:28 2019
+	    1392	Omitted references (only pm2gene indexed)
+	    31163	Discard after 10/31/2017
+	    21148	Keep after 10/31/2017
+	    7792	Keep 10/01/2016 through 10/31/2017
+	    Total time:  119.576 seconds
+
+	Here are updated numbers w/ Tumor papers added
+	Hitting database bhmgidevdb01.jax.org prod as mgd_public
+	Mon Feb 18 08:32:59 2019
+	   1392	Omitted references (only pm2gene indexed)
+	  31163	Discard after 10/31/2017
+	  21148	Keep after 10/31/2017
+	   8951	Keep 10/01/2016 through 10/31/2017
+		+ tumor papers from 7/1/2015
+	Total time:   34.168 seconds
+    Recall for papers selected by each curation group
+    ap_status      selected papers:  1720 predicted keep:  1561 recall: 0.908
+    gxd_status     selected papers:   176 predicted keep:   167 recall: 0.949
+    go_status      selected papers:  1784 predicted keep:  1579 recall: 0.885
+    tumor_status   selected papers:   142 predicted keep:   112 recall: 0.789
+    qtl_status     selected papers:     3 predicted keep:     2 recall: 0.667
+    Totals         selected papers:  2138 predicted keep:  1856 recall: 0.868
+
+    So this improves recall a bit.
+
+Feb 18, 2019
+    added tumor papers back to 7/1/2013.
+    Built cleanest dataset to date:
+    feb18_nopmRevs (pubmed and MGI review papers removed)
+    With add'l tumor papers, get recall in upper 80's. Yay!
+    Sub directories:
+	Legends		- just legends
+	LegendsWords	- legends + 50 words around references to fig/tables
+	LegendsPara	- legends + paragraphs containing refs to fig/tables
+
+    Now we can compare the different extracted text approaches.
+
+    To make it easier/quicker to add additional sample sets/files
+    (e.g., keep_tumor), and have other files preprocessed, I rejiggered the
+    build scripts to do fig text extraction and preprocessing BEFORE the
+    test/val/train split. (that way, discard_after, keep_after, etc.) can be
+    preprocessed once and reused as other files are added)
+
