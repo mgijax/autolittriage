@@ -245,8 +245,10 @@ def process():
     db.set_sqlPassword("mgdpub")
 
     if args.verbose:
-	sys.stderr.write( "Hitting database %s %s as mgd_public\n\n" % \
+	sys.stderr.write( "Hitting database %s %s as mgd_public\n" % \
 							(args.host, args.db))
+	sys.stderr.write( "Query:  %s\n\n" % args.queryKey)
+
     startTime = time.time()
 
     if args.stats: getStats(args)
