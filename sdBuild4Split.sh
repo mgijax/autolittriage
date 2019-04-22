@@ -1,5 +1,20 @@
 #!/bin/bash
-# take raw data files and do random training/validation/test set splits
+#    Split raw files into random test, train, validation files
+#    Puts all output files into the current directory.
+
+#######################################
+# Input file names
+#######################################
+		# files containing samples after lit triage started,
+		# pull random samples from these for test/validation sets
+after_nopath="discard_after keep_after" 
+
+		# files containing keeper refs from before lit triage started
+		# these are additional keepers to balance the set of discards
+		#  from after lit triage started
+		# We include ALL of these in the training set.
+before_nopath="keep_before keep_tumor"
+
 
 #######################################
 function Usage() {
@@ -9,10 +24,10 @@ function Usage() {
 $0 [--rawdir]
 
     Split raw files into random test, train, validation files
-    Puts all files into the current directory.
+    Puts all output files into the current directory.
 
     --rawdir	directory where the raw files live.
-    		raw files: ${discardAfter}, ${keepAfter}, ${keepBefore}....
+    		raw files: ${after_nopath}, ${before_nopath}
 ENDTEXT
     exit 5
 }
@@ -47,20 +62,21 @@ done
 if [ "$rawDir" == "" ]; then
     Usage
 fi
+#######################################
+# add pathname to raw files
+#######################################
+after=""
+for f in $after_nopath; do
+    after="$after $rawDir/$f"
+done
+before=""
+for f in $before_nopath; do
+    before="$before $rawDir/$f"
+done
 
 #######################################
 # from raw files, pull out testSet.txt, valSet.txt, trainSet.txt
 #######################################
-		# files containing samples after lit triage started,
-		# pull random samples from these for test/validation sets
-after="$rawDir/discard_after $rawDir/keep_after" 
-
-		# files containing keeper refs from before lit triage started
-		# these are additional keepers to balance the set of discards
-		#  from after lit triage started
-before="$rawDir/keep_before" 
-#before="$rawDir/keep_before $rawDir/keep_tumor"  # when we've split out tumor
-
 echo "splitting test validation training sets"
 date >$splitTestLog
 set -x

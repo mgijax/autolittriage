@@ -3,13 +3,19 @@
 #  Preprocess extracted figure text files into a Proc* directory
 
 #######################################
+# filenames to preprocess
+#######################################
+files="discard_after keep_after keep_before keep_tumor"
+
+#######################################
 function Usage() {
 #######################################
     cat - <<ENDTEXT
 
 $0 --datadir dir --subdir subdir [-- preprocess_options...]
 
-    Apply preprocessing options for raw sample files.
+    Apply preprocessing options for sample files:
+	$files
     Files to preprocess are in dir
     Store resulting files in dir/subdir
     Preprocess options are typically:  -p removeURLsCleanStem
@@ -40,11 +46,9 @@ done
 if [ "$dataDir" == "" -o "$subDir" == "" ]; then
     Usage
 fi
-
 #######################################
-# filenames to preprocess
+# preprocess the files
 #######################################
-files="discard_after keep_after keep_before"
 
 for f in $files; do
     set -x

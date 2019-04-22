@@ -4,6 +4,11 @@
 #  (and save these files)
 
 #######################################
+# filenames for the extracted figure text input files
+#######################################
+files="discard_after keep_after keep_before keep_tumor"
+
+#######################################
 function Usage() {
 #######################################
     cat - <<ENDTEXT
@@ -11,6 +16,7 @@ function Usage() {
 $0 --datadir dir --subdir subdir
 
     Apply -p figureText option for discard and keep raw sample files.
+	files: $files
     Files to preprocess are in dir
     Processed output files go into subdir
 ENDTEXT
@@ -36,12 +42,9 @@ done
 if [ "$dataDir" == "" -o "$subDir" == "" ]; then
     Usage
 fi
-
 #######################################
-# filenames for the extracted figure text input files
+# extract figure text
 #######################################
-files="discard_after keep_after keep_before"
-
 figTextOpt="-p figureText"
 
 for f in $files; do
