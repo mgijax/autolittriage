@@ -108,10 +108,11 @@ def getPapers(papersFile):
 def main():
     papers = getPapers(sys.stdin)
 
-    testnum = 40		# for debugging
-    papers = papers[:testnum]
+#    testnum = 40		# for debugging
+#    papers = papers[:testnum]
     setPubmedReview(papers)
-#    setTextCheckReview(papers)	# skip for now
+#    setTextCheckReview(papers)	# skip for now, this needs further research
+				#   and refinement. Debbie has thoughts.
     outputResults(papers)
 
 # ---------------------
@@ -121,33 +122,41 @@ def setPubmedReview(allPapers):
     For each paper in allPapers, set paper.pubmedReview to True
 	if Pubmed says it is a review paper (False otherwise)
     """
-    urlReader = surl.ThrottledURLReader( seconds=0.4 ) # don't overwhelm eutils
-    numPerPost = 500	# keep each post reasonable. (500 only for json output)
+    urlReader = surl.ThrottledURLReader( seconds=0.8 ) # don't overwhelm eutils
+    numPerPost = 400	# keep each post reasonable. (500 only for json output)
 
-    try:
-	for start in range(0, len(allPapers), numPerPost): # break into batches
-	    verbose('..%d' % start)
-	    last = start + numPerPost
-	    papers = allPapers[start:last]		# in this batch
-	    pubmedIDs = [ p.pubmedID for p in papers ]
-	    resultsStr = eulib.getPostResults('pubmed', pubmedIDs,
+    for start in range(0, len(allPapers), numPerPost): # break into batches
+	verbose('..%d' % start)
+	last = start + numPerPost
+	papers = allPapers[start:last]		# in this batch
+	pubmedIDs = [ p.pubmedID for p in papers ]
+	numTries = 0
+	while (True):
+	    try:
+		resultsStr = eulib.getPostResults('pubmed', pubmedIDs,
 					    URLReader = urlReader, op='summary',
 					    rettype=None, retmode='json',) [0]
-	    resultsJson = json.loads(resultsStr)
-	    for paper in papers:
-		pmid = paper.pubmedID
-		try:
-		    r = resultsJson['result'][pmid]
-		    paper.pubmedReview = isPubmedReview(r)
-		except:		# report which pmid we had trouble with
-		    sys.stderr.write("\nException: PMID %s\n" % str(pmid))
-		    sys.stderr.write(json.dumps(r,sort_keys=True,indent=4,
-						    separators=(',',': '))
-						    + '\n')
-		    continue
-    except:		# report some info so we might find the offending paper
-	sys.stderr.write("\nBatch start: %d\n" % start)
-	raise
+		break		# this try worked
+	    except Exception as e:	# this try didn't work
+		sys.stderr.write("\nTry: %d \tBatch start: %d\n" % \
+							(numTries,start))
+		sys.stderr.write(str(e) + '\n')
+		numTries += 1
+		if numTries == 5: raise
+		else: continue
+
+	resultsJson = json.loads(resultsStr)
+	for paper in papers:
+	    pmid = paper.pubmedID
+	    try:
+		r = resultsJson['result'][pmid]
+		paper.pubmedReview = isPubmedReview(r)
+	    except:		# report which pmid we had trouble with
+		sys.stderr.write("\nException: PMID %s\n" % str(pmid))
+		sys.stderr.write(json.dumps(r,sort_keys=True,indent=4,
+						separators=(',',': '))
+						+ '\n')
+		continue
     return
 # ---------------------
 
