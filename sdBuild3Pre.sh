@@ -50,8 +50,13 @@ fi
 # preprocess the files
 #######################################
 
+echo Running in parallel
+date
 for f in $files; do
     set -x
-    preprocessSamples.py $* $dataDir/$f  >  $dataDir/$subDir/$f
+    preprocessSamples.py $* $dataDir/$f  >  $dataDir/$subDir/$f 2> $dataDir/$subDir/$f.log &
     set +x
 done
+wait
+echo All Done
+date
