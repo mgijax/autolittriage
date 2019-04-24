@@ -1,5 +1,6 @@
 import sys
 import textTuningLib as tl
+import sklearnHelperLib as skHelper
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler
@@ -20,19 +21,21 @@ pipeline = Pipeline( [
 		binary=True,
 		#token_pattern=r'\b([a-z_]\w+)\b', Use default for now
 		),),
-('featureEvaluator', tl.FeatureDocCounter()),
+#('featureEvaluator', skHelper.FeatureDocCounter()),
 #('scaler'    ,StandardScaler(copy=True,with_mean=False,with_std=True)),
 #('scaler'    , MaxAbsScaler(copy=True)),
-('classifier', SGDClassifier(verbose=0, class_weight='balanced',
-		random_state=randomSeeds['randForClassifier']) ),
+('classifier', SGDClassifier(verbose=0,
+			random_state=randomSeeds['randForClassifier'],
+		) ),
 ] )
 parameters={'vectorizer__ngram_range':[(1,2)],
-	'vectorizer__min_df':[0.01],
+	'vectorizer__min_df':[0.02, ],
 	'vectorizer__max_df':[.75],
-	'classifier__alpha':[1],
-	'classifier__eta0':[ .01],
+	'classifier__loss':[ 'log', ],
+	'classifier__alpha':[.5, ],
+	'classifier__class_weight': ['balanced'],
 	'classifier__learning_rate':['optimal'],
-	'classifier__loss':[ 'log' ],
+	'classifier__eta0':[ .01],
 	'classifier__penalty':['l2'],
 	}
 p = tl.TextPipelineTuningHelper( pipeline, parameters,
