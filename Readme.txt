@@ -725,3 +725,40 @@ Feb 18, 2019
     test/val/train split. (that way, discard_after, keep_after, etc.) can be
     preprocessed once and reused as other files are added)
 
+April 22, 2019
+    Long hiatus. Got sidetracked by various things, writing annual reviews,
+    working on extracted text splitting, ...
+
+    Updated sdBuild* to get keep_tumor references - a set of additional tumor
+    papers to add to the training set since tumor papers seem to be hard to
+    recognize.
+
+    While running sdFindReviews.py from sdBuild1GetRaw.sh to see if there are
+    any papers marked as "review" in pubmed, but not in MGI, got problem:
+	kept getting
+	    Failed to reach server, reason: Bad Gateway
+	    URL: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/epost.fcgi'
+
+	    Also got:
+	    Failed to reach server, reason: Internal Server Error
+	    URL: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?&api_key=93420e6fa0a8dcf419d7a62e185706572e08&webenv=NCID_1_203959158_130.14.22.76_9001_1556025942_2112099563_0MetA0_S_MegaStore&query_key=1&db=pubmed&retmode=json&version=2.0&retmax=500'
+	when calling eulib.getPostResults() with a batch of pubmed IDs.
+	totally intermittent and after a random number of batches.
+
+	I shifted around the try..except stmts to retry the batch up to 5 times,
+	This worked, but only found 35 more reviews from pubmed to remove.
+
+    Not sure doing this additional "reviews" finds is worth it since Lori has
+    already updated review papers in MGI from pubmed, but I wanted to
+    check this. If I find this is not worth it, I can skip these steps in
+    sdBuild1GetRaw.sh.
+
+April 24, 2019
+    Took a while, but finally built training, validation, test sets for data
+    from apr22:
+	Legends:	discard_after: 174M
+	LegendsWords:	discard_after: 468M
+	LegendsPara:	discard_after: 627M
+    Updated sdBuild3Pre.sh to run preprocessor steps in parallel.
+    This sped things up.
+

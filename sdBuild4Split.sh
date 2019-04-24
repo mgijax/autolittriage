@@ -21,13 +21,13 @@ function Usage() {
 #######################################
     cat - <<ENDTEXT
 
-$0 [--rawdir]
+$0 --rawdir dir
 
     Split raw files into random test, train, validation files
     Puts all output files into the current directory.
 
     --rawdir	directory where the raw files live.
-    		raw files: ${after_nopath}, ${before_nopath}
+    		raw files: ${after_nopath}  ${before_nopath}
 ENDTEXT
     exit 5
 }
