@@ -113,6 +113,7 @@ def main():
     setPubmedReview(papers)
 #    setTextCheckReview(papers)	# skip for now, this needs further research
 				#   and refinement. Debbie has thoughts.
+				# See TR 13066
     outputResults(papers)
 
 # ---------------------

@@ -6,8 +6,8 @@
 #######################################
 rawFiles="discard_after keep_after keep_before keep_tumor"
 
-statusFile=refStatuses.txt	# reference curation statuses
-revStatusFile=reviewStatus.txt	# reference review statuses
+statusFile=refStatuses.txt	# article curation statuses
+revStatusFile=reviewStatus.txt	# article review statuses
 
 #######################################
 function Usage() {
@@ -39,15 +39,25 @@ ENDTEXT
 projectHome=~/work/autolittriage
 
 getRaw=$projectHome/sdGetRaw.py
-findReviews=$projectHome/sdFindReviews.py
-removeReviews=$projectHome/sdRemoveReviews.py
-#removeRevOpts=""
-# skip removing articles that appear to be "review" only by text analysis
-removeRevOpts="--notextpred"
 getStatuses=$projectHome/sdGetStatuses.py
 
+# Optional step of:		Everything is fine if we just do --getraw
+# Detecting and removing review articles that not currently marked as review
+#  in MGI from the sample set.
+# This is probably not worth doing as long as MGI keeps up to date with
+#   pubmed's marking of review articles
+# There are 2 steps: (1) find review papers and write these to a file
+#  (2) remove these papers from the sample set (and save the orig sample files)
+findReviews=$projectHome/sdFindReviews.py
+
+removeReviews=$projectHome/sdRemoveReviews.py
+# Skip removing articles that appear to be "review" only by text analysis.
+# The current algorithm in sdFindReviews.py to detect review articles by
+#  text analysis needs to be rethought. See TR 13066.
+removeRevOpts="--notextpred"
+
 getRawLog=getRaw.log		# log file from sdGetRaw
-reviewsLog=reviews.log
+reviewsLog=reviews.log		# log file for "review" processing
 
 #######################################
 # cmdline options
@@ -71,7 +81,7 @@ while [ $# -gt 0 ]; do
     esac
 done
 #######################################
-# pull raw subsets from db
+# Pull raw subsets from db
 #######################################
 if [ "$doGetRaw" == "yes" -o "$doAll" == "yes" ]; then
     echo "getting raw data from db"
@@ -84,7 +94,8 @@ if [ "$doGetRaw" == "yes" -o "$doAll" == "yes" ]; then
     set +x
 fi
 #######################################
-# run analysis to create file specifying which articles are review refs
+# Run analysis to create file specifying which articles are review refs
+#  beyond those that are marked as review in MGI
 #######################################
 if [ "$doFindRevs" == "yes" -o "$doAll" == "yes" ]; then
     echo "creating file containing article review statuses"
@@ -94,7 +105,8 @@ if [ "$doFindRevs" == "yes" -o "$doAll" == "yes" ]; then
     set +x
 fi
 #######################################
-# remove review articles from raw files
+# Remove review articles from raw files
+# Requires the existence of the file created in the "find reviews" step above
 #######################################
 if [ "$doRmRevs" == "yes" -o "$doAll" == "yes" ]; then
     echo "removing review articles from the raw sample files"
