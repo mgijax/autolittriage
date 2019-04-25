@@ -725,9 +725,49 @@ Feb 18, 2019
     test/val/train split. (that way, discard_after, keep_after, etc.) can be
     preprocessed once and reused as other files are added)
 
+    Data/
+	apr22/			# Raw refs + text pulled from database
+	    discard_after
+	    keep_after
+	    keep_before
+	    keep_tumor
+	    refStatuses.txt	# article statuses per curation group
+	    getRaw.log		# log from getBuild1GetRaw.py
+
+	    Legends/		# Informative text extraction option:
+	    			#  keep title + abstract + figure legends
+		discard_after
+		keep_after
+		keep_before
+		keep_tumor
+
+		Proc1/		# Preprocessed and randomly split files
+		    discard_after
+		    keep_after
+		    keep_before
+		    keep_tumor
+		    testSet.txt		# the randomly split test set
+		    trainSet.txt	# ...training set
+		    valSet.txt		# ...validation set
+		    splitTest.log	# log from the random split process
+		    LeftoversTest.txt	# leftovers in the split process
+		    LeftoversVal.txt	# leftovers in the split process
+
+		Proc2/		# if want to try different preprocessor steps
+		    ...
+	    LegendsWords/	# Informative text extraction option:
+	    			#  keep title + abs + legends + words around
+	    			#  references to figures
+		...
+	    LegendsPara/	# Informative text extraction option:
+	    			#  keep title + abs + legends + paragraphs
+	    			#  containing references to figures
+		...
+
+
 April 22, 2019
     Long hiatus. Got sidetracked by various things, writing annual reviews,
-    working on extracted text splitting, ...
+    working on extracted text splitting, vacation, ...
 
     Updated sdBuild* to get keep_tumor references - a set of additional tumor
     papers to add to the training set since tumor papers seem to be hard to
@@ -748,6 +788,9 @@ April 22, 2019
 	I shifted around the try..except stmts to retry the batch up to 5 times,
 	This worked, but only found 35 more reviews from pubmed to remove.
 
+	NOTE this does show that Pubmed does go back and update the "review"
+	status of papers sometimes after a paper has been in Pubmed for a while.
+
     Not sure doing this additional "reviews" finds is worth it since Lori has
     already updated review papers in MGI from pubmed, but I wanted to
     check this. If I find this is not worth it, I can skip these steps in
@@ -756,9 +799,64 @@ April 22, 2019
 April 24, 2019
     Took a while, but finally built training, validation, test sets for data
     from apr22:
-	Legends:	discard_after: 174M
-	LegendsWords:	discard_after: 468M
-	LegendsPara:	discard_after: 627M
+	Mon Apr 22 14:15:58 2019
+	   1471 Omitted references (only pm2gene indexed)
+	  31311 Discard after 10/31/2017
+	  23342 Keep after 10/31/2017
+	   7672 Keep 10/01/2016 through 10/31/2017
+	   2648 Tumor papers 07/01/2013 through 10/01/2016
+
+    Sample set breakdown (from Legends preprocessor)
+			:      Samples     Positive     Negative   % Positive
+    Validation Set      :         8834         3434         5400          39%
+    Training Set        :        49467        27624        21843          56%
+    Test Set            :         6637         2599         4038          39%
+
+	Legends:	training set file size:   329,246,557
+	LegendsWords:	training set file size:   851,634,837
+	LegendsPara:	training set file size: 1,115,810,384
+
     Updated sdBuild3Pre.sh to run preprocessor steps in parallel.
     This sped things up.
+April 25, 2019
+    Tried the above sample sets on SGDlog and RF.
+    LegendsWords seem to come out slightly better than Legends and LegendsPara
 
+    RF comes out really well:
+	LegendsWords, min sample leaf 25, n estimators 50
+	2019/04/24-14-07-53
+	### Metrics: Training Set
+		       precision    recall  f1-score   support
+	   Train keep       0.91      0.87      0.89     27648
+	Train discard       0.85      0.89      0.87     21819
+	  avg / total       0.88      0.88      0.88     49467
+	Train F2: 0.87981 (keep)
+	['yes', 'no']
+	[[24118  3530]
+	 [ 2353 19466]]
+	### Metrics: Validation Set
+		       precision    recall  f1-score   support
+	   Valid keep       0.85      0.89      0.87      3402
+	Valid discard       0.93      0.90      0.91      5432
+	  avg / total       0.90      0.89      0.89      8834
+	Valid F2: 0.87884 (keep)
+	['yes', 'no']
+	[[3019  383]
+	 [ 549 4883]]
+	### Metrics: Test Set
+		       precision    recall  f1-score   support
+	   Test  keep       0.84      0.89      0.86      2607
+	Test  discard       0.93      0.89      0.91      4030
+	  avg / total       0.89      0.89      0.89      6637
+	Test  F2: 0.87930 (keep)
+
+    Recall for papers selected by each curation group
+    ap_status      selected papers:  2142 predicted keep:  1980 recall: 0.924
+    gxd_status     selected papers:   207 predicted keep:   194 recall: 0.937
+    go_status      selected papers:  2179 predicted keep:  1974 recall: 0.906
+    tumor_status   selected papers:   187 predicted keep:   166 recall: 0.888
+    qtl_status     selected papers:     4 predicted keep:     2 recall: 0.500
+    Totals         selected papers:  2607 predicted keep:  2321 recall: 0.890
+
+    Tried several different random seeds and several different train/test
+    splits on LegendsWords, and got consistent results.
