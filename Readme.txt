@@ -861,7 +861,7 @@ April 25, 2019
     Tried several different random seeds and several different train/test
     splits on LegendsWords, and got consistent results.
 April 29, 2019
-    Updated sdGetRaw.py et. al. to have the option of NOT excluding review
+    (1) Updated sdGetRaw.py et. al. to have the option of NOT excluding review
     papers and not excluding non-peer review papers. Want to see how training 
     and testing work on this set since when we get PDFs, we might not have
     them categorized by these before we want to do automated tagging.
@@ -870,10 +870,20 @@ April 29, 2019
 	I populated Data/apr29_norestrict/LegendsWords/Proc1 with this data
 	set and preprocessed the extracted text. Still need to do the split
 	and try the training/testing.
+	Ok, it did hurt recall, primarily for tumor:
+    Recall for papers selected by each curation group
+    ap_status      selected papers:  2166 predicted keep:  1988 recall: 0.918
+    gxd_status     selected papers:   178 predicted keep:   172 recall: 0.966
+    go_status      selected papers:  2188 predicted keep:  1967 recall: 0.899
+    tumor_status   selected papers:   217 predicted keep:   168 recall: 0.774
+    qtl_status     selected papers:     4 predicted keep:     3 recall: 0.750
+    Totals         selected papers:  2676 predicted keep:  2331 recall: 0.871
 
-    Looked at groupRecall.py to see about computing recall by journal (and can
-    do precision too for journals). This would be good to see if there are any
-    outlier journals we'd need to handle specially somehow.
+    Need to think about this more???
+
+    (2) Looked at groupRecall.py to see about computing recall by journal
+    (and can do precision too for journals). This would be good to see if
+    there are any outlier journals we'd need to handle specially somehow.
 
     To do this by journal, I added the journal as a field in the refStatus.txt
     output file (changed sdGetStatus.py and groupRecall.py (where it

@@ -16,6 +16,7 @@ OutputColumns = [	# this column order is assumed in sampleDataLib.py
     'go_status',
     'tumor_status',
     'qtl_status',
+    'journal',
     ]
 
 #-----------------------------------
@@ -158,6 +159,7 @@ def writeResults( results	# list of records (dicts)
 	go_status     = str(r['go_status']).lower()
 	tumor_status  = str(r['tumor_status']).lower()
 	qtl_status    = str(r['qtl_status']).lower()
+	journal       = '_'.join(str(r['journal']).split(' '))
 
 	sys.stdout.write( FIELDSEP.join( [
 	    pmid,
@@ -167,6 +169,7 @@ def writeResults( results	# list of records (dicts)
 	    go_status,
 	    tumor_status,
 	    qtl_status,
+	    journal,
 	    ] )
 	    + RECORDSEP
 	    )
