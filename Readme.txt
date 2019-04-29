@@ -860,3 +860,24 @@ April 25, 2019
 
     Tried several different random seeds and several different train/test
     splits on LegendsWords, and got consistent results.
+April 29, 2019
+    Updated sdGetRaw.py et. al. to have the option of NOT excluding review
+    papers and not excluding non-peer review papers. Want to see how training 
+    and testing work on this set since when we get PDFs, we might not have
+    them categorized by these before we want to do automated tagging.
+    How does training/testing compare with what we are getting currently
+    WITH these restrictions?
+	I populated Data/apr29_norestrict/LegendsWords/Proc1 with this data
+	set and preprocessed the extracted text. Still need to do the split
+	and try the training/testing.
+
+    Looked at groupRecall.py to see about computing recall by journal (and can
+    do precision too for journals). This would be good to see if there are any
+    outlier journals we'd need to handle specially somehow.
+
+    To do this by journal, I added the journal as a field in the refStatus.txt
+    output file (changed sdGetStatus.py and groupRecall.py (where it
+    reads the status file)).
+    Next step is to change/replace groupRecall to compute this by journal
+    - might want to change some variable names here too,
+    I found the code confusing: "true positive" has two different meanings

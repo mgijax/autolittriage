@@ -55,7 +55,8 @@ class Paper (object):
 	self.gxd_status,
 	self.go_status,
 	self.tumor_status,
-	self.qtl_status,) = record.split(FIELDSEP)
+	self.qtl_status,
+	self.journal) = record.split(FIELDSEP)
 
 #----------------------
 

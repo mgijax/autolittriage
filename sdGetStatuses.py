@@ -84,7 +84,8 @@ BASE_SELECT =  \
     bs.gxd_status, 
     bs.go_status, 
     bs.tumor_status, 
-    bs.qtl_status 
+    bs.qtl_status,
+    r.journal
 from bib_refs r join bib_status_view bs on (r._refs_key = bs._refs_key)
      join bib_workflow_data bd on (r._refs_key = bd._refs_key)
      join acc_accession a on
