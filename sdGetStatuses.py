@@ -92,13 +92,13 @@ from bib_refs r join bib_status_view bs on (r._refs_key = bs._refs_key)
           and a._mgitype_key=1 )
 '''
 
-# list potential queries, best if these are non-overlapping result sets result sets result sets result sets
+# list potential queries, best if these are non-overlapping result sets,
+#  but only one for now
 QUERY_LIST = { \
 'query' :  BASE_SELECT +
     '''
     where
     r.creation_date >= '%s'
-    and r._referencetype_key=31576687 -- peer reviewed article
     and r._createdby_key != 1609      -- littriage_discard user on dev/prod
     and bd.haspdf=1
     -- order by r.journal, pubmed

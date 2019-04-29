@@ -46,6 +46,11 @@ INDEX_OF_KEEP    = 1		# index in CLASS_NAMES of the keep label
 INDEX_OF_DISCARD = 0		# index in CLASS_NAMES of the discard label
 #-----------------------------------
 
+def verbose(text):
+    if args.verbose:
+	sys.stderr.write(text)
+#-----------------------------------
+
 def getArgs():
     parser = argparse.ArgumentParser( \
 	description='Get littriage relevance training samples, write to stdout')
@@ -72,6 +77,14 @@ def getArgs():
 	required=False, type=int, default=0, 		# 0 means ALL
         help="limit SQL to n results. Default is no limit")
 
+    parser.add_argument('--textlength', dest='maxTextLength',
+	type=int, required=False, default=None,
+	help="only include the 1st n chars of the extracted text")
+
+    parser.add_argument('--norestrict', dest='restrictArticles',
+	action='store_false', required=False,
+	help="include all articles, default: skip review and non-peer reviewed")
+
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
         required=False, help="skip helpful messages to stderr")
 
@@ -93,6 +106,7 @@ def getArgs():
     return args
 #-----------------------------------
 
+args = getArgs()
 
 ####################
 # SQL fragments used to build up queries
@@ -153,11 +167,19 @@ from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
     join bib_status_view bs on (bs._refs_key = r._refs_key)
 where
     r._createdby_key != 1609          -- not littriage_discard user
-    and r._referencetype_key=31576687 -- peer reviewed article
     and bd.haspdf=1
     and not exists (select 1 from tmp_omit t where t._refs_key = r._refs_key)
+'''
+
+if args.restrictArticles:
+    BASE_SELECT += \
+'''
+    and r._referencetype_key=31576687 -- peer reviewed article
     and r.isreviewarticle != 1
 '''
+    verbose("Omitting review and non-peer reviewed articles\n")
+else:
+    verbose("Including all articles\n")
 
 # Dict of where clause components for specific queries,
 #  these should be non-overlapping result sets
@@ -231,7 +253,6 @@ def buildGetSamplesSQL(args):
 
 def process():
     """ Main routine"""
-    args = getArgs()
 
     if False:	# debug SQL
 	for i, sql in enumerate(buildGetSamplesSQL(args)):
@@ -244,19 +265,15 @@ def process():
     db.set_sqlUser    ("mgd_public")
     db.set_sqlPassword("mgdpub")
 
-    if args.verbose:
-	sys.stderr.write( "Hitting database %s %s as mgd_public\n" % \
-							(args.host, args.db))
-	sys.stderr.write( "Query:  %s\n\n" % args.queryKey)
+    verbose( "Hitting database %s %s as mgd_public\n" % (args.host, args.db))
+    verbose( "Query:  %s\n\n" % args.queryKey)
 
     startTime = time.time()
 
     if args.stats: getStats(args)
     else: getSamples(args)
 
-    if args.verbose:
-	sys.stderr.write( "Total time: %8.3f seconds\n\n" % \
-						    (time.time()-startTime))
+    verbose( "Total time: %8.3f seconds\n\n" % (time.time()-startTime))
 #-----------------------------------
 
 def getStats(args):
@@ -301,13 +318,11 @@ def getSamples(args):
 
 	results = db.sql( string.split(q, SQLSEPARATOR), 'auto')
 
-	if args.verbose:
-	    sys.stderr.write( "Query %d SQL time: %8.3f seconds\n\n" % \
-						(i, time.time()-qStartTime))
+	verbose( "Query %d SQL time: %8.3f seconds\n\n" % \
+					    (i, time.time()-qStartTime))
 	nResults = writeSamples(results[-1]) # db.sql returns list of rslt lists
 
-	if args.verbose:
-	    sys.stderr.write( "%d references retrieved\n\n" % (nResults) )
+	verbose( "%d references retrieved\n\n" % (nResults) )
     return
 
 #-----------------------------------
@@ -339,6 +354,8 @@ def writeSamples( results	# list of records (dicts)
 	title    = removeNonAscii(cleanDelimiters(title))
 	abstract = removeNonAscii(cleanDelimiters(abstract))
 	text     = removeNonAscii(cleanDelimiters(text))
+	if args.maxTextLength:
+	    text = text[:args.maxTextLength]
 
 	sys.stdout.write( FIELDSEP.join( [
 	    sampleClass,

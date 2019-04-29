@@ -14,7 +14,7 @@ function Usage() {
 #######################################
     cat - <<ENDTEXT
 
-$0 [--getraw] [--findrevs] [--rmrevs] [--doall]
+$0 [--limit n] [--norestrict] [--getraw] [--findrevs] [--rmrevs] [--doall]
 
     Get raw sample files from the db.
     Possibly remove review papers.
@@ -30,6 +30,8 @@ $0 [--getraw] [--findrevs] [--rmrevs] [--doall]
     --doall	Do all the above (default)
 
     --limit	limit on sql query results (default = no limit)
+    --norestrict when populating raw files, include all articles,
+		default: skip review and non-peer reviewed
 ENDTEXT
     exit 5
 }
@@ -66,6 +68,7 @@ doAll=yes
 doGetRaw=no
 doFindRevs=no
 doRmRevs=no
+restrictOpt=''			# default is no restriction
 limit="0"			# getRaw record limit, "0" = no limit
 				#(set small for debugging)
 while [ $# -gt 0 ]; do
@@ -75,6 +78,7 @@ while [ $# -gt 0 ]; do
     --getraw)    doGetRaw=yes;doAll=no; shift; ;;
     --findrevs)  doFindRevs=yes;doAll=no; shift; ;;
     --rmrevs)    doRmRevs=yes;doAll=no; shift; ;;
+    --norestrict) restrictOpt=--norestrict; shift; ;;
     --limit)     limit="$2"; shift; shift; ;;
     -*|--*) echo "invalid option $1"; Usage ;;
     *) break; ;;
@@ -86,9 +90,9 @@ done
 if [ "$doGetRaw" == "yes" -o "$doAll" == "yes" ]; then
     echo "getting raw data from db"
     set -x
-    $getRaw --stats >$getRawLog
+    $getRaw $restrictOpt --stats >$getRawLog
     for f in $rawFiles; do
-	$getRaw -l $limit --server dev --query $f > $f 2>> $getRawLog
+	$getRaw -l $limit $restrictOpt --server dev --query $f > $f 2>> $getRawLog
     done
     $getStatuses > $statusFile  2>> $getRawLog
     set +x
