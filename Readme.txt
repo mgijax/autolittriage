@@ -891,3 +891,12 @@ April 29, 2019
     Next step is to change/replace groupRecall to compute this by journal
     - might want to change some variable names here too,
     I found the code confusing: "true positive" has two different meanings
+
+May 16, 2019
+    Finished subsetPandR.py - a more general version of groupRecall.py. Allows
+    computation of recall/precision for papers by journal and by curation group.
+    
+    (using april 22, legends+words data, RF
+    subsetPandR.py --journal  ../Data/apr22/refStatuses.txt  RF.Apr22/RF_test_pred.tx)
+    Looking at journals, there are a couple of outliers to investigate:
+	cancer lett, arch biochem biophys, am j physiol cell physiol
