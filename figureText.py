@@ -33,7 +33,7 @@ class Text2FigConverter (object):
     """
 
     def __init__(self,
-		conversionType='legend', # which flavor above:
+		conversionType='legend', # which flavor discussed above:
 					# 'legend', 'paragraph', 'close words'
 		numWords=50,		# if 'close words', how many close words
 					#  to include on each side of "fig"
@@ -69,38 +69,21 @@ figureRe = re.compile(r'\b(?:fig(?:ure)?|table)s?\b', re.IGNORECASE)
 # match a word that can begin a figure or table legend.
 #   i.e., "fig" or "figure" or "supp...figure" or "table"
 #   Note no plurals
-legendRe = re.compile(r'(?:(?:supp\w*[ ])?fig(?:ure)?|table)\b', re.IGNORECASE)
+legendRe = re.compile(r'\b(?:(?:supp\w*[ ])?fig(?:ure)?|table)\b',re.IGNORECASE)
 
 #---------------------------------
-def figParagraphIterator(text,		# text (string) to search for paragraphs
-			onlyLegends=False,	# only fig/tbl start paragraphs
-						# vs. All paras that reference
-						#   figs/tbls
+
+def paragraphIterator(text,	# text (string) to search for paragraphs
     ):
+    """iterate through the paragraphs in text
     """
-    iterate through the paragraphs of 'text' that contain reference to a 
-    figure or table
-    """
-    eoText = len(text)		# index of 1st char not in text
-
-    startPara = 0		# index 1st char of potential para start
-
-    while startPara < eoText:
-
-	endPara = text.find(PARAGRAPH_BOUNDARY, startPara \
-						    + PARAGRAPH_BOUNDARY_LEN)
-	if endPara == -1:	# must be no more paragraph ends, at text end
-	    endPara = eoText
-
-	if onlyLegends: 
-	    if legendRe.match(text, startPara, endPara):
-		yield text[startPara : endPara].strip()
-	elif figureRe.search(text, startPara, endPara):
-		yield text[startPara : endPara].strip()
-
-	startPara = endPara + PARAGRAPH_BOUNDARY_LEN
-
-    return
+    start = 0
+    endPara = text.find(PARAGRAPH_BOUNDARY, start)
+    while endPara != -1:
+	yield text[start : endPara].strip()
+	start = endPara + PARAGRAPH_BOUNDARY_LEN
+	endPara = text.find(PARAGRAPH_BOUNDARY, start)
+    yield text[start: ].strip()
 #---------------------------------
 
 def text2FigText_Legend(text,
@@ -109,7 +92,7 @@ def text2FigText_Legend(text,
     Return list of paragraphs in text that are figure or table legends
     (paragraph starts with "fig" or "table")
     """
-    return list( figParagraphIterator(text, onlyLegends=True) )
+    return [ p for p in paragraphIterator(text) if legendRe.match(p) ]
 #---------------------------------
 
 def text2FigText_LegendAndParagraph(text,
@@ -118,7 +101,7 @@ def text2FigText_LegendAndParagraph(text,
     Return list of paragraphs in text that talk about figures or tables
     (includes legends)
     """
-    return list( figParagraphIterator(text) )
+    return [ p for p in paragraphIterator(text) if figureRe.search(p) ]
 #---------------------------------
 
 def text2FigText_LegendAndWords(text, numWords=50,
@@ -131,7 +114,7 @@ def text2FigText_LegendAndWords(text, numWords=50,
     """
     figParagraphs = []
 
-    for p in figParagraphIterator(text):
+    for p in paragraphIterator(text):
 	if legendRe.match(p):		# have figure/table legend
 	    figParagraphs.append(p)
 	else:				# not legend, get parts
@@ -146,33 +129,40 @@ def getFigureBlurbs(text, numWords=50,
     Search through text for references to figures/tables.
     Return a list of text blurbs consisting of numWords around those references
     """
-    blurbs = []
-    pieces = figureRe.split(text)	# chunks before, after, between "fig"
-    numPieces = len(pieces)
-    if numPieces == 0: return []
-    
-    # 1st, leading piece
-    words = pieces[0].split()		# split 1st piece into words[]
+    matches = list(figureRe.finditer(text))	# all matches of fig/tbl words
+
+    if len(matches) == 0: return []
+
+    blurbs = []				# text blurbs to return
+
+    # 1st, leading chunk before first fig/tbl word
+    m = matches[0]
+    textChunk = text[ : m.start() ]	# text before the fig/tbl word
+    words = textChunk.split()		# the words
     blurbs.append( ' '.join(words[-numWords:]) )
 
-    # for pieces between fig/tbl words
-    for i in range(1, numPieces-1):
-	words = pieces[i].split()	# split the piece into words[]
+    # for textChunks between fig/tbl words
+    for i in range(len(matches)-1):
+	textChunk = text[ matches[i].start() : matches[i+1].start() ]
+	words = textChunk.split()
 
-	# Have '...fig intervening text fig...', piece[i] is intervening text
+	# Have '...fig intervening text fig...',
+	#   words[] are the words in the intervening text.
 	# Could have two blurbs:  words[:numWords] and words[-numWords:]
 	# But if these two blurbs overlap, really only one blurb:
 	#   the whole intervening text
 
 	if numWords > len(words)/2:	# have overlap
-	    blurbs.append( ' '.join(words) )	# use the whole piece
-	else:					# have two blurbs in piece
-	    blurbs.append( ' '.join(words[:numWords]) )
+	    blurbs.append( ' '.join(words) )	# use the whole chunk
+	else:					# have two blurbs
+	    blurbs.append( ' '.join(words[:numWords+1])) # +1: incl 'fig' ref
 	    blurbs.append( ' '.join(words[-numWords:]) )
 
-    # last, trailing piece
-    words = pieces[numPieces-1].split()		# split last piece into words[]
-    blurbs.append( ' '.join(words[:numWords]) )
+    # last, trailing chunk after last fig/tbl word
+    m = matches[len(matches) -1]
+    textChunk = text[ m.start() : ]
+    words = textChunk.split()
+    blurbs.append( ' '.join(words[:numWords+1]) ) # +1: incl 'fig' ref
 
     return blurbs
 
@@ -212,25 +202,40 @@ here is a supp figure mention
 
 And here is the end of this amazing document. Really it is over
 """
+    if True:	# paragraphIterator
+	testCases = [ 'abc\n\ndef ghi\n\nthe end',
+		    '',
+		    'abc def',
+		    '\n\nabc def\n\n',
+		    ]
+	for text in testCases:
+	    print '--------'
+	    for p in paragraphIterator(text):
+		print "'%s'" % p
     if True:	# Legend and Paragraphs
+
+	print
+	print "Text2FigConverter Just Legends"
+	blurbs = Text2FigConverter().text2FigText(simpleTestDoc)
+	for b in blurbs:
+	    print b
+	    print
+	    #print "****|%s|****" % b
+
 	print
 	print "Text2FigConverter Legends and Paragraphs"
 	blurbs = Text2FigConverter(conversionType="paragraph").text2FigText(simpleTestDoc)
 	for b in blurbs:
-	    print "****|%s|****" % b
+	    print b
+	    print
+	    #print "****|%s|****" % b
 
 	print
 	print "Text2FigConverter Legends and Words"
 	blurbs = Text2FigConverter(conversionType="close words", numWords=5).text2FigText(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
-
-	print
-	print "Text2FigConverter Just Legends"
-	blurbs = Text2FigConverter().text2FigText(simpleTestDoc)
-	for b in blurbs:
-	    print "****|%s|****" % b
-
+	    print
     if False:
 	print "Should raise error"
 	c = Text2FigConverter(conversionType='foo').text2FigText('text')
@@ -242,32 +247,38 @@ And here is the end of this amazing document. Really it is over
 	simpleTestDoc = "no paragraph start but figure\n\n"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print "****|%s|****" % b
+	    print b
+	print
 
 	simpleTestDoc = "\n\nno paragraph end figure"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print "****|%s|****" % b
+	    print b
+	print
 
 	simpleTestDoc = "no paragraph start or end figure"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print "****|%s|****" % b
+	    print b
+	print
 
 	simpleTestDoc = ""
 	print "empty string"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print "****|%s|****" % b
+	    print b
+	print
 
-	simpleTestDoc = "s"
+	simpleTestDoc = "s\n\n figure 1 blah\n\nD\n\n a fig sentence\n\nE"
 	print "one character"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print "****|%s|****" % b
+	    print b
+	print
 
 	simpleTestDoc = "\n\n"
 	print "only para boundary"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print "****|%s|****" % b
+	    print b
+	print
