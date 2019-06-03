@@ -892,6 +892,21 @@ April 29, 2019
     - might want to change some variable names here too,
     I found the code confusing: "true positive" has two different meanings
 
+April 29, 2019
+    generated Data/apr29_norestrict which doesn't remove review and
+    non-peer reviewed articles to see how important those restrictions are.
+    Get:
+    ap_status      selected papers:  2166 predicted keep:  1988 recall: 0.918
+    gxd_status     selected papers:   178 predicted keep:   172 recall: 0.966
+    go_status      selected papers:  2188 predicted keep:  1967 recall: 0.899
+    tumor_status   selected papers:   217 predicted keep:   168 recall: 0.774
+    qtl_status     selected papers:     4 predicted keep:     3 recall: 0.750
+    Totals         selected papers:  2676 predicted keep:  2331 recall: 0.871
+
+    So this does hurt tumor recall significantly. 
+    So we should continue to restrict our sample set by leaving these papers
+    out.
+
 May 16, 2019
     Finished subsetPandR.py - a more general version of groupRecall.py. Allows
     computation of recall/precision for papers by journal and by curation group.
@@ -900,3 +915,95 @@ May 16, 2019
     subsetPandR.py --journal  ../Data/apr22/refStatuses.txt  RF.Apr22/RF_test_pred.tx)
     Looking at journals, there are a couple of outliers to investigate:
 	cancer lett, arch biochem biophys, am j physiol cell physiol
+
+May 17, 2019
+    Met w/ Joel, Jackie, and Richard yesterday to review where we are and what
+    next.
+    Summary of thoughts (roughly in order of difficulty):
+    1) Look at FN from journals with lower recall and see if there is anything
+	obvious going on (e.g., text extraction/finding figures is not good)
+
+    2) Pull together a small subset of FP and FN for some curators to review
+
+    3) Analyze confidence of predictions from SGDlog. I think we can automate
+	this analysis: Bin papers by confidence score and count numbers of
+	FP and FN per bin. See if higher confidence results in fewer FP/N.
+
+	Can try the same thing for RF, but need to see if I can get conf
+	scores from this model.
+	IF we find that confidence matters, during the curation process,
+	curators could look at low confidence discards to find FN's.
+	(Note, curators would not need to do anything special with FP assuming
+	they look at all predicted keepers anyway)
+
+    4) Look at new approach: one predictor for each curation group. Takes a
+	mouse paper and predicts relevance for that group, setting status to
+	routed or rejected.
+	Effectively, if rejected for all groups, it is a discard.
+	Need to ponder this to see how easy it would be to do.
+
+	Curator question: If this works, would we even need a discard flag
+	    anymore?  I.e, is discard really equivalent to reject by all groups?
+	    Isn't discard flag (currently) only necessary so 1ary triage can
+	    inform 2ary triage?
+
+    5) Can we get an estimate of curators' recall?
+	We mentioned the idea of curators looking at predicted FN from these
+	models, but that would be starting with FN from the predictor.
+	Curators could have a FN from ANY curated discard, independent of
+	what the model predicts.
+	It seems to me we'd really need for curators to look at a subset
+	of discards from the db and evaluate if they really should be discards.
+	Not sure we could compute recall from this because we'd need an
+	estimate of the curator TP too, but we could estimate a FN rate.
+
+May 28, 2019
+    looking at PMID 28701356 from Am J Physiol Cell Physiol to see if its text
+    extracted ok and/or figure text extraction worked ok.
+
+    Finding some bugs in figureText.py.
+	1) in figParagraphIterator(), it doesn't find the start of a para
+	    if the previous paragraph was only one char (text from tables
+	    and such in extracted text can be single characters).
+	    This causes it to miss a figure legend and instead think it is a
+	    para that references a figure - not too serious a bug, but 
+	    some of the figure legend may be omitted.
+	2) the matching term "fig" or "figure", etc. is omitted from the text,
+	    making it hard find things in the extracted text
+    BUT it seems like the text is extracted reasonably and most of the figure
+    text is found and pulled out.
+
+    I looked at extracted text from 28835433 28701356 30156861 30110564
+	all looks reasonable.
+    Recall is probably low because there are so few Keep's: 5FN out of 8
+	keepers in the test set.
+    So I don't see any structural problem.
+
+May 30, 2019
+    Link to graph showing P & R by journal:
+    https://docs.google.com/spreadsheets/d/1MQmKSkqv3rOhrD3Xxjk2uLchQx1BU25IebBwAnlLjuw/edit?pli=1#gid=3923920
+    Most of the journals w/ low R have very few TP and FN (in particular), so
+    their recall scores don't mean much.
+    The journal w/ R < .8 and the biggest FN is j_biol_chem. I'll look at this.
+
+June 3, 2019
+    Finished cleaning up figureText.py to address the issues above.
+    Wrote text2figureText.py to extract fig text from a file.
+    Wrote sampleFile2Ref.py so it would be easier to look at the extracted text
+	from sample files.
+
+    FINALLY  back to looking at FN:  J_Biol_Chem is the journal with poorer
+    R and not just a few FN. Here is what I found:
+	1) sometimes paragraph boundaries are not appearing in extracted text so
+	figure "paragraphs" would get big. Figure "words" will also pick up
+	words across paragraph boundaries and figure legend starts may not be
+	recognized as legends
+	(this will be worse if we are doing Legends + Paragraphs instead of
+	words)
+	example 24451367 - look after Fig. 1D, and "Fig. 1G, left"
+	example 29358324 - look at text after Fig. 1D and around Fig. 2A
+	example 30156861 after "Fig. 4, C and D)". 
+
+	I don't think these are very serious issues, so I don't think they
+	explain why j_biol_chem has lower R.
+
