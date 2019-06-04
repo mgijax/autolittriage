@@ -18,8 +18,8 @@ def parseCmdLine():
     parser.add_argument('--justtext', dest='justText', action='store_true',
         help="output just the text of the article, not the full sample record")
 
-    parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
-        required=False, help="skip helpful messages to stderr")
+    parser.add_argument('-v', '--verbose', dest='verbose', action='store_true',
+        required=False, help="include helpful messages to stderr")
 
     args = parser.parse_args()
 
@@ -47,11 +47,16 @@ def main():
 	sr = sampleDataLib.SampleRecord(rcd)
 
 	if sr.getID() in args.pmids: 
+	    verbose("Pubmed %s found at record number %d\n" % (sr.getID(), rcdnum))
 	    if args.justText:
 		sys.stdout.write(sr.getDocument())
 		sys.stdout.write(';;\n')
 	    else:
 		sys.stdout.write(sr.getSampleAsText())
+
+#---------------------------
+def verbose(text):
+    if args.verbose: sys.stderr.write(text)
 
 if __name__ == "__main__":
     main()

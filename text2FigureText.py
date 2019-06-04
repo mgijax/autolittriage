@@ -1,6 +1,6 @@
 #!/usr/bin/env python2.7
 
-# Read a text file (extracted text) (currently stdin) and run the
+# Read a text file (extracted text) (from stdin) and run the
 #  figure text extraction, output the figure text to stdout.
 #
 

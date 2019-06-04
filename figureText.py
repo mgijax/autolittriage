@@ -135,47 +135,83 @@ def getFigureBlurbs(text, numWords=50,
 
     blurbs = []				# text blurbs to return
 
-    # 1st, leading chunk before first fig/tbl word
+    # 1st match, leading chunk before first fig/tbl word
     m = matches[0]
     textChunk = text[ : m.start() ]	# text before the fig/tbl word
     words = textChunk.split()		# the words
-    blurbs.append( ' '.join(words[-numWords:]) )
 
-    # for textChunks between fig/tbl words
+	# curBlurb is text so far of the numWords around the current
+	#   match we are looking at
+    curBlurb = ' '.join(words[-numWords:])	# Start w/ words before 1st m
+
+    # for each match before last one,
+    #   look at textChunks between fig word matches
     for i in range(len(matches)-1):
 	textChunk = text[ matches[i].start() : matches[i+1].start() ]
-	words = textChunk.split()
+	words = textChunk.split() 	# words incl 1st fig word but not 2nd
 
-	# Have '...fig intervening text fig...',
-	#   words[] are the words in the intervening text.
+	# Have '...fig ... intervening text fig...',
+	#   words[] are the words in   fig ...intervening text
 	# Could have two blurbs:  words[:numWords] and words[-numWords:]
 	# But if these two blurbs overlap, really only one blurb:
 	#   the whole intervening text
 
-	if numWords > len(words)/2:	# have overlap
-	    blurbs.append( ' '.join(words) )	# use the whole chunk
-	else:					# have two blurbs
-	    blurbs.append( ' '.join(words[:numWords+1])) # +1: incl 'fig' ref
-	    blurbs.append( ' '.join(words[-numWords:]) )
+	if numWords > (len(words)-1)/2:	# have overlap (-1: dont count fig word)
+	    curBlurb += ' ' + ' '.join(words)	# no blurb boundary yet
 
-    # last, trailing chunk after last fig/tbl word
+	else:				# have 2 blurbs & blurb boundary
+	    eoBlurbWords = ' '.join(words[:numWords+1]) # +1: incl 'fig' word
+	    curBlurb += ' ' + eoBlurbWords
+	    blurbs.append(curBlurb)			# save this blurb
+
+	    curBlurb = ' '.join(words[-numWords:]) 	# start new blurb
+
+    # last match, trailing chunk after last fig/tbl word
     m = matches[len(matches) -1]
     textChunk = text[ m.start() : ]
     words = textChunk.split()
-    blurbs.append( ' '.join(words[:numWords+1]) ) # +1: incl 'fig' ref
+    curBlurb += ' ' + ' '.join(words[:numWords+1])	# +1: incl 'fig' word
+    blurbs.append(curBlurb)
 
     return blurbs
-
 #---------------------------------
+
 if __name__ == "__main__": 	# ad hoc test code
     testDoc = """
-table paragraph 2 has a legend figure 1 blah0 blah1 blah2 blah3 blah4 fig 2 and more fig
-"""
+    initial first words table fig
+    blah1 fig
+    blah2 blah3 fig
+    blah4 blah5 blah6 fig
+    blah7 blah8 blah9 blah10 fig
+    blah11 blah12 blah13 blah14 blah15 fig
+    blah16 blah17 blah18 blah19 blah20 blah21 fig
+    blah22 blah23 blah24 blah25 blah26 blah27 blah28 fig
+    final words
+    """
     if True:	# getFigureBlurbs()
-	print " getFigureBlurbs()"
+	print "getFigureBlurbs() w/ numWords=2"
 	blurbs = getFigureBlurbs(testDoc, numWords=2)
 	for b in blurbs:
 	    print "****|%s|****" % b
+
+	print
+	print "getFigureBlurbs() w/ numWords=3"
+	blurbs = getFigureBlurbs(testDoc, numWords=3)
+	for b in blurbs:
+	    print "****|%s|****" % b
+
+    if True:	# paragraphIterator
+	print
+	print 'paragraphIterator'
+	testCases = [ 'abc\n\ndef ghi\n\nthe end',
+		    '',
+		    'abc def',
+		    '\n\nabc def\n\n',
+		    ]
+	for text in testCases:
+	    print '--------'
+	    for p in paragraphIterator(text):
+		print "'%s'" % p
 
     simpleTestDoc = """
 start of text. Fig 1 is really interesting, I mean it. Really.
@@ -193,25 +229,18 @@ Figures can be helpful, but this is not a figure legend.
 Some text about tables. blah blah.
 
 Table: the start of a table
+and this is a bit more of the caption.
 
 Figure 2: this is caption 2. Also spellbinding
+and this is a bit more of the caption.
 
 Supplemental Figure 3: this is the caption of a supplemental figure.
+and this is a bit more of the caption.
 
 here is a supp figure mention
 
 And here is the end of this amazing document. Really it is over
 """
-    if True:	# paragraphIterator
-	testCases = [ 'abc\n\ndef ghi\n\nthe end',
-		    '',
-		    'abc def',
-		    '\n\nabc def\n\n',
-		    ]
-	for text in testCases:
-	    print '--------'
-	    for p in paragraphIterator(text):
-		print "'%s'" % p
     if True:	# Legend and Paragraphs
 
 	print
@@ -231,7 +260,7 @@ And here is the end of this amazing document. Really it is over
 	    #print "****|%s|****" % b
 
 	print
-	print "Text2FigConverter Legends and Words"
+	print "Text2FigConverter Legends and Words, numWords=5"
 	blurbs = Text2FigConverter(conversionType="close words", numWords=5).text2FigText(simpleTestDoc)
 	for b in blurbs:
 	    print "****|%s|****" % b
@@ -247,38 +276,38 @@ And here is the end of this amazing document. Really it is over
 	simpleTestDoc = "no paragraph start but figure\n\n"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print b
+	    print "'%s'" % b
 	print
 
 	simpleTestDoc = "\n\nno paragraph end figure"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print b
+	    print "'%s'" % b
 	print
 
 	simpleTestDoc = "no paragraph start or end figure"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print b
+	    print "'%s'" % b
 	print
 
 	simpleTestDoc = ""
 	print "empty string"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print b
+	    print "'%s'" % b
 	print
 
 	simpleTestDoc = "s\n\n figure 1 blah\n\nD\n\n a fig sentence\n\nE"
 	print "one character"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print b
+	    print "'%s'" % b
 	print
 
 	simpleTestDoc = "\n\n"
 	print "only para boundary"
 	blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
 	for b in blurbs:
-	    print b
+	    print "'%s'" % b
 	print
