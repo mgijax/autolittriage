@@ -1007,3 +1007,60 @@ June 3, 2019
 	I don't think these are very serious issues, so I don't think they
 	explain why j_biol_chem has lower R.
 
+June 4, 2019
+    Improved to figureText.py handling of Legends+Words. Now outputs a complete
+    blurb ...text figure text... rather than splitting that into two blurbs
+    '...text' and 'figure text... - and it keeps the "figure" text in the blurb
+    (it used to delete it). Now it is much easier to see what fig text is being
+    pulled out.
+
+    Looking at precision and recall by journal (for Random Forest).
+    Item (1) from May 17
+    See graphs:
+    https://docs.google.com/spreadsheets/d/1MQmKSkqv3rOhrD3Xxjk2uLchQx1BU25IebBwAnlLjuw/edit?pli=1#gid=203117656
+    and
+    https://docs.google.com/spreadsheets/d/1MQmKSkqv3rOhrD3Xxjk2uLchQx1BU25IebBwAnlLjuw/edit?pli=1#gid=925762984
+
+    sci_transl_med is journal w/ reasonable size FP and poor Precision.
+    Looking at examples to see if text extraction, figure text extraction is messed.
+
+    Looking at 29093181 it is TN
+	some paragraph boundaries are missing so Legends+Words bleeds across some
+	paragraphs. See "KIT activation loop mutants display affinity for
+	type I inhibitors". The next two paragraphs are joined
+
+	Also the paragraph flow order is pretty weird - but probably doesn't affect
+	anything (even crosses page boundaries)
+    Looking at 28931657 FP
+	WAS marked as discard on Apr 22, but now is not discard and is AP indexed.
+	So it is really a TP not an FP
+	similar issues to 29093181. Fig legend that is only recognized as a fig
+	paragraph because page footer bleads into "Fig. 1."
+    Looking at 28794285 FP
+	(still is discard)
+	Similar problems, but sometimes 2 columns of text are read as one right
+	across the page. See paragraph with "fig. S1, E"
+    Looking at 29118259 FP - still an FP
+
+    nat_genet - low precision, but only has 2 keeps of 52 articles,
+	predictor has 5 FP so numbers too small to be significant.
+
+	Looked at 25362484. Just one example of issues. "Figure 1" is not recognized
+	as legend because the 1st word in the image "Measurable" is extracted as
+	the word before "Figure 1". Nothing is perfect!
+June 10, 2019
+    Looking into confidence scores for SGDlog (from jan 2 data) - item (3) from
+    May 17 meeting.
+    See
+    https://docs.google.com/spreadsheets/d/1FIu615HU48mVaVF71nl7jXMVNI-MZ4qHhS2cMJLdiBQ/edit#gid=1635760950
+
+    Bottom line:
+	yes, NPV does correlate with negative prediction "confidence" for SGDlog,
+	however since NPV is pretty high even for low confidence, it is not clear
+	that it would be worth curator time to look at lower confidence
+	predictions.
+	Would be curator judgement.
+	UPON further looking, NPV correlates with confidence only for larger
+	confidence bins. If you set the bin range to be smaller, things don't
+	correlate so well.
+

@@ -58,7 +58,7 @@ class Paper (object):
     def __init__(self, record):
 	FIELDSEP = '|'		# should really get this from sampleDataLib
 	(self.pubmed,
-	self.classification,
+	self.trueClass,
 	self.ap,
 	self.gxd,
 	self.go,
@@ -94,7 +94,7 @@ class SubsetOfPapers (object):
     """ IS:   Information about a subset of papers
 	HAS:  Counts of papers in subset, TP, FN, FP, TN
 	DOES: Decide if a paper belongs to this subset, 
-	      Compute Precision/Recall for this subset of papers
+	      Compute Precision/Recall/NPV for this subset of papers
     """
     def __init__(self, subsetName):
 	""" subsetName = 'ap_status' or 'gxd_status' ..."""
@@ -106,17 +106,20 @@ class SubsetOfPapers (object):
 	self.numTN = 0	# n papers in subset correctly predicted discard
     # ---------------------
 
-    def paperInSubset(self, paper):
-	""" Return true if the paper is in this subset"""
+    def isPaperInSubset(self, paper):
+	"""
+	Abstract method.
+	Return true if the paper is in this subset
+	"""
 	return True
     # ---------------------
 
     def paperVsPrediction(self, paper, prediction):
-	""" Compare paper status/classification to prediction
+	""" Compare paper trueClass to prediction
 	"""
-	if self.paperInSubset(paper):
+	if self.isPaperInSubset(paper):
 	    self.numInSubset += 1
-	    if paper.classification == "keep":
+	    if paper.trueClass == "keep":
 		if prediction.predClass =="keep":
 		    self.numTP += 1
 		else:
@@ -145,17 +148,24 @@ class SubsetOfPapers (object):
 	if denom == 0: return 0
 	else: return float(self.numTP)/float(denom)
 
+    def getNPV(self):
+	# negative predictive value, like precision but for negatives
+	denom = self.numTN + self.numFN
+	if denom == 0: return 0
+	else: return float(self.numTN)/float(denom)
+
 #----------------------
 
 class CurationGroup (SubsetOfPapers):
     """ IS:   A SubsetOfPapers selected by a curation group, e.g, AP, GO, ...
 	NOTE: Looking at recall for papers selected by an individual curation
-		group makes sense: how many papers selected are predicted keep.
-	      Precision is not useful, it should always be 1 since the subset
-	        only includes keepers, no discards, so there should be no
-		FP
+		group makes sense: how many papers actually selected are predicted
+		keep.
+	      But any paper selected by the group is inherently a "keep", so
+		we don't see any true discards *in* a curation group.
+	      So within the group, precision = 1 and NPV = 0: not useful
     """
-    def paperInSubset(self, paper):
+    def isPaperInSubset(self, paper):
 	status = paper.__getattribute__(self.subsetName)
 	return status in ['chosen', 'indexed', 'full-coded']
 #----------------------
@@ -163,7 +173,7 @@ class CurationGroup (SubsetOfPapers):
 class JournalGroup (SubsetOfPapers):
     """ IS:   A SubsetOfPapers from a given journal
     """
-    def paperInSubset(self, paper):
+    def isPaperInSubset(self, paper):
 	return paper.journal == self.subsetName
 #----------------------
 
@@ -244,8 +254,8 @@ def doJournalGroup(journalGroups, paper, pred):
 # ---------------------
 
 def printJournalGroupReport(journalGroups, allPapers):
-    hdr = '%6s\t%6s\t%6s\t%6s\t%6s\t%5s\t%5s\t%s' \
-		% ('Papers', 'TP', 'TN', 'FN', 'FP', 'P', 'R', 'journal')
+    hdr = '%6s\t%6s\t%6s\t%6s\t%6s\t%5s\t%5s\t%5s\t%s' \
+		% ('Papers', 'TP', 'TN', 'FN', 'FP', 'P', 'R', 'NPV', 'journal')
     print hdr
 
     for jname in sorted(journalGroups.keys()):
@@ -263,10 +273,11 @@ def formatSubsetLine(subset):
 	FP      = subset.getFP()
 	p       = subset.getPrecision()
 	r       = subset.getRecall()
+	npv     = subset.getNPV()
 	name    = subset.getSubsetName()
 
-	return '%6d\t%6d\t%6d\t%6d\t%6d\t%5.3f\t%5.3f\t%s' \
-		    % (nPapers, TP, TN, FN, FP, p, r, name)
+	return '%6d\t%6d\t%6d\t%6d\t%6d\t%5.3f\t%5.3f\t%5.3f\t%s' \
+		    % (nPapers, TP, TN, FN, FP, p, r, npv, name)
 # ---------------------
 
 def printCurationGroupReport(curationGroups, allPapers):
