@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7 
 #
-# Library to support handling of lit triage text documents
+# Library to support handling of lit triage samples (training samples or
+#  samples to predict)
 #
 import sys
 import string
@@ -9,8 +10,6 @@ import ConfigParser
 import nltk.stem.snowball as nltk
 import figureText
 import featureTransform
-#sys.path.extend(['..', '../..', '../../..'])
-#from refSectionLib import RefSectionRemover
 #-----------------------------------
 cp = ConfigParser.ConfigParser()
 cp.optionxform = str # make keys case sensitive
@@ -20,166 +19,139 @@ cl = ['/'.join(l)+'/config.cfg' for l in [['.']]+[['..']*i for i in range(1,6)]]
 cp.read(cl)
 
 FIELDSEP     = eval( cp.get("DEFAULT", "FIELDSEP") )
-RECORDSEP    = eval( cp.get("DEFAULT", "RECORDSEP") )
+RECORDEND    = eval( cp.get("DEFAULT", "RECORDEND") )
 CLASS_NAMES  = eval( cp.get("CLASS_NAMES", "y_class_names") )
-
-TEXT_PART_SEP = '::::\n'	# separates title, abstract, extr text
 
 FIG_CONVERSION        = cp.get("DEFAULT", "FIG_CONVERSION")
 FIG_CONVERSION_NWORDS = cp.getint("DEFAULT", "FIG_CONVERSION_NWORDS")
 figConverter = figureText.Text2FigConverter(conversionType=FIG_CONVERSION,
 						numWords=FIG_CONVERSION_NWORDS)
 
-# As is the sklearn convention we use
-#  y_true to be the index of the known class of a sample (from training set)
-#  y_pred is the index of the predicted class of a sample/record
+class ClassifiedSampleSet (object):
+    """
+    IS:     a set of ClassifiedSamples records
+    HAS:    sample record list, ...
+    DOES:   Loads/parses sample records from a sample record file
+	    Writes sample records to a file
+
+    Note: might want to implement a way to iterate through Samples so not all
+	    are held in memory at a time. Particularly if outside of this class,
+	    we are pulling each of the sample docs into a list or data structure,
+	    since then we'd be storing the text of each document twice.
+	    Could write an iterator that uses input file iterator to just get the
+	    next Sample (kind of a pain since we'd have to buffer lines until a
+	    Sample record sep is found).
+	    Or perhaps a way to say "kill/truncate a Sample" after it is used
+	    by the caller.
+	    For now, lets not worry and hope garbage collection takes care of 
+	    things ok.
+    """
+    def __init__(self,):
+	self.samples = []
+    #-------------------------
+
+    def read(self, inFile,	# file pathname or open file obj for reading
+	):
+	"""
+	Assumes sample record file is not empty
+	"""
+	if type(inFile) == type(''): fp = open(inFile, 'r')
+	else: fp = inFile
+
+	self.textToSamples(fp.read())
+	return self
+    #-------------------------
+
+    def textToSamples(self, text,
+	):
+	rcds = text.split(RECORDEND)
+	del rcds[0]             # header line
+	del rcds[-1]            # empty string after end of split
+
+	self.samples = [ ClassifiedSample().parseInput(sr) for sr in rcds ]
+	return self
+    #-------------------------
+
+    def write(self, outFile,	# file pathname or open file obj for writing
+	):
+	if type(outFile) == type(''): fp = open(outFile, 'w')
+	else: fp = outFile
+
+	fp.write(self.getHeaderLine() + RECORDEND)
+	for s in self.samples:
+	    fp.write(s.getSampleAsText() + RECORDEND)
+	return self
+    #-------------------------
+
+    def addSample(self, sample,		# ClassifiedSample
+	):
+	if not isinstance(sample, ClassifiedSample):
+	    raise TypeError('Invalid sample type %s' % str(type(sample)))
+	self.samples.append(sample)
+	return self
+    #-------------------------
+
+    def getSamples(self):		return self.samples
+    def getRecordEnd(self):		return RECORDEND
+    def getHeaderLine(self):		return ClassifiedSample.getHeaderLine()
+    def getExtraInfoFieldNames(self):
+	return ClassifiedSample.getExtraInfoFieldNames()
+
+# end class ClassifiedSampleSet -----------------------------------
 
 #-----------------------------------
-# Regex's
-miceRegex    = re.compile( r'\bmice\b', flags=re.IGNORECASE)
+# Regex's and stemmer for preprocessors
 urls_re      = re.compile(r'\b(?:https?://|www[.]|doi)\S*',re.IGNORECASE)
 token_re     = re.compile(r'\b([a-z_]\w+)\b',re.IGNORECASE)
-className_re = re.compile(r'\b(\w+)\b')	# valid class names (all alpha numeric)
 
 stemmer = nltk.EnglishStemmer()
-
 #-----------------------------------
 
-class SampleRecord (object):
+class BaseSample (object):
     """
     Represents a training sample or a sample to predict.
     A training sample has a known class that it belongs to,
-    A sample to predict may or may not have a known class (sometimes we
-	do predictions on samples for which we know what class they belong to)
-    Knows how to take a text representation of a record (typically a
-	text string with delimitted fields) and parse into its fields
-    Provides various methods to preprocess a sample record (if any)
+    A sample to predict does not have a known class
 
-    A SampleRecord can be marked as "reject". Has rejectReason, ...
+    Provides various methods to preprocess a sample record
     """
-    def __init__(self, s,):
-
-	self.rejected  = False
-	self.rejectReason = None
-	self.parseInput(s)
-    #----------------------
-
-    def parseInput(self, s):
-	fields = s.split(FIELDSEP)
-
-	if len(fields) == 8:	# have known class name as 1st field
-	    self.knownClassName = self.validateClassName(fields[0])
-	    fields = fields[1:]
-	else:
-	    self.knownClassName = None
-
-	self.ID            = str(fields[0])
-	self.creation_date = str(fields[1])
-	self.year          = str(fields[2])
-	self.journal       = fields[3]
-	self.title         = fields[4]
-	self.abstract      = fields[5]
-	self.extractedText = fields[6]
-	
-    #----------------------
-    def validateClassName(self, name):
-	"""
-	Given the potential sample class 'name',
-	1) transform it as needed: remove any leading/trailing spaces and punct
-	2) validate the name is a CLASS_NAME
-	Return the cleaned up name and set self.rejected if it is not valid.
-	The need for this arose when using ';;' as the record sep and having
-	   some extracted text ending in ';'. So splitting records on ';;'
-	   left the record's class as ';discard' which caused problems down
-	   the line.
-	"""
-	m = className_re.search(name)
-	if m and m.group() in CLASS_NAMES:	# have match
-	    return m.group()
-	self.rejected = True
-	self.rejectReason = "invalid class name '%s'" % (name)
-	return name 
+    def __init__(self,):
+	pass
     #----------------------
 
     def constructDoc(self):
-	# Do what needs to be done to construct the text doc
-	# FIXME: not sure if we should joining with the TEXT_PART_SEP. But since
-	#    we'd be  adding punctuation and we've likely already removed punct
-	#    from the text files in other preprocessing steps. Hmmm...
-	text = ' '.join([self.title, self.abstract,
-						self.extractedText])
-	return text
+	return '\n'.join([self.title, self.abstract, self.extractedText])
+
     #----------------------
-
-    def getSampleAsText(self):
-	# return this record as a text string
-
-	if self.rejected: return None
-
-	if self.knownClassName:
-	    fields = [self.knownClassName]
-	else:
-	    fields = []
-
-	# make sure title starts with '\n' so we can find the record boundaries
-	#  during debugging
-	#if self.title[0] == '\n': title = self.title
-	#else: title = '\n' + self.title
-
-	fields += [ self.ID,
-		    self.creation_date,
-		    self.year,
-		    self.journal,
-		    self.title,	
-		    self.abstract,
-		    self.extractedText,
-		    ]
-	return FIELDSEP.join( fields) + RECORDSEP
-    #----------------------
-
-    def getKnownClassName(self): return self.knownClassName
-    def getKnownYvalue(self):	return CLASS_NAMES.index(self.knownClassName)
-
     def getSampleName(self):	return self.ID
     def getSampleID(self):	return self.getSampleName()
     def getID(self):		return self.getSampleName()
     def getName(self):		return self.getSampleName()
 
-    def getJournal(self):	return self.journal
     def getTitle(self):		return self.title
     def getAbstract(self):	return self.abstract
     def getExtractedText(self): return self.extractedText
     def getDocument(self):	return self.constructDoc()
-    def isReject(self):		return self.rejected
-    def getRejectReason(self):	return self.rejectReason
+    #----------------------
+
+    # preprocessSamples.py script checks for rejected samples.
+    #  For autolittriage, we don't have any checks to reject samples (yet)
+    def isReject(self):		return False
+    def getRejectReason(self):	return None
+    #----------------------
 
     #----------------------
-    # "Preprocessor" functions.
-    #  Each Preprocessor should modify this sample and return itself
+    # "preprocessor" functions.
+    #  Each preprocessor should modify this sample and return itself
     #----------------------
-#    refRemover = RefSectionRemover(maxFraction=0.4) # finds ref sections
-#
-#    def removeRefSection(self):
-#	self.doc = refRemover.getBody(self.doc)
-#	return self
-    # ---------------------------
 
-    def rejectIfNoMice(self):	# preprocessor
-				# might
-	if not miceRegex.search(self.title + self.abstract +
-							self.extractedText):
-	    self.rejected = True
-	    self.rejectReason = "Mice not found"
-	return self
-    # ---------------------------
-
-    def figureText(self):	# preprocessor
+    def figureText(self):		# preprocessor
 	self.extractedText = '\n'.join( \
 			    figConverter.text2FigText(self.extractedText))
 	return self
     # ---------------------------
 
-    def featureTransform(self):	# preprocessor
+    def featureTransform(self):		# preprocessor
 	self.title         = featureTransform.transformText(self.title)
 	self.abstract      = featureTransform.transformText(self.abstract)
 	self.extractedText = featureTransform.transformText(self.extractedText)
@@ -200,8 +172,6 @@ class SampleRecord (object):
 	    for s in urls_re.split(text): # split and remove URLs
 		s = featureTransform.transformText(s).lower()
 		for m in token_re.finditer(s):
-		    # this would be the place to remove stop words or do
-		    #  other token mappings, e.g., "e12" -> e_day
 		    output += " " + stemmer.stem(m.group())
 	    return  output
 	#------
@@ -212,7 +182,7 @@ class SampleRecord (object):
 	return self
     # ---------------------------
 
-    def removeURLs(self):	# preprocessor
+    def removeURLs(self):		# preprocessor
 	'''
 	Remove URLs, lower case everything,
 	'''
@@ -220,17 +190,16 @@ class SampleRecord (object):
 	def _removeURLs(text):
 	    output = ''
 	    for s in urls_re.split(text):
-		output += ' ' + s.lower
+		output += ' ' + s.lower()
 	    return output
 	#------
-
 	self.title         = _removeURLs(self.title)
 	self.abstract      = _removeURLs(self.abstract)
 	self.extractedText = _removeURLs(self.extractedText)
 	return self
     # ---------------------------
 
-    def tokenPerLine(self):	# preprocessor
+    def tokenPerLine(self):		# preprocessor
 	"""
 	Convert text to have one token per line.
 	Makes it easier to examine the tokens/features
@@ -244,24 +213,14 @@ class SampleRecord (object):
 		output += m.group().strip() + '\n'
 	    return  output
 	#------
-
 	self.title         = _tokenPerLine(self.title)
 	self.abstract      = _tokenPerLine(self.abstract)
 	self.extractedText = _tokenPerLine(self.extractedText)
 	return self
     # ---------------------------
 
-    def addJournalFeature(self):	# preprocessor
-	'''
-	add the journal name as a text token to the document
-	'''
-	jtext = 'journal__' + '_'.join( self.journal.split(' ') ).lower()
-	self.extractedText += " " + jtext
-	return self
-    # ---------------------------
-
-    def truncateText(self):	# preprocessor
-	# for debugging, so you can see a sample record easily
+    def truncateText(self):		# preprocessor
+	""" for debugging, so you can see a sample record easily"""
 	
 	self.title = self.title[:10].replace('\n',' ')
 	self.abstract = self.abstract[:20].replace('\n',' ')
@@ -269,131 +228,195 @@ class SampleRecord (object):
 	return self
     # ---------------------------
 
-    def removeText(self):	# preprocessor
-	# for debugging, so you can see a sample info easily
+    def removeText(self):		# preprocessor
+	""" for debugging, so you can see a sample record easily"""
 	
 	self.title = self.title[:10].replace('\n',' ')
-	self.abstract = 'abstract'
-	self.extractedText = 'text\n'
+	self.abstract = 'abstract...'
+	self.extractedText = 'extracted text...\n'
 	return self
-# end class SampleRecord ------------------------
+# end class BaseSample ------------------------
 
-class PredictionReporter (object):
-
-# NOT MODIFIED YET TO HANDLE AUTOMATED TRIAGE SAMPLES!
+class ClassifiedSample (BaseSample):
     """
-    Knows how to generate/format prediction reports for SampleRecords and their
-    predictions from some model.
-
-    Provides two types of reports
-	a "short" prediction file with basic sample info + the prediction
-	a longer prediction file that has additional info including the doc
-	itself.
-
-    Knows the structure of a SampleRecord.
+    Represents a training sample that has a known classification (keep/discard)
+    Knows how to take a text representation of a record (typically a
+	text string with delimitted fields) and parse into its fields
+    Provides various methods to preprocess a sample record (if any)
     """
+    def __init__(self,):
+	super(type(self), self).__init__()
+    #----------------------
 
-    rptFieldSep = '\t'
+    def setFields(self, values,		# dict
+	):
+	self.knownClassName = self.validateClassName(values['knownClassName'])
+	self.ID             = str(values['ID'])
+	self.creation_date  = str(values['creation_date'])
+	self.year           = str(values['year'])
+	self.journal        = values['journal']
+	self.title          = values['title']
+	self.abstract       = values['abstract']
+	self.extractedText  = values['extractedText']
 
-    def __init__(self,  exampleSample,		# an example SampleRecord
-			hasConfidence=False,	# T/F the predicting model has
-					    	#  confidences for predictions
-			):
-	# we assume if this exampleSample record has a knownClass, then
-	#  all samples have a knownClass, and we should report that column
-	self.exampleSample  = exampleSample
-	self.knownClassName = exampleSample.getKnownClassName()
-	self.hasConfidence  = hasConfidence
+	return self
+    #----------------------
+	
+    def validateClassName(self, name):
+	"""
+	1) validate name is a CLASS_NAME
+	2) transform it as needed: remove any leading/trailing spaces and punct
+	Return the cleaned up name.
+	The orig need for cleaning up arose when using ';;' as the record sep
+	    and having some extracted text ending in ';'.
+	    So splitting records on ';;' left the record's class as ';discard'
+	    which caused problems down the line.
+	"""
+	className_re = re.compile(r'\b(\w+)\b')	# all alpha numeric
+	m = className_re.search(name)
 
-    def getPredHeaderColumns(self):
-	# return list of column names for a header line
-	cols = [ "ID" ]
-	if self.exampleSample.knownClassName != None: cols.append("True Class")
-	cols.append("Pred Class")
-	if self.hasConfidence:
-	    cols.append("Confidence")
-	    cols.append("Abs Value")
-	return cols
+	if m and m.group() in CLASS_NAMES:
+	    return m.group()
+	else:
+	    raise ValueError("Invalid sample class name '%s'\n" % str(name))
+    #----------------------
 
-    def getPredOutputHeader(self):
-	# return formatted header line for prediction report
-	cols = self.getPredHeaderColumns()
-	return self.rptFieldSep.join(cols) + '\n'
+    def parseInput(self, s):
+	fields = s.split(FIELDSEP)
 
-    def getPredLongOutputHeader(self):
-	# return formatted header line for Long prediction report
-	cols = self.getPredHeaderColumns()
-	cols.append("isDiscard")
-	cols.append("status")
-	cols.append("journal")
-	cols.append("Processed text")
-	return self.rptFieldSep.join(cols) + '\n'
+	# JIM extra info fields
+	return self.setFields( { \
+	    'knownClassName': fields[0],
+	    'ID'            : fields[1],
+	    'creation_date' : fields[2],
+	    'year'          : fields[3],
+	    'journal'       : fields[4],
+	    'title'         : fields[5],
+	    'abstract'      : fields[6],
+	    'extractedText' : fields[7],
+	    } )
+    #----------------------
 
-    def getPredictionColumns(self, sample, y_pred, confidence):
-	# return list of values to output for the prediction for this sample
-	# y_pred is the predicted class index, not the class name
-	cols = [ sample.ID ]
-	if self.knownClassName != None:  cols.append(sample.knownClassName)
-	cols.append(CLASS_NAMES[y_pred])
-	if self.hasConfidence:
-	    if confidence != None:
-		cols.append("%6.3f" % confidence)
-		cols.append("%6.3f" % abs(confidence))
-	    else:	# don't expect this would ever happen, but to be safe
-		cols.append("none")
-		cols.append("none")
-	return cols
+    def getSampleAsText(self):
+	""" Return this record as a text string
+	"""
+		    # JIM get extra info fields (i.e., just more fields)
+	fields = [ self.knownClassName,
+		    self.ID,
+		    self.creation_date,
+		    self.year,
+		    self.journal,
+		    self.title,	
+		    self.abstract,
+		    self.extractedText,
+		    ]
+	return FIELDSEP.join( fields)
+    #----------------------
 
-    def getPredOutput(self, sample, y_pred, confidence=None):
-	# return formatted line for the prediction report for this sample
-	# y_pred is the predicted class index, not the class name
-	cols = self.getPredictionColumns(sample, y_pred, confidence)
-	return self.rptFieldSep.join(cols) + '\n'
+    @classmethod
+    def getHeaderLine(cls):
+	""" Return sample output file column header line
+	"""
+		    # JIM get extra info fields (i.e., just more fields)
+	fields = [ 'knownClassName',
+		    'ID',
+		    'creation_date',
+		    'year',
+		    'journal',
+		    'title',	
+		    'abstract',
+		    'extractedText',
+		    ]
+	return FIELDSEP.join( fields)
+    #----------------------
 
-    def getPredLongOutput(self, sample, y_pred, confidence=None):
-	# return formatted line for the Long prediction report for this sample
-	# y_pred is the predicted class index, not the class name
-	cols = self.getPredictionColumns(sample, y_pred, confidence)
-	cols.append(sample.isDiscard)
-	cols.append(sample.status)
-	cols.append(str(sample.journal))
-	cols.append(str(sample.doc))
-	return self.rptFieldSep.join(cols) + '\n'
-# end class PredictionReporter ----------------
+    def getKnownClassName(self):return self.knownClassName
+    def getKnownYvalue(self):	return CLASS_NAMES.index(self.knownClassName)
+    def getJournal(self):	return self.journal
+    def getExtraInfo(self):     return ('a', 'b', 'c')	# note: tuple
 
-if __name__ == "__main__":	# ad hoc test code:0
-    r = SampleRecord(\
-    '''keep|pmID1|01/01/1900|1900|my Journal|My Title|
-    My Abstract|My text: text https://foo text www.foo.org text text text Reference r1'''
+    @classmethod
+    def getExtraInfoFieldNames(cls): return ['field1', 'field2', 'field3']
+
+    #----------------------
+    # "preprocessor" functions.
+    #  Each preprocessor should modify this sample and return itself
+    #----------------------
+
+    def addJournalFeature(self):		# preprocessor
+	''' Add the journal name as a text token to the document
+	'''
+	jtext = 'journal__' + '_'.join( self.journal.split(' ') ).lower()
+	self.extractedText += " " + jtext
+	return self
+    # ---------------------------
+# end class ClassifiedSample ------------------------
+
+
+class UnclassifiedSample (BaseSample):
+    """
+    IS a sample record that we need to predict (i.e., a new, unseen article)
+    Will fill this out when we get to predicting new articles
+    """
+    pass
+# end class UnclassifiedSample ------------------------
+
+if __name__ == "__main__":	# ad hoc test code
+    r2 = ClassifiedSample().parseInput(\
+    ''';discard...|pmID1|10/3/2017|1901|journal|title|abstract|text''')
+    r1 = ClassifiedSample().parseInput(\
+    '''keep|pmID1|01/01/1900|1900|Journal of Insomnia|My Title|
+    My Abstract|My text: it's a knock out https://foo text www.foo.org word word  -/- the final words'''
     )
-    print r.getKnownClassName()
-    print r.getKnownYvalue()
-    print r.getSampleName()
-    print r.getSampleAsText()
-    exit(1)
-#    print r.getJournal()
-#    print r.isReject()
-    print r.getDocument()
-    print r.getSampleAsText()
-#    r.removeRefSection()
-#    print r.getDocument()
-#    r.rejectIfNoMice()
-#    print r.isReject()
-#    print r.getRejectReason()
-#    r.addJournalFeature()
-    r.removeURLs()
-    r.tokenPerLine()
-    print r.getDocument()
-#    print "Prediction Report:"
-#    rptr = PredictionReporter(r, hasConfidence=True)
-#    print rptr.getPredOutputHeader(),
-#    print rptr.getPredOutput(r, 0, confidence=-0.5)
-    r = SampleRecord(''';discard...|pmID1|10/3/2017|1901|journal|title|abstract|text''')
-    print "Reject? %s " % str(r.isReject())
-    print "Reason: " +  str(r.getRejectReason())
-    print r.getKnownClassName()
-    r = SampleRecord(''';foo...|pmID1|10/3/2017|1902|journal|title|abstract|text''')
-    print "Reject? %s " % str(r.isReject())
-    print "Reason: " +  str(r.getRejectReason())
-    print r.getKnownClassName()
+    if True:	# basic Classified Sample tests
+	print "----------------------"
+	print "ClassifiedSample tests\n"
+	print "classname: '%s'"		% r1.getKnownClassName()
+	print "Y value: %d"		% r1.getKnownYvalue()
+	print "SampleName: '%s'"	% r1.getSampleName()
+	print "Journal: '%s'"		% r1.getJournal()
+	print "title: \n'%s'\n"		% r1.getTitle()
+	print "abstract: \n'%s'\n"	% r1.getAbstract()
+	print "extractedText: \n'%s'\n"	% r1.getExtractedText()
+	print "document: \n'%s'\n"	% r1.getDocument()
+	print "Reject? %s "		% str(r1.isReject())
+	print "Reason: '%s'"		% str(r1.getRejectReason())
+	print r1.getHeaderLine()
+	print "sample as text: \n'%s'\n" % r1.getSampleAsText()
+	print "header line: \n'%s'\n" % r1.getHeaderLine()
+	print "ExtraInfoFieldNames:\n'%s'\n" % ' '.join(r1.getExtraInfoFieldNames())
 
+    if True: # ClassifiedSampleSet tests
+	print "---------------"
+	print "SampleSet tests\n"
+	print r2.getKnownClassName()
+	ss = ClassifiedSampleSet()
+	print "header line: \n'%s'\n" % ss.getHeaderLine()
+	print "Record End: \n'%s'\n" % ss.getRecordEnd()
+	print "ExtraInfoFieldNames:\n'%s'\n" % ' '.join(ss.getExtraInfoFieldNames())
+	ss.addSample(r1)
+	ss.addSample(r2)
+	print "1st sample: \n'%s'\n'" % ss.getSamples()[0].getSampleAsText()
+	print "Output file:"
+	ss.write(sys.stdout)
+	print "\nEnd Output file"
+
+	print
+	print "Input records string" 
+	e = ss.getRecordEnd()
+	inputStr = ss.getHeaderLine() + e + r1.getSampleAsText() + e + r2.getSampleAsText() + e
+	ss.textToSamples(inputStr)
+	print "2nd sample: \n'%s'\n'" % ss.getSamples()[1].getSampleAsText()
+	print "Output file:"
+	ss.write(sys.stdout)
+	print "\nEnd Output file"
+	
+    if True:		# preprocessor tests
+	print "---------------"
+	print "Preprocessor tests\n"
+	r1.addJournalFeature()
+	r1.removeURLsCleanStem()
+#	r1.removeText()
+	r1.truncateText()
+#	r1.tokenPerLine()
+	print r1.getDocument()
