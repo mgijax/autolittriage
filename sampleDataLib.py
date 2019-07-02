@@ -7,7 +7,6 @@ import sys
 import string
 import re
 import ConfigParser
-import nltk.stem.snowball as nltk
 import figureText
 import featureTransform
 #-----------------------------------
@@ -35,16 +34,16 @@ class ClassifiedSampleSet (object):
 	    Writes sample records to a file
 
     Note: might want to implement a way to iterate through Samples so not all
-	    are held in memory at a time. Particularly if outside of this class,
-	    we are pulling each of the sample docs into a list or data structure,
-	    since then we'd be storing the text of each document twice.
-	    Could write an iterator that uses input file iterator to just get the
-	    next Sample (kind of a pain since we'd have to buffer lines until a
-	    Sample record sep is found).
-	    Or perhaps a way to say "kill/truncate a Sample" after it is used
-	    by the caller.
-	    For now, lets not worry and hope garbage collection takes care of 
-	    things ok.
+	are held in memory at a time. Particularly if outside of this class,
+	we are pulling each of the sample docs into a list or data structure,
+	since then we'd be storing the text of each document twice.
+	Could write an iterator that uses input file iterator to just get the
+	next Sample (kind of a pain since we'd have to buffer lines until a
+	Sample record sep is found).
+	Or perhaps a way to say "kill/truncate a Sample" after it is used
+	by the caller.
+	For now, lets not worry and hope garbage collection takes care of 
+	things ok.
     """
     def __init__(self,):
 	self.samples = []
@@ -53,7 +52,7 @@ class ClassifiedSampleSet (object):
     def read(self, inFile,	# file pathname or open file obj for reading
 	):
 	"""
-	Assumes sample record file is not empty
+	Assumes sample record file is not empty and has a header line
 	"""
 	if type(inFile) == type(''): fp = open(inFile, 'r')
 	else: fp = inFile
@@ -73,11 +72,13 @@ class ClassifiedSampleSet (object):
     #-------------------------
 
     def write(self, outFile,	# file pathname or open file obj for writing
+	writeHeader=True,	# write header line?
 	):
 	if type(outFile) == type(''): fp = open(outFile, 'w')
 	else: fp = outFile
 
-	fp.write(self.getHeaderLine() + RECORDEND)
+	if writeHeader:  fp.write(self.getHeaderLine())
+
 	for s in self.samples:
 	    fp.write(s.getSampleAsText() + RECORDEND)
 	return self
@@ -92,19 +93,21 @@ class ClassifiedSampleSet (object):
     #-------------------------
 
     def getSamples(self):		return self.samples
+    def getNumSamples(self):		return len(self.samples)
     def getRecordEnd(self):		return RECORDEND
-    def getHeaderLine(self):		return ClassifiedSample.getHeaderLine()
+    def getHeaderLine(self):
+	return ClassifiedSample.getHeaderLine() + RECORDEND
     def getExtraInfoFieldNames(self):
 	return ClassifiedSample.getExtraInfoFieldNames()
 
 # end class ClassifiedSampleSet -----------------------------------
 
 #-----------------------------------
-# Regex's and stemmer for preprocessors
+# Regex's preprocessors
 urls_re      = re.compile(r'\b(?:https?://|www[.]|doi)\S*',re.IGNORECASE)
 token_re     = re.compile(r'\b([a-z_]\w+)\b',re.IGNORECASE)
 
-stemmer = nltk.EnglishStemmer()
+stemmer = None		# see preprocessor below
 #-----------------------------------
 
 class BaseSample (object):
@@ -166,6 +169,16 @@ class BaseSample (object):
 	Stem,
 	Replace \n with spaces
 	'''
+	# This is currently the only preprocessor that uses a stemmer.
+	# Would be clearer to import and instantiate one stemmer above,
+	# BUT that requires nltk (via anaconda) to be installed on each
+	# server we use. This is currently not installed on our linux servers
+	# By importing here, we can use BaseSample in situations where we don't
+	# call this preprocessor, and it will work on our current server setup.
+	global stemmer
+	if not stemmer:
+	    import nltk.stem.snowball as nltk
+	    stemmer = nltk.EnglishStemmer()
 	#------
 	def _removeURLsCleanStem(text):
 	    output = ''
