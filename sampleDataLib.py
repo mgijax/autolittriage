@@ -77,7 +77,7 @@ class ClassifiedSampleSet (object):
 	if type(outFile) == type(''): fp = open(outFile, 'w')
 	else: fp = outFile
 
-	if writeHeader:  fp.write(self.getHeaderLine())
+	if writeHeader:  fp.write(self.getHeaderLine() + RECORDEND)
 
 	for s in self.samples:
 	    fp.write(s.getSampleAsText() + RECORDEND)
@@ -96,7 +96,7 @@ class ClassifiedSampleSet (object):
     def getNumSamples(self):		return len(self.samples)
     def getRecordEnd(self):		return RECORDEND
     def getHeaderLine(self):
-	return ClassifiedSample.getHeaderLine() + RECORDEND
+	return ClassifiedSample.getHeaderLine()
     def getExtraInfoFieldNames(self):
 	return ClassifiedSample.getExtraInfoFieldNames()
 
@@ -117,6 +117,7 @@ class BaseSample (object):
     A sample to predict does not have a known class
 
     Provides various methods to preprocess a sample record
+    (preprocess the text prior to vectorization)
     """
     def __init__(self,):
 	pass
@@ -253,10 +254,46 @@ class BaseSample (object):
 class ClassifiedSample (BaseSample):
     """
     Represents a training sample that has a known classification (keep/discard)
-    Knows how to take a text representation of a record (typically a
-	text string with delimitted fields) and parse into its fields
-    Provides various methods to preprocess a sample record (if any)
+    Knows how to take a text representation of a record (a text string with
+	delimitted fields) and parse into its fields
+    Has "extraInfoFields", information about the sample that don't necessarily
+	relate to the sample features used for training/prediction, but may
+	be used to subset the sample set when analyzing prediction results.
+	(e.g., if we want to analyze precision/recall for individual journals)
     """
+    # fields of a sample as an input/output record (as text), in order
+    fieldNames = [ \
+	    'knownClassName',
+	    'ID'            ,
+	    'creationDate'  ,
+	    'year'          ,
+	    'isReview'      ,
+	    'refType'       ,
+	    'suppStatus'    ,
+	    'apStatus'      ,
+	    'gxdStatus'     ,
+	    'goStatus'      ,
+	    'tumorStatus'   ,
+	    'qtlStatus'     ,
+	    'journal'       ,
+	    'title'         ,
+	    'abstract'      ,
+	    'extractedText' ,
+	    ]
+    extraInfoFieldNames = [ \
+	    'creationDate'  ,
+	    'year'          ,
+	    'isReview'      ,
+	    'refType'       ,
+	    'suppStatus'    ,
+	    'apStatus'      ,
+	    'gxdStatus'     ,
+	    'goStatus'      ,
+	    'tumorStatus'   ,
+	    'qtlStatus'     ,
+	    'journal'       ,
+	    ]
+
     def __init__(self,):
 	super(type(self), self).__init__()
     #----------------------
@@ -265,14 +302,47 @@ class ClassifiedSample (BaseSample):
 	):
 	self.knownClassName = self.validateClassName(values['knownClassName'])
 	self.ID             = str(values['ID'])
-	self.creation_date  = str(values['creation_date'])
+	self.creationDate   = str(values['creationDate'])
 	self.year           = str(values['year'])
-	self.journal        = values['journal']
-	self.title          = values['title']
-	self.abstract       = values['abstract']
-	self.extractedText  = values['extractedText']
+	self.isReview       = str(values[ 'isReview' ])
+	self.refType        = values[ 'refType' ]
+	self.suppStatus     = values[ 'suppStatus' ]
+	self.apStatus       = values[ 'apStatus' ]
+	self.gxdStatus      = values[ 'gxdStatus' ]
+	self.goStatus       = values[ 'goStatus' ]
+	self.tumorStatus    = values[ 'tumorStatus' ]
+	self.qtlStatus      = values[ 'qtlStatus' ]
+	self.journal        = values[ 'journal']
+	self.title          = values[ 'title']
+	self.abstract       = values[ 'abstract']
+	self.extractedText  = values[ 'extractedText']
+				# note: tuple JIM: why?
+	self.extraInfo = ( str(values[fn]) for fn in self.extraInfoFieldNames )
 
 	return self
+    #----------------------
+
+    def getSampleAsText(self):
+	""" Return this record as a text string
+	"""
+	fields = [ self.knownClassName,
+		    self.ID,
+		    self.creationDate,
+		    self.year,
+		    self.isReview,
+		    self.refType,
+		    self.suppStatus,
+		    self.apStatus,
+		    self.gxdStatus,
+		    self.goStatus,
+		    self.tumorStatus,
+		    self.qtlStatus,
+		    self.journal,
+		    self.title,	
+		    self.abstract,
+		    self.extractedText,
+		    ]
+	return FIELDSEP.join( fields)
     #----------------------
 	
     def validateClassName(self, name):
@@ -295,61 +365,30 @@ class ClassifiedSample (BaseSample):
     #----------------------
 
     def parseInput(self, s):
+
+	values = {}
 	fields = s.split(FIELDSEP)
 
-	# JIM extra info fields
-	return self.setFields( { \
-	    'knownClassName': fields[0],
-	    'ID'            : fields[1],
-	    'creation_date' : fields[2],
-	    'year'          : fields[3],
-	    'journal'       : fields[4],
-	    'title'         : fields[5],
-	    'abstract'      : fields[6],
-	    'extractedText' : fields[7],
-	    } )
-    #----------------------
+	for i, fn in enumerate(self.fieldNames):
+	    values[ fn ] = fields[i]
 
-    def getSampleAsText(self):
-	""" Return this record as a text string
-	"""
-		    # JIM get extra info fields (i.e., just more fields)
-	fields = [ self.knownClassName,
-		    self.ID,
-		    self.creation_date,
-		    self.year,
-		    self.journal,
-		    self.title,	
-		    self.abstract,
-		    self.extractedText,
-		    ]
-	return FIELDSEP.join( fields)
+	return self.setFields(values)
     #----------------------
 
     @classmethod
     def getHeaderLine(cls):
 	""" Return sample output file column header line
 	"""
-		    # JIM get extra info fields (i.e., just more fields)
-	fields = [ 'knownClassName',
-		    'ID',
-		    'creation_date',
-		    'year',
-		    'journal',
-		    'title',	
-		    'abstract',
-		    'extractedText',
-		    ]
-	return FIELDSEP.join( fields)
+	return FIELDSEP.join( cls.fieldNames)
+
+    @classmethod
+    def getExtraInfoFieldNames(cls): return cls.extraInfoFieldNames
     #----------------------
 
     def getKnownClassName(self):return self.knownClassName
     def getKnownYvalue(self):	return CLASS_NAMES.index(self.knownClassName)
     def getJournal(self):	return self.journal
-    def getExtraInfo(self):     return ('a', 'b', 'c')	# note: tuple
-
-    @classmethod
-    def getExtraInfoFieldNames(cls): return ['field1', 'field2', 'field3']
+    def getExtraInfo(self):     return self.extraInfo
 
     #----------------------
     # "preprocessor" functions.
@@ -376,9 +415,9 @@ class UnclassifiedSample (BaseSample):
 
 if __name__ == "__main__":	# ad hoc test code
     r2 = ClassifiedSample().parseInput(\
-    ''';discard...|pmID1|10/3/2017|1901|journal|title|abstract|text''')
+    ''';discard...|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
     r1 = ClassifiedSample().parseInput(\
-    '''keep|pmID1|01/01/1900|1900|Journal of Insomnia|My Title|
+    '''keep|pmID1|01/01/1900|1900|0|non-peer1|supp type1|apstat1|gxdstat1|goStat1|tumorstat1|qtlStat1|Journal of Insomnia|My Title|
     My Abstract|My text: it's a knock out https://foo text www.foo.org word word  -/- the final words'''
     )
     if True:	# basic Classified Sample tests
@@ -394,10 +433,12 @@ if __name__ == "__main__":	# ad hoc test code
 	print "document: \n'%s'\n"	% r1.getDocument()
 	print "Reject? %s "		% str(r1.isReject())
 	print "Reason: '%s'"		% str(r1.getRejectReason())
-	print r1.getHeaderLine()
-	print "sample as text: \n'%s'\n" % r1.getSampleAsText()
 	print "header line: \n'%s'\n" % r1.getHeaderLine()
+	print "sample as text: \n'%s'\n" % r1.getSampleAsText()
 	print "ExtraInfoFieldNames:\n'%s'\n" % ' '.join(r1.getExtraInfoFieldNames())
+	print "ExtraInfo:" 
+	for e in r1.getExtraInfo(): print e
+	print
 
     if True: # ClassifiedSampleSet tests
 	print "---------------"
@@ -428,7 +469,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print "---------------"
 	print "Preprocessor tests\n"
 	r1.addJournalFeature()
-	r1.removeURLsCleanStem()
+	#r1.removeURLsCleanStem()
 #	r1.removeText()
 	r1.truncateText()
 #	r1.tokenPerLine()

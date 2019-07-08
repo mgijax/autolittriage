@@ -13,7 +13,7 @@
 OutputColumns = [	# this column order is assumed in sampleDataLib.py
     'class', 	# "discard" or "keep" (CLASS_NAMES in config file)
     'pubmed',
-    'creation_date',
+    'creationDate',
     'year',
     'journal',
     'title',
@@ -159,17 +159,29 @@ create index idx1 on tmp_omit(_refs_key)
 #----------------
 BASE_FIELDS =  \
 '''
-select distinct r._refs_key, a.accid pubmed, r.isdiscard, r.year,
+select distinct r._refs_key,
+    r.isdiscard, r.year,
     to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
-    r.journal, r.title, r.abstract
+    r.isreviewarticle,
+    typeTerm.term as ref_type,
+    suppTerm.term as supp_status,
+    r.journal, r.title, r.abstract,
+    a.accid pubmed,
+    bs.ap_status,
+    bs.gxd_status, 
+    bs.go_status, 
+    bs.tumor_status, 
+    bs.qtl_status
 '''
 BASE_FROM =  \
 '''
 from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
+    join bib_status_view bs on (r._refs_key = bs._refs_key)
+    join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
+    join voc_term typeTerm on (r._referencetype_key = typeTerm._term_key)
     join acc_accession a on
          (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
           and a._mgitype_key=1 )
-    join bib_status_view bs on (bs._refs_key = r._refs_key)
 '''
 BASE_WHERE =  \
 '''
@@ -194,7 +206,7 @@ EXTTEXT_FROM =  \
 '''
 from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
     join voc_term t on (bd._extractedtext_key = t._term_key)
-    join bib_status_view bs on (bs._refs_key = r._refs_key)
+    join bib_status_view bs on (r._refs_key = bs._refs_key)
 '''
 EXTTEXT_BASE_WHERE = BASE_WHERE
 
@@ -486,12 +498,21 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
 
     newR['knownClassName']= sampleClass
     newR['ID']            = str(r['pubmed'])
-    newR['creation_date'] = str(r['creation_date'])
+    newR['creationDate']  = str(r['creation_date'])
     newR['year']          = str(r['year'])
     newR['journal']       = '_'.join(str(r['journal']).split(' '))
     newR['title']         = cleanUpTextField(r, 'title')
     newR['abstract']      = cleanUpTextField(r, 'abstract')
     newR['extractedText'] = cleanUpTextField(r, 'ext_text')
+
+    newR['isReview']      = str(r['isreviewarticle'])
+    newR['refType']       = str(r['ref_type'])
+    newR['suppStatus']    = str(r['supp_status'])
+    newR['apStatus']      = str(r['ap_status'])
+    newR['gxdStatus']     = str(r['gxd_status'])
+    newR['goStatus']      = str(r['go_status'])
+    newR['tumorStatus']   = str(r['tumor_status']) 
+    newR['qtlStatus']     = str(r['qtl_status'])
 
     return sampleDataLib.ClassifiedSample().setFields(newR)
 #-----------------------------------
