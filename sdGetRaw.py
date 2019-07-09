@@ -8,18 +8,9 @@
 	    replacing non-ascii chars with ' '
 	    replacing FIELDSEP and RECORDSEP chars in the doc text w/ ' '
 
-  Outputs:     delimited file to stdout
+  Outputs:      Delimited file to stdout
+		See sampleDataLib.ClassifiedSample for output format
 '''
-OutputColumns = [	# this column order is assumed in sampleDataLib.py
-    'class', 	# "discard" or "keep" (CLASS_NAMES in config file)
-    'pubmed',
-    'creationDate',
-    'year',
-    'journal',
-    'title',
-    'abstract',
-    'ext_text',	# '|\r' replaced by space & convert Unicode to space
-    ]
 #-----------------------------------
 import sys
 import os
@@ -116,38 +107,58 @@ START_DATE = "10/01/2016" 		# earliest date for refs to get
 TUMOR_START_DATE = "07/01/2013"		# date to get add'l tumor papers from
 
 #----------------
-# SQL for tmp table of references to skip
+# SQL to build tmp tables 
 #----------------
-OMIT_SAMPLES_SQL = \
+BUILD_TMP_TABLES = [ \
+    # Tmp table of samples to omit.
+    # Currently, only one reason to omit:
+    # (1) articles "indexed" by pm2gene and not reviewed by a curator yet
+    #     we don't really know if these are relevant (not good ground truth)
 '''
--- Build tmp table of samples to omit.
--- Currently, only one reason to omit:
--- (1) articles "indexed" by pm2gene and not reviewed by a curator yet
---     we don't really know if these are relevant (not good ground truth)
-create temporary table tmp_omit
-as
-select r._refs_key, a.accid pubmed
-from bib_refs r join bib_workflow_status bs
-    on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
-    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
-    join acc_accession a
-    on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
-	and a._mgitype_key=1 )
-where 
-    (
-	(bs._status_key = 31576673 and bs._group_key = 31576666 and 
-	    bs._createdby_key = 1571) -- index for GO by pm2geneload
+    create temporary table tmp_omit
+    as
+    select r._refs_key, a.accid pubmed
+    from bib_refs r join bib_workflow_status bs
+	on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
+	join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+	join acc_accession a
+	on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
+	    and a._mgitype_key=1 )
+    where 
+	(
+	    (bs._status_key = 31576673 and bs._group_key = 31576666 and 
+		bs._createdby_key = 1571) -- index for GO by pm2geneload
 
-	and bsv.ap_status in ('Not Routed', 'Rejected')
-	and bsv.gxd_status in ('Not Routed', 'Rejected')
-	and bsv.tumor_status in ('Not Routed', 'Rejected')
-	and bsv.qtl_status in ('Not Routed', 'Rejected')
-	and r.creation_date >= '%s'
-    )
-''' % (START_DATE)   + SQLSEPARATOR + \
+	    and bsv.ap_status in ('Not Routed', 'Rejected')
+	    and bsv.gxd_status in ('Not Routed', 'Rejected')
+	    and bsv.tumor_status in ('Not Routed', 'Rejected')
+	    and bsv.qtl_status in ('Not Routed', 'Rejected')
+	    and r.creation_date >= '%s'
+	)
+''' % (START_DATE),
 '''
-create index idx1 on tmp_omit(_refs_key)
+    create index tmp_idx1 on tmp_omit(_refs_key)
+''',
+    # tmp table of references matching initial criteria. Need this tmp tble
+    #  to make subsequent selects run fast.
 '''
+    create temporary table tmp_refs
+    as
+    select distinct r._refs_key, r.creation_date
+    from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
+    where r._createdby_key != 1609          -- not littriage_discard user
+       and bd.extractedtext is not null
+       and not exists (select 1 from tmp_omit t where t._refs_key = r._refs_key)
+''',
+'''
+    create index tmp_idx2 on tmp_refs(_refs_key)
+''',
+    # this index is important for speed since bib_refs does not have an index on
+    #  creation_date
+'''
+    create index tmp_idx3 on tmp_refs(creation_date)
+''',
+]
 #----------------
 # We get the data for a reference in 2 steps (separate SQL):
 #  (1) basic ref info
@@ -175,20 +186,14 @@ select distinct r._refs_key,
 '''
 BASE_FROM =  \
 '''
-from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
+from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
+    join bib_workflow_data bd on (r._refs_key = bd._refs_key)
     join bib_status_view bs on (r._refs_key = bs._refs_key)
     join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
     join voc_term typeTerm on (r._referencetype_key = typeTerm._term_key)
     join acc_accession a on
          (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
           and a._mgitype_key=1 )
-'''
-BASE_WHERE =  \
-'''
-where
-    r._createdby_key != 1609          -- not littriage_discard user
-    and bd.extractedtext is not null
-    and not exists (select 1 from tmp_omit t where t._refs_key = r._refs_key)
 '''
 RESTRICT_REF_TYPE = \
 '''
@@ -204,65 +209,71 @@ select bd._refs_key, bd.extractedtext as text_part, t.term as text_type
 '''
 EXTTEXT_FROM =  \
 '''
-from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
+from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
+    join bib_workflow_data bd on (r._refs_key = bd._refs_key)
     join voc_term t on (bd._extractedtext_key = t._term_key)
     join bib_status_view bs on (r._refs_key = bs._refs_key)
 '''
-EXTTEXT_BASE_WHERE = BASE_WHERE
 
 #----------------
-# SQL additional where clauses for each subset of refs to get
+# SQL Parts for getting stats/counts of references
+#----------------
+STATS_FIELDS = 'select count(distinct r._refs_key) as num\n'
+STATS_FROM =  \
+'''
+from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
+    join bib_status_view bs on (r._refs_key = bs._refs_key)
+'''
+
+#----------------
+# SQL where clauses for each subset of refs to get
 #----------------
 # Dict of where clause components for specific queries,
 #  these should be non-overlapping result sets
-# These where clauses are shared between the basic ref SQL and the extracted
-#  text SQL
+# These where clauses are shared between the basic ref SQL, extracted
+#  text SQL, and stats SQL
 
-ADDITIONAL_WHERE = { \
+WHERE_CLAUSES = { \
 'discard_after' :
     '''
     -- discard_after
-    and r.isdiscard = 1
-    and r.creation_date > '%s' -- After lit triage release
+    where r.isdiscard = 1
+    and tr.creation_date > '%s' -- After lit triage release
     ''' % LIT_TRIAGE_DATE,
 'keep_after' :
     '''
     -- keep_after
-    and 
+    where 
     (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
      or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
-    and r.creation_date > '%s' -- After lit triage release
+    and tr.creation_date > '%s' -- After lit triage release
     ''' % LIT_TRIAGE_DATE,
 'keep_before' :
     '''
     -- keep_before
-    and 
-    (
-	(bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
-	 or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
-	 or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
-	 or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
-	 or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
-	)
-	and r.creation_date >= '%s' -- after start date
-	and r.creation_date <= '%s' -- before lit triage release
+    where 
+    (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
+    and tr.creation_date >= '%s' -- after start date
+    and tr.creation_date <= '%s' -- before lit triage release
     ''' % (START_DATE, LIT_TRIAGE_DATE, ),
 'keep_tumor' :
     '''
     -- keep_tumor
-    and 
-    (
+    where 
      bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
-     and r.creation_date >= '%s' -- after tumor start date
-     and r.creation_date <= '%s' -- before start date
-    )
+     and tr.creation_date >= '%s' -- after tumor start date
+     and tr.creation_date <= '%s' -- before start date
     ''' % ( TUMOR_START_DATE, START_DATE, ),
-}	# end ADDITIONAL_WHERE
+}	# end WHERE_CLAUSES
 #-----------------------------------
 
 class ExtractedTextSet (object):
@@ -382,21 +393,21 @@ def buildGetSamplesSQL(args, ):
     Assemble SQL statements (strings) to run to get samples from db.
     Return list of pairs of SQL (basic fields query, text query)
     """
-    # list of keys in ADDITIONAL_WHERE to run
+    # list of keys in WHERE_CLAUSES to run
     if args.queryKey == 'all':
-	queryKeys = ['discard_after', 'keep_after'] #ADDITIONAL_WHERE.keys()
+	queryKeys = WHERE_CLAUSES.keys()
     else:
 	queryKeys = [ args.queryKey ]
 
     # Assemble shared query parts
-    baseSQL = BASE_FIELDS + BASE_FROM + BASE_WHERE
-    textSQL = EXTTEXT_FIELDS + EXTTEXT_FROM + EXTTEXT_BASE_WHERE
+    baseSQL = BASE_FIELDS + BASE_FROM
+    textSQL = EXTTEXT_FIELDS + EXTTEXT_FROM
 
     if args.restrictArticles:
-	baseSQL += RESTRICT_REF_TYPE
-	textSQL += RESTRICT_REF_TYPE
+	restrict = RESTRICT_REF_TYPE
 	verbose("Omitting review and non-peer reviewed articles\n")
     else:
+	restrict = ''
 	verbose("Including review and non-peer reviewed articles\n")
 
     if args.nResults > 0: limitSQL = "\nlimit %d\n" % args.nResults
@@ -406,8 +417,8 @@ def buildGetSamplesSQL(args, ):
     queryPairs = []
 
     for qk in queryKeys:
-	fullBaseSQL = baseSQL + ADDITIONAL_WHERE[qk] + limitSQL
-	fullTextSQL = textSQL + ADDITIONAL_WHERE[qk] + limitSQL
+	fullBaseSQL = baseSQL + WHERE_CLAUSES[qk] + restrict + limitSQL
+	fullTextSQL = textSQL + WHERE_CLAUSES[qk] + restrict + limitSQL
 	queryPairs.append( (fullBaseSQL, fullTextSQL) )
 
     return queryPairs
@@ -417,7 +428,7 @@ def getSamples(args):
     '''
     Run SQL to get samples from DB and output them to stdout
     '''
-    db.sql( string.split(OMIT_SAMPLES_SQL, SQLSEPARATOR), 'auto')
+    db.sql( BUILD_TMP_TABLES, 'auto')
 
     samples = []
 
@@ -474,13 +485,12 @@ def writeSamples( i, results	# list of records from SQL query (dicts)
     Return count of records written
     """
     sampleSet = sampleDataLib.ClassifiedSampleSet()
-    if i == 0: sys.stdout.write( sampleSet.getHeaderLine())
 
     for r in results:
 	sample = sqlRecord2ClassifiedSample( r)
 	sampleSet.addSample( sample)
 
-    sampleSet.write(sys.stdout, writeHeader=False)
+    sampleSet.write(sys.stdout, writeHeader= i==0)
     return len(results)
 #-----------------------------------
 
@@ -539,24 +549,30 @@ def getStats(args):
 
     # Count of records in the omit temp table
     # Do this 1st so tmp table exists for the other queries
-    selectCount = 'select count(distinct _refs_key) as num\n'
-    q = OMIT_SAMPLES_SQL + SQLSEPARATOR + selectCount + 'from tmp_omit'
-    writeStat("Omitted references (only pm2gene indexed)", q)
+    selectCount = 'select count(distinct _refs_key) as num from tmp_omit\n'
+    q = BUILD_TMP_TABLES + [selectCount]
+    
+    writeStat("Omitted references (only pm2gene indexed)", SQLSEPARATOR.join(q))
 
-    selectCount = 'select count(distinct r._refs_key) as num\n'
-    baseSQL = selectCount + BASE_FROM + BASE_WHERE
+    baseSQL = STATS_FIELDS + STATS_FROM
+    if args.restrictArticles:
+	restrict = RESTRICT_REF_TYPE
+	sys.stdout.write("Omitting review and non-peer reviewed articles\n")
+    else:
+	restrict = ''
+	sys.stdout.write("Including review and non-peer reviewed articles\n")
 
     writeStat("Discard after %s" % LIT_TRIAGE_DATE,
-				baseSQL + ADDITIONAL_WHERE['discard_after'])
+			baseSQL + WHERE_CLAUSES['discard_after'] + restrict)
 
     writeStat("Keep after %s" % LIT_TRIAGE_DATE,
-				baseSQL + ADDITIONAL_WHERE['keep_after'])
+			baseSQL + WHERE_CLAUSES['keep_after'] + restrict)
 
     writeStat("Keep %s through %s" % (START_DATE, LIT_TRIAGE_DATE),
-				baseSQL + ADDITIONAL_WHERE['keep_before'])
+			baseSQL + WHERE_CLAUSES['keep_before'] + restrict)
 
     writeStat("Tumor papers %s through %s" % (TUMOR_START_DATE, START_DATE),
-				baseSQL + ADDITIONAL_WHERE['keep_tumor'])
+			baseSQL + WHERE_CLAUSES['keep_tumor'] + restrict)
 #-----------------------------------
 
 def writeStat(label, q):
