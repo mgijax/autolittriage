@@ -299,6 +299,8 @@ class ClassifiedSample (BaseSample):
 	    'tumorStatus'   ,
 	    'qtlStatus'     ,
 	    'journal'       ,
+	    'abstractLen'   ,
+	    'textLen'       ,
 	    ]
 
     def __init__(self,):
@@ -323,8 +325,10 @@ class ClassifiedSample (BaseSample):
 	self.title          = values[ 'title']
 	self.abstract       = values[ 'abstract']
 	self.extractedText  = values[ 'extractedText']
-				# note: tuple JIM: why?
-	self.extraInfo = ( str(values[fn]) for fn in self.extraInfoFieldNames )
+				
+	self.extraInfo = { fn : str(values.get(fn,'none')) \
+					for fn in self.getExtraInfoFieldNames() }
+	self.setComputedExtraInfoFields()
 
 	return self
     #----------------------
@@ -395,7 +399,14 @@ class ClassifiedSample (BaseSample):
     def getKnownClassName(self):return self.knownClassName
     def getKnownYvalue(self):	return CLASS_NAMES.index(self.knownClassName)
     def getJournal(self):	return self.journal
-    def getExtraInfo(self):     return self.extraInfo
+
+    def getExtraInfo(self):
+	self.setComputedExtraInfoFields()
+	return [ self.extraInfo[x] for x in self.getExtraInfoFieldNames() ]
+	
+    def setComputedExtraInfoFields(self):
+	self.extraInfo['abstractLen'] = str(len(self.abstract))
+	self.extraInfo['textLen']     = str(len(self.extractedText))
 
     # preprocessSamples.py script checks for rejected samples.
     #  For autolittriage, we don't have any checks to reject samples (yet)
