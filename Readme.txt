@@ -1058,9 +1058,74 @@ June 10, 2019
 	yes, NPV does correlate with negative prediction "confidence" for SGDlog,
 	however since NPV is pretty high even for low confidence, it is not clear
 	that it would be worth curator time to look at lower confidence
-	predictions.
+	predictions (i.e., curators would have to look at a log of TN to find a
+	small number of FN).
 	Would be curator judgement.
 	UPON further looking, NPV correlates with confidence only for larger
 	confidence bins. If you set the bin range to be smaller, things don't
 	correlate so well.
+
+July 9, 2019
+    Long digression.
+    THE BASIC IDEA: include more fields in sample files that are not nec.
+    used in training/predictions, BUT are useful for prediction analysis
+    This generalizes what I've been doing with journal and curation group status,
+    and supports better analysis
+    1) Learned about google sheets pivot tables for analyzing prediction results
+	for various article subsets
+    2) changing sampleDataLib.py and tuningTemplate.py to add "extra info fields"
+	to prediction output file (e.g., review status, curator group status, ...)
+    3) Lots of refactoring to sdGetRaw.py and sdBuild1Get.sh:
+	a) use sampleDataLib.py for output of samples, including new extra info
+	    fields. Encapsulates the sample file knowledge in sampleDataLib
+	b) lots of refactoring sampleDataLib. Includes speed up of preprocessors.
+	c) stop creating separate refStatus file - these fields are now included
+	    in sample file
+	d) stop finding/removing review articles that are not marked as review
+	    in MGD. Just use MGD setting.
+	    Also building 2 instances of sample set, one with review papers and
+	    non-peer review papers omitted, one keeping all these refs.
+	    Will analyze the difference here. See thoughts below.
+	e) handle schema change with extracted text split into multiple sections.
+	    This was trickier than it sounds as there is no easy to concat the
+	    sections in the right order with SQL and it was somewhat useful to
+	    do the concatenation in Python anyway. Had to do fussing to get
+	    SQL to run efficiently.
+	    This now runs a lot faster than it used to (w/o the section split)
+
+    INCLUDING REVIEW PAPERS and non-peer review articles in sample set.
+    Pros and Cons. (and note, we could separate these two criteria)
+    
+    Omit)
+	a) presumably most curators have not been looking at these, so maybe they
+	    do not have very accurate ground truth (?), Jackie, Debbie, is this
+	    true?
+	b) will not be learning Tumor review papers
+	c) when we go to production
+	    i) Can either omit these types of papers from prediction process
+		(since we will know paper types from Pubmed)
+	    ii) OR predict but without having done specific training or analysis
+		on these predictions.
+
+	    maybe either of these options is ok as curators can address these
+	    paper types differently. Note tumor may want to look at these more
+	    carefully than other groups. But would need to think this through.
+    Include)
+	a) is their discard/keep assignments accurate enough?
+	b) would include tumor review papers in training set
+	    i) with some work, could try to include only tumor review papers in
+		the training/test set. Not sure how much work this would be.
+
+    WHEN SPLITTING SAMPLE SET into training/validation/test sets. Should we only
+    include papers from MGI monitored journals in validation/test sets (as we
+    have been doing up to now)? Want validation/test sets to be as much like the
+    data we will be predicting as possible.
+
+    Seems to me that would should include ALL journals in the post Lit Triage
+    release paper set because this is more representative of what papers we will
+    actually make predictions for. I.e., we want predictions to work for all
+    papers in the lit triage directories whether from MGI journals or not.
+
+July 15, 2019
+    converted preprocessSamples.py to use sampleDataLib.ClassifiedSampleSet
 

@@ -72,16 +72,25 @@ class ClassifiedSampleSet (object):
     #-------------------------
 
     def write(self, outFile,	# file pathname or open file obj for writing
-	writeHeader=True,	# write header line?
+	writeHeader=True,
+	omitRejects=False,
 	):
 	if type(outFile) == type(''): fp = open(outFile, 'w')
 	else: fp = outFile
 
 	if writeHeader:  fp.write(self.getHeaderLine() + RECORDEND)
 
-	for s in self.samples:
+	for s in self.sampleIterator(omitRejects=omitRejects):
 	    fp.write(s.getSampleAsText() + RECORDEND)
 	return self
+    #-------------------------
+
+    def sampleIterator(self,
+	omitRejects=False,
+	):
+	for s in self.samples:
+	    if omitRejects and s.isReject(): continue
+	    yield s
     #-------------------------
 
     def addSample(self, sample,		# ClassifiedSample
@@ -92,11 +101,10 @@ class ClassifiedSampleSet (object):
 	return self
     #-------------------------
 
-    def getSamples(self):		return self.samples
-    def getNumSamples(self):		return len(self.samples)
-    def getRecordEnd(self):		return RECORDEND
-    def getHeaderLine(self):
-	return ClassifiedSample.getHeaderLine()
+    def getSamples(self):	return self.samples
+    def getNumSamples(self):	return len(self.samples)
+    def getRecordEnd(self):	return RECORDEND
+    def getHeaderLine(self):	return ClassifiedSample.getHeaderLine()
     def getExtraInfoFieldNames(self):
 	return ClassifiedSample.getExtraInfoFieldNames()
 
@@ -118,6 +126,9 @@ class BaseSample (object):
 
     Provides various methods to preprocess a sample record
     (preprocess the text prior to vectorization)
+    JIM: think about refactoring this class into a (real) BaseSample that lives
+	in MLtextTools and BaseArticleSample that lives in sampleDataLib.
+	Then (Un)ClassifiedSample would inherit from BaseArticleSample
     """
     def __init__(self,):
 	pass
@@ -138,10 +149,6 @@ class BaseSample (object):
     def getDocument(self):	return self.constructDoc()
     #----------------------
 
-    # preprocessSamples.py script checks for rejected samples.
-    #  For autolittriage, we don't have any checks to reject samples (yet)
-    def isReject(self):		return False
-    def getRejectReason(self):	return None
     #----------------------
 
     #----------------------
@@ -389,6 +396,11 @@ class ClassifiedSample (BaseSample):
     def getKnownYvalue(self):	return CLASS_NAMES.index(self.knownClassName)
     def getJournal(self):	return self.journal
     def getExtraInfo(self):     return self.extraInfo
+
+    # preprocessSamples.py script checks for rejected samples.
+    #  For autolittriage, we don't have any checks to reject samples (yet)
+    def isReject(self):		return False
+    def getRejectReason(self):	return None
 
     #----------------------
     # "preprocessor" functions.
