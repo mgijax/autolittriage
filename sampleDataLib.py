@@ -287,6 +287,7 @@ class ClassifiedSample (BaseSample):
 	    'abstract'      ,
 	    'extractedText' ,
 	    ]
+    				# should be [] if no extraInfoFields
     extraInfoFieldNames = [ \
 	    'creationDate'  ,
 	    'year'          ,
