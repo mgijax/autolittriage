@@ -85,7 +85,7 @@ class JournalCounts (object):
 #----------------------
 def getMgiJournals(mgiJournalsFile):
     """ return dict of MGI monitored journal names
-	{journalname: [], ...}		# list of articles seen in the journal
+	{journalname: [], ...}		# list of samples seen in the journal
     """
     journals = {}
     fp = open(mgiJournalsFile, 'r')
@@ -108,68 +108,58 @@ def main():
 		    sys.path
     import sampleDataLib
 
-    recordSep = sampleDataLib.RECORDSEP
     counts = { 'allSamples': 0, 'fromMonitored':0,}
 
     mgiJournals = getMgiJournals(args.mgiJournalsFile)
 
-    selectedFp = open(args.selectedFile, 'w')
-    leftoverFp = open(args.leftoverFile, 'w')
-
-    headerLine = None	# header line for each output file, same as input
-    			# ASSUME all input files have the same rcd structure
+    selectedSampleSet = sampleDataLib.ClassifiedSampleSet()
+    leftoverSampleSet = sampleDataLib.ClassifiedSampleSet()
 
     ### Loop through all input files, reading all sample records.
-    ### Save them in a list for each monitored journal.
-    ### Write records from non-monitored journals to leftovers file.
+    ### Samples from monitored journals go to selectedSampleSet
+    ### Samples from non-monitored journals go to leftoverSampleSet
     for fn in args.inputFiles:
 
 	verbose("Reading %s\n" % fn)
-	rcds = open(fn,'r').read().split(recordSep)	# read/split all rcds
-	del rcds[-1]			# empty line at end after split()
+	inputSampleSet = sampleDataLib.ClassifiedSampleSet().read(fn)
 
-	if not headerLine:		# first time we've seen a header line
-	    headerLine = rcds[0]
-	    selectedFp.write( headerLine + recordSep)
-	    leftoverFp.write( headerLine + recordSep)
-
-	del rcds[0]			# delete header line from input
-
-	for rcdnum, rcd in enumerate(rcds):
+	for rcdnum, sr in enumerate(inputSampleSet.sampleIterator()):
 	    counts['allSamples'] += 1
-	    sr = sampleDataLib.SampleRecord(rcd)
 	    journal = sr.getJournal().strip().lower()
 	    if mgiJournals.has_key(journal):
 		counts['fromMonitored'] += 1
 		mgiJournals[journal].append(sr)
-	    else:		# non-mgi-monitored go to leftovers
-		leftoverFp.write( sr.getSampleAsText() )
+	    else:
+		leftoverSampleSet.addSample(sr)
 
-    ### NOW, loop through mgiJournals. for each, select random fraction,
-    ### write them to selected file.
-    ### write others to leftovers.
+    ### NOW, loop through mgiJournals. for each, select random fraction of samples,
+    ### add random samples to selectedSampleSet or leftoverSampleSet
     mgiJournalCounts = {}	# mgiJournalCounts[journalname] = num selected
     totNumSelected = 0		# num selected across all MGI journals
 
-    for journalName, articles in mgiJournals.items():
-	numInJournal = len(articles)
+    for journalName, samples in mgiJournals.items():
+	numInJournal = len(samples)
 	numToSelect  = int( (numInJournal * args.fraction) + 0.5)
 
 	# save counts so we can compute/output percentages below
 	mgiJournalCounts[journalName] = numToSelect
 	totNumSelected += numToSelect
 
-	# random list of article indexes, in sorted order
+	# random list of sample indexes, in sorted order
 	randomIndexes = sorted(random.sample( range(numInJournal), numToSelect))
 
-	# loop through the articles in list order, selecting the ones whose
+	# loop through the samples in list order, selecting the ones whose
 	#  index is in randomIndexes
 	for i in range(numInJournal):
 	    if len(randomIndexes) > 0 and i == randomIndexes[0]:
-		selectedFp.write( articles[i].getSampleAsText() )
+		selectedSampleSet.addSample(samples[i])
 		del randomIndexes[0]
 	    else:
-		leftoverFp.write( articles[i].getSampleAsText() )
+		leftoverSampleSet.addSample(samples[i])
+
+    # Write output files
+    selectedSampleSet.write(args.selectedFile)
+    leftoverSampleSet.write(args.leftoverFile)
 
     ### Write report to stdout
     print "Monitored Journals: \t%d" % len(mgiJournals)
@@ -184,8 +174,8 @@ def main():
     print "#articles\t%% of all\t#selected\t%% of sel\tjournal"
 
     for journalName in sorted(mgiJournals.keys()):
-	articles = mgiJournals[journalName]
-	numInJournal = len(articles)
+	samples = mgiJournals[journalName]
+	numInJournal = len(samples)
 	numSelected  = mgiJournalCounts[journalName]
 
 	    # fraction of fromJournal/fromMonitored should be same as 
@@ -201,7 +191,9 @@ def main():
 # ---------------------
 
 def verbose(text):
-    if args.verbose: sys.stderr.write(text)
+    if args.verbose:
+	sys.stderr.write(text)
+	sys.stderr.flush()
 
 # ---------------------
 if __name__ == "__main__":
