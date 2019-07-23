@@ -67,7 +67,7 @@ class ClassifiedSampleSet (object):
 	del rcds[0]             # header line
 	del rcds[-1]            # empty string after end of split
 
-	self.samples = [ ClassifiedSample().parseInput(sr) for sr in rcds ]
+	self.samples = [ ClassifiedSample().parseSampleRecordText(sr) for sr in rcds ]
 	return self
     #-------------------------
 
@@ -135,20 +135,15 @@ class BaseSample (object):
     #----------------------
 
     def constructDoc(self):
-	return '\n'.join([self.title, self.abstract, self.extractedText])
+	return '\n'.join([self.getTitle(), self.getAbstract(),
+							self.getExtractedText()])
 
     #----------------------
-    def getSampleName(self):	return self.ID
-    def getSampleID(self):	return self.getSampleName()
-    def getID(self):		return self.getSampleName()
-    def getName(self):		return self.getSampleName()
+    def getSampleName(self):	return self.getID()
+    def getSampleID(self):	return self.getID()
+    def getName(self):		return self.getID()
 
-    def getTitle(self):		return self.title
-    def getAbstract(self):	return self.abstract
-    def getExtractedText(self): return self.extractedText
     def getDocument(self):	return self.constructDoc()
-    #----------------------
-
     #----------------------
 
     #----------------------
@@ -157,15 +152,16 @@ class BaseSample (object):
     #----------------------
 
     def figureText(self):		# preprocessor
-	self.extractedText = '\n'.join( \
-			    figConverter.text2FigText(self.extractedText))
+	self.setExtractedText( '\n'.join( \
+			    figConverter.text2FigText(self.getExtractedText()) ) )
 	return self
     # ---------------------------
 
     def featureTransform(self):		# preprocessor
-	self.title         = featureTransform.transformText(self.title)
-	self.abstract      = featureTransform.transformText(self.abstract)
-	self.extractedText = featureTransform.transformText(self.extractedText)
+	self.setTitle( featureTransform.transformText(self.getTitle()) )
+	self.setAbstract( featureTransform.transformText(self.getAbstract()) )
+	self.setExtractedText( featureTransform.transformText( \
+						self.getExtractedText()) )
 	return self
     # ---------------------------
 
@@ -197,9 +193,9 @@ class BaseSample (object):
 	    return  output
 	#------
 
-	self.title         = _removeURLsCleanStem(self.title)
-	self.abstract      = _removeURLsCleanStem(self.abstract)
-	self.extractedText = _removeURLsCleanStem(self.extractedText)
+	self.setTitle( _removeURLsCleanStem( self.getTitle()) )
+	self.setAbstract( _removeURLsCleanStem( self.getAbstract()) )
+	self.setExtractedText( _removeURLsCleanStem( self.getExtractedText()) )
 	return self
     # ---------------------------
 
@@ -214,9 +210,9 @@ class BaseSample (object):
 		output += ' ' + s.lower()
 	    return output
 	#------
-	self.title         = _removeURLs(self.title)
-	self.abstract      = _removeURLs(self.abstract)
-	self.extractedText = _removeURLs(self.extractedText)
+	self.setTitle( _removeURLs( self.getTitle()) )
+	self.setAbstract( _removeURLs( self.getAbstract() ) )
+	self.setExtractedText( _removeURLs( self.getExtractedText() ) )
 	return self
     # ---------------------------
 
@@ -234,27 +230,27 @@ class BaseSample (object):
 		output += m.group().strip() + '\n'
 	    return  output
 	#------
-	self.title         = _tokenPerLine(self.title)
-	self.abstract      = _tokenPerLine(self.abstract)
-	self.extractedText = _tokenPerLine(self.extractedText)
+	self.setTitle( _tokenPerLine( self.getTitle()) )
+	self.setAbstract( _tokenPerLine( self.getAbstract()) )
+	self.setExtractedText( _tokenPerLine( self.getExtractedText()) )
 	return self
     # ---------------------------
 
     def truncateText(self):		# preprocessor
 	""" for debugging, so you can see a sample record easily"""
 	
-	self.title = self.title[:10].replace('\n',' ')
-	self.abstract = self.abstract[:20].replace('\n',' ')
-	self.extractedText = self.extractedText[:20].replace('\n',' ') + '\n'
+	self.setTitle( self.getTitle()[:10].replace('\n',' ') )
+	self.setAbstract( self.getAbstract()[:20].replace('\n',' ') )
+	self.setExtractedText( self.getExtractedText()[:20].replace('\n',' ')+'\n' )
 	return self
     # ---------------------------
 
     def removeText(self):		# preprocessor
 	""" for debugging, so you can see a sample record easily"""
 	
-	self.title = self.title[:10].replace('\n',' ')
-	self.abstract = 'abstract...'
-	self.extractedText = 'extracted text...\n'
+	self.setTitle( self.getTitle()[:10].replace('\n',' ') )
+	self.setAbstract( 'abstract...' )
+	self.setExtractedText( 'extracted text...\n' )
 	return self
 # end class BaseSample ------------------------
 
@@ -308,53 +304,38 @@ class ClassifiedSample (BaseSample):
 	super(type(self), self).__init__()
     #----------------------
 
-    def setFields(self, values,		# dict
-	):
-	self.knownClassName = self.validateClassName(values['knownClassName'])
-	self.ID             = str(values['ID'])
-	self.creationDate   = str(values['creationDate'])
-	self.year           = str(values['year'])
-	self.isReview       = str(values[ 'isReview' ])
-	self.refType        = values[ 'refType' ]
-	self.suppStatus     = values[ 'suppStatus' ]
-	self.apStatus       = values[ 'apStatus' ]
-	self.gxdStatus      = values[ 'gxdStatus' ]
-	self.goStatus       = values[ 'goStatus' ]
-	self.tumorStatus    = values[ 'tumorStatus' ]
-	self.qtlStatus      = values[ 'qtlStatus' ]
-	self.journal        = values[ 'journal']
-	self.title          = values[ 'title']
-	self.abstract       = values[ 'abstract']
-	self.extractedText  = values[ 'extractedText']
-				
-	self.extraInfo = { fn : str(values.get(fn,'none')) \
-					for fn in self.getExtraInfoFieldNames() }
-	self.setComputedExtraInfoFields()
+    def parseSampleRecordText(self, text):
+	"""
+	Parse the text representing a sample record and populate self
+	with that record
+	"""
+	values = {}
+	fields = text.split(FIELDSEP)
 
-	return self
+	for i, fn in enumerate(self.fieldNames):
+	    values[ fn ] = fields[i]
+
+	return self.setFields(values)
     #----------------------
 
     def getSampleAsText(self):
 	""" Return this record as a text string
 	"""
-	fields = [ self.knownClassName,
-		    self.ID,
-		    self.creationDate,
-		    self.year,
-		    self.isReview,
-		    self.refType,
-		    self.suppStatus,
-		    self.apStatus,
-		    self.gxdStatus,
-		    self.goStatus,
-		    self.tumorStatus,
-		    self.qtlStatus,
-		    self.journal,
-		    self.title,	
-		    self.abstract,
-		    self.extractedText,
-		    ]
-	return FIELDSEP.join( fields)
+	return FIELDSEP.join( [ self.values[fn] for fn in self.fieldNames ] )
+    #----------------------
+
+    @classmethod
+    def getHeaderLine(cls):
+	""" Return sample output file column header line
+	"""
+	return FIELDSEP.join( cls.fieldNames)
+    #----------------------
+
+    def setFields(self, values,		# dict
+	):
+	self.values = { fn: str(values[fn]) for fn in self.fieldNames }
+	self.setKnownClassName( values['knownClassName'] )
+	return self
     #----------------------
 	
     def validateClassName(self, name):
@@ -376,38 +357,39 @@ class ClassifiedSample (BaseSample):
 	    raise ValueError("Invalid sample class name '%s'\n" % str(name))
     #----------------------
 
-    def parseInput(self, s):
+    def setKnownClassName(self, t):
+	self.values['knownClassName'] = self.validateClassName(t)
 
-	values = {}
-	fields = s.split(FIELDSEP)
+    def getKnownClassName(self): return self.values['knownClassName']
+    def getKnownYvalue(self):    return CLASS_NAMES.index(self.getKnownClassName())
 
-	for i, fn in enumerate(self.fieldNames):
-	    values[ fn ] = fields[i]
+    def setID(self, t): self.values['ID'] = t
+    def getID(self,  ): return self.values['ID']
 
-	return self.setFields(values)
+    def setExtractedText(self, t): self.values['extractedText'] = t
+    def getExtractedText(self,  ): return self.values['extractedText']
+
+    def setAbstract(self, t): self.values['abstract'] = t
+    def getAbstract(self,  ): return self.values['abstract']
+
+    def setTitle(self, t): self.values['title'] = t
+    def getTitle(self,  ): return self.values['title']
+
+    def getJournal(self):	return self.values['journal']
+
     #----------------------
-
-    @classmethod
-    def getHeaderLine(cls):
-	""" Return sample output file column header line
-	"""
-	return FIELDSEP.join( cls.fieldNames)
-
     @classmethod
     def getExtraInfoFieldNames(cls): return cls.extraInfoFieldNames
-    #----------------------
-
-    def getKnownClassName(self):return self.knownClassName
-    def getKnownYvalue(self):	return CLASS_NAMES.index(self.knownClassName)
-    def getJournal(self):	return self.journal
-
     def getExtraInfo(self):
+	self.extraInfo = { fn : str(self.values.get(fn,'none')) \
+					for fn in self.getExtraInfoFieldNames() }
 	self.setComputedExtraInfoFields()
 	return [ self.extraInfo[x] for x in self.getExtraInfoFieldNames() ]
 	
     def setComputedExtraInfoFields(self):
-	self.extraInfo['abstractLen'] = str(len(self.abstract))
-	self.extraInfo['textLen']     = str(len(self.extractedText))
+	self.extraInfo['abstractLen'] = str( len(self.getAbstract()) )
+	self.extraInfo['textLen']     = str( len(self.getExtractedText()) )
+    #----------------------
 
     # preprocessSamples.py script checks for rejected samples.
     #  For autolittriage, we don't have any checks to reject samples (yet)
@@ -422,8 +404,8 @@ class ClassifiedSample (BaseSample):
     def addJournalFeature(self):		# preprocessor
 	''' Add the journal name as a text token to the document
 	'''
-	jtext = 'journal__' + '_'.join( self.journal.split(' ') ).lower()
-	self.extractedText += " " + jtext
+	jtext = 'journal__' + '_'.join( self.getJournal().split(' ') ).lower()
+	self.setExtractedText( self.getExtractedText() + " " + jtext )
 	return self
     # ---------------------------
 # end class ClassifiedSample ------------------------
@@ -438,9 +420,9 @@ class UnclassifiedSample (BaseSample):
 # end class UnclassifiedSample ------------------------
 
 if __name__ == "__main__":	# ad hoc test code
-    r2 = ClassifiedSample().parseInput(\
+    r2 = ClassifiedSample().parseSampleRecordText(\
     ''';discard...|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
-    r1 = ClassifiedSample().parseInput(\
+    r1 = ClassifiedSample().parseSampleRecordText(\
     '''keep|pmID1|01/01/1900|1900|0|non-peer1|supp type1|apstat1|gxdstat1|goStat1|tumorstat1|qtlStat1|Journal of Insomnia|My Title|
     My Abstract|My text: it's a knock out https://foo text www.foo.org word word  -/- the final words'''
     )
