@@ -3,10 +3,9 @@
 # Compute recall and precision for subsets of papers
 # Current subsets supported:
 #  by curation group
-#  by journal
 #
-# Inputs: file of paper info including journal and curation group statuses
-#	  a file of paper predictions
+# Inputs: prediction file that includes "extra info" (see sampleDataLib.py)
+#	   that has curation group statuses for the paper being predicted
 #
 # Output to stdout.
 #
@@ -17,21 +16,47 @@ import time
 import argparse
 
 PREDFILE_RECORDSEP = '\n'
+PREDFILE_FIELDSEP = '\t'
 
+NoteToSelf = \
+"""
+future thought:
+* it would not be hard to add cmd line option
+    --attr name : would give  P, R, NPV for groups defined by diff values for the
+	named attr.
+	This could work for attrs that are enumerations like journal,
+	ap_status, gxd_status, ..., supp data status, isreview, ...
+	This would not work well for attr that are counts or that require logic
+	to combine different values
+    This would be a generalization of the --journal option originally implemented
+    here.
+
+    still need to keep
+    --group : since this involves logic using curation group statuses,
+	it is special and would not work as --attr
+
+* to do --attr, will need
+    a subclass of SubsetOfPapers, something like "PapersByAttr".
+    Takes name of extra info field to use and individual value - there would be 1
+    instance per value in the field
+
+    change report formatting for --attr
+"""
 #-----------------------------------
 
 def parseCmdLine():
     parser = argparse.ArgumentParser( \
-    description='Compute precision & recall for subsets of papers. Write to stdout')
+    description='Compute precision & recall for curation groups. Write to stdout')
 
-    parser.add_argument('paperFile',help='file of paper curation statuses/info')
     parser.add_argument('predictionFile', help='file of paper predictions')
 
-    parser.add_argument('--journal', dest='subsetType', action='store_const',
-	const='journal', default='group', help="do analysis by journal")
-
     parser.add_argument('--group', dest='subsetType', action='store_const',
-	const='group', help="do analysis by curation group. Default")
+    	const='group', default='group',
+	help="do analysis by curation group. Default")
+
+# July 24, 2019: not dealing with this for now.
+#    parser.add_argument('--journal', dest='subsetType', action='store_const',
+#  	const='journal', default='group', help="do analysis by journal")
 
     parser.add_argument('-l', '--long', dest='longOutput', action='store_true',
 	required=False,
@@ -49,45 +74,37 @@ def parseCmdLine():
 args = parseCmdLine()
 
 #----------------------
-class Paper (object):
-    """
-    Is a paper with curation statuses.
-    Does: knows how to initialize itself from a line in a file with statuses
-	    for the paper.
-    """
-    def __init__(self, record):
-	FIELDSEP = '|'		# should really get this from sampleDataLib
-	(self.pubmed,
-	self.trueClass,
-	self.ap,
-	self.gxd,
-	self.go,
-	self.tumor,
-	self.qtl,
-	self.journal) = record.split(FIELDSEP)
-
-#----------------------
 
 class Prediction (object):
     """
     Is:   a prediction for a given paper
     Does: knows how to initialize itself from a line from a prediction file
     """
-    FIELDSEP = '\t'		# standard for prediction files
     def __init__(self, record):
-	components = record.split(self.FIELDSEP)
+	# basic prediction fields
+	components = record.lower().split(PREDFILE_FIELDSEP)
 	(self.pubmed,
 	self.trueClass,
 	self.predClass,
 	self.fpFn,
-	) = components[:4]
-	if len(components) == 6:   # if predictions have a confidence & abs val
-	    (self.confidence,
-	    self.absValue,) = components[4:]
-	else:			# just dummy values
-	    self.confidence = 0
-	    self.absValue   = 0
-
+	self.confidence,
+	self.absValue,
+	# extra info fields, hard coded. Yuck.
+	# Needs to match ClassifiedSample extra info fields
+	self.creationDate,
+	self.year,
+	self.isReview,
+	self.refType,
+	self.suppStatus,
+	self.ap,
+	self.gxd,
+	self.go,
+	self.tumor,
+	self.qtl,
+	self.journal,
+	self.abstractLen,
+	self.textLen,
+	) = components
 #----------------------
 
 class SubsetOfPapers (object):
@@ -108,18 +125,18 @@ class SubsetOfPapers (object):
 
     def isPaperInSubset(self, paper):
 	"""
-	Abstract method.
 	Return true if the paper is in this subset
+	This is likely the method that needs to be overridden for a Subset.
 	"""
 	return True
     # ---------------------
 
-    def paperVsPrediction(self, paper, prediction):
+    def truthVsPrediction(self, prediction):
 	""" Compare paper trueClass to prediction
 	"""
-	if self.isPaperInSubset(paper):
+	if self.isPaperInSubset(prediction):
 	    self.numInSubset += 1
-	    if paper.trueClass == "keep":
+	    if prediction.trueClass == "keep":
 		if prediction.predClass =="keep":
 		    self.numTP += 1
 		else:
@@ -165,37 +182,11 @@ class CurationGroup (SubsetOfPapers):
 		we don't see any true discards *in* a curation group.
 	      So within the group, precision = 1 and NPV = 0: not useful
     """
-    def isPaperInSubset(self, paper):
-	status = paper.__getattribute__(self.subsetName)
+    def isPaperInSubset(self, prediction):
+	status = prediction.__getattribute__(self.subsetName)
 	return status in ['chosen', 'indexed', 'full-coded']
 #----------------------
 
-class JournalGroup (SubsetOfPapers):
-    """ IS:   A SubsetOfPapers from a given journal
-    """
-    def isPaperInSubset(self, paper):
-	return paper.journal == self.subsetName
-#----------------------
-
-def getPapers(papersFile):
-    """ Read the file of papers and their curation statuses.
-	Return {pubmed: Paper object, ...}
-    """
-    RECORDSEP = '\n'
-    rcds = open(papersFile,'r').read().split(RECORDSEP)	# read/split all rcds
-    del rcds[0] 			# header line
-    del rcds[-1]			# empty line at end after split()
-    papers = {}				# {pubmed : Paper object}
-    for rcd in rcds:
-	paper = Paper(rcd.strip().lower())
-	papers[paper.pubmed] = paper
-
-    return papers
-#----------------------
-
-#----------------------
-# Main prog
-#----------------------
 def main():
 
     #### define all the subsets of papers to track
@@ -207,10 +198,8 @@ def main():
 			CurationGroup('tumor'),
 			CurationGroup('qtl'),
 		    ]
-    journalGroups = {}	# journalGroups[journal name] is a JournalGroup object
-
-    #### get papers' information and start reading the predictions
-    papers = getPapers(args.paperFile)
+    # not supporting this for now
+#    journalGroups = {}	# journalGroups[journal name] is a JournalGroup object
 
     predLines = open(args.predictionFile,'r').read().split(PREDFILE_RECORDSEP)
     del predLines[0]			# header line
@@ -220,29 +209,26 @@ def main():
 
     for predLine in predLines:		# for each prediction
 	pred = Prediction(predLine)
-	paper = papers[pred.pubmed]
 
-	allPapers.paperVsPrediction(paper, pred)
+	allPapers.truthVsPrediction(pred)
 
 	for cg in curationGroups:
-	    cg.paperVsPrediction(paper, pred)
+	    cg.truthVsPrediction(pred)
 
-	doJournalGroup(journalGroups, paper, pred)
+#	doJournalGroup(journalGroups, pred)
 
-	if args.longOutput: outputLong(paper, pred)
+	if args.longOutput: outputLong(pred)
 
     #### Print reports
-    if args.subsetType == 'journal':
-	printJournalGroupReport(journalGroups, allPapers)
-    else:
-	printCurationGroupReport(curationGroups, allPapers)
+    printCurationGroupReport(curationGroups, allPapers)
 # ---------------------
 
-def doJournalGroup(journalGroups, paper, pred):
+def doJournalGroup(journalGroups, pred):
     """
-    Add the paper/pred to the journalGroup of the journal the paper is from
+    NOT SUPPORTING this for now.
+    Add the pred to the journalGroup of the journal the paper is from
     """
-    j = paper.journal
+    j = pred.journal
 
     if journalGroups.has_key(j):
 	group = journalGroups[j]
@@ -250,10 +236,11 @@ def doJournalGroup(journalGroups, paper, pred):
 	group = JournalGroup(j)
 	journalGroups[j] = group
 
-    group.paperVsPrediction(paper, pred)
+    group.truthVsPrediction(pred)
 # ---------------------
 
 def printJournalGroupReport(journalGroups, allPapers):
+    # NOT SUPPORTING this for now.
     hdr = '%6s\t%6s\t%6s\t%6s\t%6s\t%5s\t%5s\t%5s\t%s' \
 		% ('Papers', 'TP', 'TN', 'FN', 'FP', 'P', 'R', 'NPV', 'journal')
     print hdr
@@ -295,13 +282,14 @@ def printCurationGroupReport(curationGroups, allPapers):
     fn = allPapers.getFN()
     print '%-14s keep     papers: %5d predicted keep: %5d recall: %5.3f' % \
 		(allPapers.getSubsetName(), tp+fn, tp, allPapers.getRecall())
+    print "Predictions from %s - %s" % (args.predictionFile, time.ctime())
 # ---------------------
 
 def outputLongHeader():
     """
     Write header line for long output file
     """
-    args.longOutputFile.write( Prediction.FIELDSEP.join( [ \
+    args.longOutputFile.write( PREDFILE_FIELDSEP.join( [ \
 		'ID',
 		'True Class',
 		'Pred Class',
@@ -317,31 +305,32 @@ def outputLongHeader():
 		] ) + PREDFILE_RECORDSEP )
 # ---------------------
 
-def outputLong( paper,		# Paper record
-		pred,		# Prediction record w/ same pubmed as paper
+def outputLong( pred,		# Prediction record w/ same pubmed as paper
 		):
     """
     Write a combined prediction record with the curation statuses to for
     each curation group from the paper record.
     """
-    args.longOutputFile.write( Prediction.FIELDSEP.join( [ \
+    args.longOutputFile.write( PREDFILE_FIELDSEP.join( [ \
 		pred.pubmed,
 		pred.trueClass,
 		pred.predClass,
 		pred.fpFn,
 		str(pred.confidence),
 		str(pred.absValue),
-		paper.ap,
-		paper.gxd,
-		paper.go,
-		paper.tumor,
-		paper.qtl,
-		paper.journal,
+		pred.ap,
+		pred.gxd,
+		pred.go,
+		pred.tumor,
+		pred.qtl,
+		pred.journal,
 		] ) + PREDFILE_RECORDSEP )
 # ---------------------
 
 def verbose(text):
-    if args.verbose: sys.stderr.write(text)
+    if args.verbose:
+	sys.stderr.write(text)
+	sys.stderr.flush()
 # ---------------------
 
 if __name__ == "__main__":

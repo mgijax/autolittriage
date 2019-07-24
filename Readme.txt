@@ -1129,3 +1129,14 @@ July 9, 2019
 July 15, 2019
     converted preprocessSamples.py to use sampleDataLib.ClassifiedSampleSet
 
+July 23, 2019
+    Continued improvements to sampleDataLib.py.
+    Converted sdSplitByJounal to use ClassifiedSampleSet.
+    Tested build of small data set (Data/smallSet).
+    Tested textTuningLib.py.
+July 24
+    Changed subsetPandR.py to get paper "extra info" from new prediction file
+    format.
+    For simplicity, I got rid of --journal option and just made it work for
+    curation groups.
+
