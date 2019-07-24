@@ -1,9 +1,8 @@
 #!/usr/bin/env python2.7
 
 # Read a sample file from stdin and extract the sample record
-#  for a specified pubmed ID. Write to stdout.
+#  for specified pubmed IDs. Write to stdout.
 #
-
 import sys
 import argparse
 import sampleDataLib
@@ -23,7 +22,7 @@ def parseCmdLine():
 
     args = parser.parse_args()
 
-    args.sampleFile = sys.stdin	# set here in case we ever have input file opt
+    args.sampleFile = sys.stdin	# might want input file to be an arg someday
 
     return args
 #---------------------------
@@ -37,26 +36,25 @@ def main():
                     sys.path
     import sampleDataLib
 
-    recordSep = sampleDataLib.RECORDSEP
+    sampleSet = sampleDataLib.ClassifiedSampleSet().read(args.sampleFile)
 
-    rcds = args.sampleFile.read().split(recordSep)     # read/split all rcds
-    del rcds[-1]		# empty line at end after spit()
-    del rcds[0]                 # delete header line from input
+    recordEnd = sampleSet.getRecordEnd()
 
-    for rcdnum, rcd in enumerate(rcds):
-	sr = sampleDataLib.SampleRecord(rcd)
+    for rcdnum, sample in enumerate(sampleSet.sampleIterator()):
 
-	if sr.getID() in args.pmids: 
-	    verbose("Pubmed %s found at record number %d\n" % (sr.getID(), rcdnum))
+	if sample.getID() in args.pmids: 
+	    verbose("ID '%s' found at record number %d\n" % \
+							(sample.getID(), rcdnum))
 	    if args.justText:
-		sys.stdout.write(sr.getDocument())
-		sys.stdout.write(';;\n')
+		sys.stdout.write(sample.getDocument() + '\n' + recordEnd)
 	    else:
-		sys.stdout.write(sr.getSampleAsText())
+		sys.stdout.write(sample.getSampleAsText() + '\n' + recordEnd)
 
 #---------------------------
 def verbose(text):
-    if args.verbose: sys.stderr.write(text)
+    if args.verbose:
+	sys.stderr.write(text)
+	sys.stderr.flush()
 
 if __name__ == "__main__":
     main()
