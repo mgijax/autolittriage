@@ -93,6 +93,13 @@ class ClassifiedSampleSet (object):
 	    yield s
     #-------------------------
 
+    def addSamples(self, samples,	# [ ClassifiedSamples ]
+	):
+	for s in samples:
+	    self.addSample(s)
+	return self
+    #-------------------------
+
     def addSample(self, sample,		# ClassifiedSample
 	):
 	if not isinstance(sample, ClassifiedSample):
