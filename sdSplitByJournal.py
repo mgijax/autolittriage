@@ -1,29 +1,20 @@
 #!/usr/bin/env python2.7 
 #
 # sdSplitByJournal.py
-# Takes one or more files of samples and splits the samples into 2 outputs
-#   1) random samples only from monitored journals in the same distribution
-#       as those journals
-#   2) "leftovers" the rest of the samples (non-selected and non-monitored
-#        journals)
+# Takes one or more files of samples and randomly splits the samples into 2 outputs
+#   1) the "selected" samples
+#      - the selected samples can be restricted to only MGI monitored journals or
+#        unrestricted and selected from any journals in the input sample sets
+#   2) "leftovers" the rest of the samples
+#
 #   (1) written to a file specified on command line
 #   (2) written to a file specified on command line
-#   Summary report is written to stdout
+#   a Summary report is written to stdout
 #
-# SampleRecord Class in sampleDataLib.py is responsible for the sample handling
+# ClassifiedSampleRecord Class in sampleDataLib.py is responsible for the sample
+#   handling
 #
-# Assumes all input files have the same column structure. see SampleRecord.
-#
-# Use this to get a subset of samples with the same journal distribution as
-# the input. So for instance, to generate a test set.
-#
-# NOTE currently this script is only considering articles from the MGI
-#  monitored journals. So it is not really the distribution across all journals
-# 
-# This only works IF the input set already has the distribution we want.
-# If the input is some other funky/ill-defined distribution, then we'd need
-# to know the fraction of inputs desired for each journal, and we'd need a 
-# different script.
+# Assumes all input files have the same column structure. see sampleDataLib.py.
 #
 # At the moment this does NOT consider/preserve the distribution of keep/discard
 # for each journal. We should probably add that.
@@ -34,6 +25,10 @@ import os
 import time
 import argparse
 import random
+# extend path up multiple parent dirs, hoping we can import sampleDataLib
+sys.path = ['/'.join(dots) for dots in [['..']*i for i in range(1,4)]] + \
+		sys.path
+import sampleDataLib
 
 DEFAULT_OUTPUT_SELECTED = 'selectedRefs.txt'
 DEFAULT_OUTPUT_LEFTOVER = 'leftoverRefs.txt'
@@ -43,21 +38,21 @@ DEFAULT_MGI_JOURNALS_FILE = 'mgiJournals.all.txt'
 
 def parseCmdLine():
     parser = argparse.ArgumentParser( \
-    description='split samples into MGI monitored journals vs. not. Write to stdout')
+    description='journal by journal select random samples. Summary stats to stdout')
 
     parser.add_argument('inputFiles', nargs=argparse.REMAINDER,
     	help='files of samples')
 
     parser.add_argument('-f', '--fraction', dest='fraction', action='store',
-        required=True, type=float, default=0.0,
+        required=True, type=float, default=0.2,
         help='fraction of articles from each journal to select. Float 0..1 .')
 
-    parser.add_argument('--selectedrefs', dest='selectedFile', action='store',
+    parser.add_argument('--selectedfile', dest='selectedFile', action='store',
 	required=False, default=DEFAULT_OUTPUT_SELECTED,
     	help='where to write articles randomly selected from monitored '+
 	'journals. Default: ' + DEFAULT_OUTPUT_SELECTED)
 
-    parser.add_argument('--leftoverrefs', dest='leftoverFile', action='store',
+    parser.add_argument('--leftoverfile', dest='leftoverFile', action='store',
 	required=False, default=DEFAULT_OUTPUT_LEFTOVER,
     	help='where to write leftover articles not selected'+
 	'. Default: ' + DEFAULT_OUTPUT_LEFTOVER)
@@ -66,6 +61,9 @@ def parseCmdLine():
 	required=False, default=DEFAULT_MGI_JOURNALS_FILE,
     	help='file containing the list of MGI journals. Default: '
 						+ DEFAULT_MGI_JOURNALS_FILE)
+
+    parser.add_argument('--alljournals', dest='allJournals', action='store_true',
+	required=False, help="include all journals, not just MGI monitored")
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
 	required=False, help="skip helpful messages to stderr")
@@ -78,123 +76,231 @@ def parseCmdLine():
 args = parseCmdLine()
 
 #----------------------
-class JournalCounts (object):
-    numSelected = 0
-    numLeftover = 0
 
-#----------------------
 def getMgiJournals(mgiJournalsFile):
-    """ return dict of MGI monitored journal names
-	{journalname: [], ...}		# list of samples seen in the journal
+    """ return list of MGI monitored journalNames
     """
-    journals = {}
+    journals = []
     fp = open(mgiJournalsFile, 'r')
     for j in fp:
-	j = j.strip().lower()
-	jn = '_'.join(j.split(' '))
-	journals[jn.strip()] = []
+	journals.append( cleanJournalName(j) )
     fp.close()
     return journals
 #----------------------
+
+def cleanJournalName(s):
+    j = s.strip().lower()
+    jn = '_'.join(j.split(' ')).strip()
+    return jn
+#----------------------
+
+class JournalCollection (object):
+    """
+    # IS a collection of journals, each with its list of samples/articles
+    """
+    def __init__(self):
+	self.journals = {}		# { journalName: [ list of Samples ] }
+	self.numSelectedByJournal = {}	# { journalName: num selected samples }
+	self.totNumSamples = 0
+    #----------------------
+
+    def addSample(self, journalName,
+	sample,			# ClassifiedSample
+	):
+	self.journals.setdefault(journalName, []).append(sample)
+	self.numSelectedByJournal[journalName] = 0
+	self.totNumSamples += 1
+    #----------------------
+
+    def selectRandomSetFrom(self, journalName, fraction):
+	"""
+	Return two lists of random samples from the journal,
+	    selected and not-selected
+	"""
+	samples = self.journals[journalName]
+	selectedSamples = []
+	leftoverSamples = []
+
+	for sample in samples:
+	    if random.random() < float(fraction):
+		selectedSamples.append(sample)
+	    else:
+		leftoverSamples.append(sample)
+
+	self.numSelectedByJournal[journalName] = len(selectedSamples)
+	return selectedSamples, leftoverSamples
+    #----------------------
+
+    def getSamplesFrom(self, journalName):
+	return self.journals[journalName]
+    def getNumSamplesFrom(self, journalName):
+	return len(self.journals[journalName])
+
+    def getNumSamples(self):
+	return self.totNumSamples
+
+    def getJournalNames(self):
+	return self.journals.keys()
+    def getNumJournals(self):
+	return len(self.journals.keys())
+
+    def getNumSelectedFrom(self, journalName):
+	return self.numSelectedByJournal[journalName]
+    def getNumSelected(self,):
+	tot = 0
+	for n in self.numSelectedByJournal.values():
+	    tot += n
+	return tot
+    def getNumLeftover(self,):
+	return self.totNumSamples - self.getNumSelected()
+# end class ----------------------
+
+#----------------------
 # Main prog
 #----------------------
+
 def main():
 
-    verbose("Distributing Articles over MGI monitored Journals\n")
+    verbose("Splitting article set\n")
     startTime = time.time()
 
-    # extend path up multiple parent dirs, hoping we can import sampleDataLib
-    sys.path = ['/'.join(dots) for dots in [['..']*i for i in range(1,4)]] + \
-		    sys.path
-    import sampleDataLib
+    mgiJournalNames = getMgiJournals(args.mgiJournalsFile)
 
-    counts = { 'allSamples': 0, 'fromMonitored':0,}
-
-    mgiJournals = getMgiJournals(args.mgiJournalsFile)
-
+    # the final sample sets
     selectedSampleSet = sampleDataLib.ClassifiedSampleSet()
     leftoverSampleSet = sampleDataLib.ClassifiedSampleSet()
 
-    ### Loop through all input files, reading all sample records.
-    ### Samples from monitored journals go to selectedSampleSet
-    ### Samples from non-monitored journals go to leftoverSampleSet
-    for fn in args.inputFiles:
+    mgiJournalCollection   = JournalCollection()
+    otherJournalCollection = JournalCollection()
 
+    ### Loop through all input files, build JournalCollections
+    for fn in args.inputFiles:
 	verbose("Reading %s\n" % fn)
 	inputSampleSet = sampleDataLib.ClassifiedSampleSet().read(fn)
 
-	for rcdnum, sr in enumerate(inputSampleSet.sampleIterator()):
-	    counts['allSamples'] += 1
-	    journal = sr.getJournal().strip().lower()
-	    if mgiJournals.has_key(journal):
-		counts['fromMonitored'] += 1
-		mgiJournals[journal].append(sr)
+	for sample in inputSampleSet.sampleIterator():
+	    journalName = cleanJournalName( sample.getJournal() )
+	    if journalName in mgiJournalNames:
+		mgiJournalCollection.addSample(journalName, sample)
 	    else:
-		leftoverSampleSet.addSample(sr)
+		otherJournalCollection.addSample(journalName, sample)
+	 
+    ### Loop through journals. for each, select random fraction of samples,
+    for journalName in mgiJournalCollection.getJournalNames():
+	selected,leftover = mgiJournalCollection.selectRandomSetFrom(journalName,
+								    args.fraction)
+	selectedSampleSet.addSamples(selected)
+	leftoverSampleSet.addSamples(leftover)
 
-    ### NOW, loop through mgiJournals. for each, select random fraction of samples,
-    ### add random samples to selectedSampleSet or leftoverSampleSet
-    mgiJournalCounts = {}	# mgiJournalCounts[journalname] = num selected
-    totNumSelected = 0		# num selected across all MGI journals
+    for journalName in otherJournalCollection.getJournalNames():
+	if args.allJournals:
+	    selected,leftover = otherJournalCollection.selectRandomSetFrom( \
+							journalName, args.fraction)
+	    selectedSampleSet.addSamples(selected)
+	    leftoverSampleSet.addSamples(leftover)
+	else:
+	    leftoverSampleSet.addSamples( \
+				otherJournalCollection.getSamplesFrom(journalName))
 
-    for journalName, samples in mgiJournals.items():
-	numInJournal = len(samples)
-	numToSelect  = int( (numInJournal * args.fraction) + 0.5)
-
-	# save counts so we can compute/output percentages below
-	mgiJournalCounts[journalName] = numToSelect
-	totNumSelected += numToSelect
-
-	# random list of sample indexes, in sorted order
-	randomIndexes = sorted(random.sample( range(numInJournal), numToSelect))
-
-	# loop through the samples in list order, selecting the ones whose
-	#  index is in randomIndexes
-	for i in range(numInJournal):
-	    if len(randomIndexes) > 0 and i == randomIndexes[0]:
-		selectedSampleSet.addSample(samples[i])
-		del randomIndexes[0]
-	    else:
-		leftoverSampleSet.addSample(samples[i])
-
-    # Write output files
+    ### Write output files
     selectedSampleSet.write(args.selectedFile)
     leftoverSampleSet.write(args.leftoverFile)
 
-    ### Write report to stdout
-    print "Monitored Journals: \t%d" % len(mgiJournals)
-    print "Total articles: \t%d" % counts['allSamples']
-    print "From monitored journals: %d" % counts['fromMonitored']
-    print "From non-monitored journals: %d" % \
-				(counts['allSamples'] - counts['fromMonitored'])
-    print "Total selected articles: %d" % totNumSelected
-    print "Total leftover articles: %d" % (counts['allSamples'] - totNumSelected)
+    ### Write summary report
+    numMgiJournalsSeen   = mgiJournalCollection.getNumJournals()
+    numOtherJournals     = otherJournalCollection.getNumJournals()
+
+    numMgiSamples         = mgiJournalCollection.getNumSamples()
+    numMgiSelectedSamples = mgiJournalCollection.getNumSelected()
+    numMgiLeftoverSamples = mgiJournalCollection.getNumLeftover()
+
+    numOtherSamples         = otherJournalCollection.getNumSamples()
+    numOtherSelectedSamples = otherJournalCollection.getNumSelected()
+    numOtherLeftoverSamples = otherJournalCollection.getNumLeftover()
+
+    print "Selecting random set of articles. Fraction: %5.3f" % args.fraction
+    print args.inputFiles
+    print time.ctime()
     print
-    # column headings
-    print "#articles\t%% of all\t#selected\t%% of sel\tjournal"
+    printSummary("Overall",
+	numMgiJournalsSeen + numOtherJournals,
+	numMgiSamples + numOtherSamples,
+	selectedSampleSet.getNumSamples(),
+	leftoverSampleSet.getNumSamples(),
+	)
+    print
+    title = "MGI Journals: %d - all elegible" % len(mgiJournalNames)
+    printSummary(title,
+	numMgiJournalsSeen,
+	numMgiSamples,
+	numMgiSelectedSamples,
+	numMgiLeftoverSamples,
+	)
 
-    for journalName in sorted(mgiJournals.keys()):
-	samples = mgiJournals[journalName]
-	numInJournal = len(samples)
-	numSelected  = mgiJournalCounts[journalName]
+    if args.allJournals: suffix = " - elegible for selection"
+    else: suffix = " - NOT elegible for selection"
+    print
+    printSummary("Non-MGI Journals" + suffix,
+	numOtherJournals,
+	numOtherSamples,
+	numOtherSelectedSamples,
+	numOtherLeftoverSamples,
+	)
 
-	    # fraction of fromJournal/fromMonitored should be same as 
-	    #  numselected/totNumSelected. If not, we've miscalculated somehow.
-	print "%d\t%7.4f\t\t%d\t%7.4f\t%s" % ( \
-		    numInJournal,
-		    float(100.0 * float(numInJournal)/counts['fromMonitored']),
-		    numSelected,
-		    float(100.0 * float(numSelected)/totNumSelected),
-		    journalName
+    ### write details report
+    # for each elegible journal:
+    cols = ["articles",			# num articles
+	    "% of elegible",		# % of all elegible articles
+	    "selected",			# num selected
+	    "% of selected",		# % of all selected articles
+	    "% from journal",		# % of all articles in this journal
+	    "journal",
+	    ]
+    print '\t'.join(cols)
+
+    numElegible = mgiJournalCollection.getNumSamples()
+    if args.allJournals: numElegible += otherJournalCollection.getNumSamples()
+    
+    numSelected = selectedSampleSet.getNumSamples()
+
+    for journalName in sorted(mgiJournalCollection.getJournalNames() + \
+					otherJournalCollection.getJournalNames()):
+	if journalName in mgiJournalNames:
+	    collection = mgiJournalCollection
+	else:
+	    collection = otherJournalCollection
+
+	numJSamples  = collection.getNumSamplesFrom(journalName)
+	numJSelected = collection.getNumSelectedFrom(journalName)
+
+	spaces = ' ' * 3
+	print "%5d %s %5.2f%% %s %5d %s %5.2f%% %s %5.2f%% %s %s" % ( \
+		    numJSamples, spaces,
+		    float(100.0 * float(numJSamples)/numElegible), spaces,
+		    numJSelected, spaces,
+		    float(100.0 * float(numJSelected)/numSelected), spaces,
+		    float(100.0 * float(numJSelected)/numJSamples), spaces,
+		    journalName,
 		    )
+
     verbose( "Total time: %8.3f seconds\n\n" % (time.time()-startTime))
+# ---------------------
+
+def printSummary(title, numJournals, numArticles, numSelected, numLeftover):
+    print title
+    print "Journals in the input: \t%d" % numJournals
+    print "Total articles: \t%d" % numArticles
+    print "Total selected articles: %d  %4.2f%%" % (numSelected,
+						float(numSelected)/numArticles)
+    print "Total leftover articles: %d  %4.2f%%" % (numLeftover,
+						float(numLeftover)/numArticles)
 # ---------------------
 
 def verbose(text):
     if args.verbose:
 	sys.stderr.write(text)
 	sys.stderr.flush()
-
 # ---------------------
+
 if __name__ == "__main__":
     main()
