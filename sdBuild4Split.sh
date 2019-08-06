@@ -81,10 +81,10 @@ echo "splitting test validation training sets"
 date >$splitTestLog
 set -x
 # random test set + leftovers
-$splitByJournal --mgijournals $mgiJournals -f $testFraction --selectedfile testSet.txt  --leftoverfile LeftoversTest.txt $after >>$splitTestLog 2>&1
+$splitByJournal --alljournals --mgijournals $mgiJournals -f $testFraction --selectedfile testSet.txt  --leftoverfile LeftoversTest.txt $after >>$splitTestLog 2>&1
 
 # random validation set from test set leftovers
-$splitByJournal --mgijournals $mgiJournals -f $valFraction --selectedfile valSet.txt  --leftoverfile LeftoversVal.txt LeftoversTest.txt >>$splitTestLog 2>&1
+$splitByJournal --alljournals --mgijournals $mgiJournals -f $valFraction --selectedfile valSet.txt  --leftoverfile LeftoversVal.txt LeftoversTest.txt >>$splitTestLog 2>&1
 
 # trainSet is valSet leftovers + $before
 # (preprocess w/ no preprocessing steps just intelligently concats files)
