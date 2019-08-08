@@ -1063,7 +1063,7 @@ June 10, 2019
 	Would be curator judgement.
 	UPON further looking, NPV correlates with confidence only for larger
 	confidence bins. If you set the bin range to be smaller, things don't
-	correlate so well.
+	correlate so well. - See Aug 8 below
 
 July 9, 2019
     Long digression.
@@ -1140,3 +1140,71 @@ July 24
     For simplicity, I got rid of --journal option and just made it work for
     curation groups.
 
+Aug 8, 2019
+    For classifiers with predict_proba(), output a "confidence" value.
+    Generated data (references) from Jul 9, 2019,
+	omitting isReview (from MGD) and non-peer-reviewed papers.
+	including all journals (not just MGI) in the test & validation sets.
+	    - sdSplitByJournal.py, sdBuild4Split.sh
+	Reran RF and SGDlog on these to get comparable results w/ "extra info"
+
+    Organized RF and SGDlog analysis google sheets and did a bunch of analysis:
+	P, NPV, R by journal, by year of publication, by "confidence", by text len
+	Identified some journals w/ low NPV to look at.
+	SGDlog P and NPV doesn't correlate with "confidence" very well.
+	RF P and NPV correlates better.
+	    Jim: should take an initial look
+
+    Thinking about writing 1 classifier per group, skipping primary triage:
+	Since Oct 31, 2017
+	Discards: 40000 (not including those from backpopulated discards)
+	    Excluding review and non-peer-reviewed papers
+	    Selected = chosen or indexed or full-coded
+	    (Rejects do not include discards)
+		Reject	Select	Tot Rej	%Selected
+	AP	4217	23696 	44217	34%		- maybe balanced enough
+	GO	1079	15783*	41079	28%		- maybe balanced enough
+	GXD	13391	2141	53391	4%
+	Tumor	7874	1578	47874	3%
+			(1801 if you include reviews)
+
+	* GO selected = 21664 - 5881 indexed by pm2geneload
+
+	For AP, easily balance by adding some selected papers from before 10/31/2017
+	For GO, easily balance by adding some selected papers from before 10/31/2017
+
+	Balancing GXD and Tumor are a little harder, but close enough:
+	For GXD,   selected papers before 10/31/2017:  25210	34% selected
+	For Tumor, selected papers before 10/31/2017:  14547	25% selected
+						    (or 16795 including reviews)
+
+	SO, it seems feasible to do a classifier for each group by balancing each
+	dataset with selected papers from before 10/31/2017.
+
+	One thought:
+	We do already have secondary triage reports.
+
+	In general:
+	Does it make sense to use current autolittriage classifier (keep/discard)
+	    followed by secondary triage report for each group?
+
+	Fallback for specific group:
+	if specific classifier for any group doesn't work too well, could
+	    use keep/discard classifier followed by secondary triage report for
+	    that group
+
+	To do specific group classifier, need:
+	    getRaw.py - new version parameterized by curation group
+	    sdSplitBYJournal.py - probably no change needed, need to think
+	    sdBuild1Get.sh - needs to call new getRaw.py
+
+	Directory structure:
+	    Data/ap		- include Readme to specify data date, etc.)
+	    Data/gxd
+	    ...
+
+	    ModelAnalysis/primary	<---- move current analysis to this
+	    ModelAnalysis/ap
+	    ModelAnalysis/gxd
+	    ...
+	

@@ -21,7 +21,7 @@ pipeline = Pipeline( [
 		binary=True,
 		#token_pattern=r'\b([a-z_]\w+)\b', Use default for now
 		),),
-#('featureEvaluator', skHelper.FeatureDocCounter()),
+('featureEvaluator', skHelper.FeatureDocCounter()),
 #('scaler'    ,StandardScaler(copy=True,with_mean=False,with_std=True)),
 #('scaler'    , MaxAbsScaler(copy=True)),
 ('classifier', SGDClassifier(verbose=0,
