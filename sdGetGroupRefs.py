@@ -122,6 +122,8 @@ class BaseRefSearch (object): # {
 					#  before lit Triage
     TUMOR_START_DATE = "07/01/2013"	# date to get add'l tumor papers from
 
+    tmpTablesBuilt = False		# only build the tmp tables once
+
     #----------------
     # SQL to build tmp tables 
     #----------------
@@ -169,13 +171,12 @@ class BaseRefSearch (object): # {
     '''
 	create index tmp_idx2 on tmp_refs(_refs_key)
     ''',
-	# this index is important for speed since bib_refs does not have an index on
-	#  creation_date
+	# this index is important for speed since bib_refs does not have an
+	#  index on creation_date
     '''
 	create index tmp_idx3 on tmp_refs(creation_date)
     ''',
     ]
-    tmpTableBuilt = False
 
     #----------------
     # We get the data for a reference in 2 steps (separate SQL):
@@ -257,12 +258,11 @@ class BaseRefSearch (object): # {
     #-----------------------------------
 
     def getCount(self):
-	return 23
 	self.buildTmpTables()
 
 	results = self.runSQL(self.buildCountSQL(),
 				    'getting %s count' % self.getName())
-	return int(results[-1][0]['num'])
+	return results[-1][0]['num']
     #-----------------------------------
 
     def buildCountSQL(self):
@@ -270,14 +270,16 @@ class BaseRefSearch (object): # {
 	    restrict = self.RESTRICT_REF_TYPE
 	else:
 	    restrict = ''
-	return self.COUNT_SELECT + self.COUNT_FROM + self.getWhereClauses()+restrict
+	return self.COUNT_SELECT + self.COUNT_FROM + self.getWhereClauses() \
+								     + restrict
     #-----------------------------------
 
     def getRefRecords(self):
 	"""
 	Run SQL for basic fields and extracted text fields, & join them.
 	Return list of records.
-	Each record represents one article w/ its basic fields & its extracted text
+	Each record represents one article w/ its basic fields & its
+	extracted text.
 	"""
 	self.buildTmpTables()
 
@@ -286,7 +288,8 @@ class BaseRefSearch (object): # {
 	rslts = self.runSQL(refQ, 'getting ref info for %s' % self.getName())
 	refRcds = rslts[-1]
 
-	rslts = self.runSQL(textQ, 'getting extracted text for %s' % self.getName())
+	rslts = self.runSQL(textQ, 'getting extracted text for %s'  \
+							    % self.getName())
 	extTextRcds = rslts[-1]
 
 	return self.joinExtractedText(refRcds, extTextRcds)
@@ -312,26 +315,23 @@ class BaseRefSearch (object): # {
 
 	if self.args.restrictArticles:
 	    restrict = self.RESTRICT_REF_TYPE
-	    verbose("Omitting review and non-peer reviewed articles\n")
 	else:
 	    restrict = ''
-	    verbose("Including review and non-peer reviewed articles\n")
 
-	if self.args.nResults > 0: limitSQL = "\nlimit %d\n" % self.args.nResults
+	if self.args.nResults > 0: limitSQL ="\nlimit %d\n" % self.args.nResults
 	else: limitSQL = ''
 
 	refInfoSQL = self.REFINFO_SELECT + self.REFINFO_FROM + where + \
 							    restrict + limitSQL
 	extTextSQL = self.EXTTEXT_SELECT + self.EXTTEXT_FROM + where + \
 							    restrict + limitSQL
-
 	return refInfoSQL, extTextSQL
     #-----------------------------------
 
     def buildTmpTables(self,):
-	if not self.tempTablesBuilt:
-	    results = self.runSQL( BUILD_TMP_TABLES, 'Building temp tables')
-	    self.tempTablesBuilt = True
+	if not BaseRefSearch.tmpTablesBuilt:
+	    results = self.runSQL(self.BUILD_TMP_TABLES, 'Building temp tables')
+	    BaseRefSearch.tmpTablesBuilt = True
     #-----------------------------------
 
     def runSQL(self, sql, label):
@@ -340,10 +340,12 @@ class BaseRefSearch (object): # {
 	sql is list of SQLstmts or a single stmt (string)
 	"""
 	startTime = time.time()
-	verbose(label)
-	#results = self.db.sql( string.split(sql, SQLSEPARATOR), 'auto')
-	results = db.sql(sql, 'auto')
-	verbose( "SQL time: %8.3f seconds\n\n" % (time.time()-startTime) )
+	verbose(label + '...')
+	if type(sql) == type(''):
+	    results = db.sql( string.split(sql, self.SQLSEPARATOR), 'auto')
+	else:
+	    results = db.sql(sql, 'auto')
+	verbose( "SQL time: %8.3f seconds\n" % (time.time()-startTime) )
 	return results
     #-----------------------------------
 
@@ -379,7 +381,7 @@ class SelectedAfterRefSearch(BaseRefSearch):  # {
 	return '''
     -- selected after
     where tr.creation_date > '%s' -- After lit triage release
-    and bs.%s in [ 'Chosen', 'Indexed', 'Full-coded']
+    and bs.%s in ( 'Chosen', 'Indexed', 'Full-coded')
     ''' % (self.LIT_TRIAGE_DATE, self.bsvFieldName)
 # ----------- }
 
@@ -537,6 +539,10 @@ def main():
 
     verbose( "Hitting database %s %s as mgd_public\n" % (args.host, args.db))
     verbose( "Query option:  %s\n" % args.group)
+    if args.restrictArticles:
+	verbose("Omitting review and non-peer reviewed articles\n")
+    else:
+	verbose("Including review and non-peer reviewed articles\n")
 
     startTime = time.time()
 
