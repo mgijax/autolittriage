@@ -626,7 +626,7 @@ def writeSamples(results	# list of records from SQL query (dicts)
     sampleSet = sampleDataLib.ClassifiedSampleSet()
 
     for r in results:
-	sapleSet.addSample( sqlRecord2ClassifiedSample(r) )
+	sampleSet.addSample( sqlRecord2ClassifiedSample(r) )
 
     sampleSet.write(sys.stdout, writeHeader=True)
     return len(results)
