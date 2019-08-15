@@ -57,9 +57,7 @@ def getArgs():
 
     parser.add_argument('--query', dest='queryKey', action='store',
         required=False, default='all',
-	choices=['all', 'discard_after', 'keep_after', 'keep_before',
-		    'keep_tumor'],
-        help='which subset of the reference samples to get. Default: "all"')
+        help='which subset of the reference samples to get')
 
     parser.add_argument('--counts', dest='counts', action='store_true',
         required=False, help="don't get references, just get counts")
@@ -120,7 +118,7 @@ class BaseRefSearch (object): # {
     LIT_TRIAGE_DATE = "10/31/2017"	# when we switched to new lit triage
     START_DATE = "10/01/2016" 		# earliest date for refs to get
 					#  before lit Triage
-    TUMOR_START_DATE = "07/01/2013"	# date to get add'l tumor papers from
+    TUMOR_START_DATE = "07/01/2013"	# date to get add'l tumor refs from
 
     tmpTablesBuilt = False		# only build the tmp tables once
 
@@ -128,45 +126,14 @@ class BaseRefSearch (object): # {
     # SQL to build tmp tables 
     #----------------
     BUILD_TMP_TABLES = [ \
-	# Tmp table of samples to omit.
-	# Currently, only one reason to omit:
-	# (1) articles "indexed" by pm2gene and not reviewed by a curator yet
-	#     we don't really know if these are relevant (not good ground truth)
-    '''
-	create temporary table tmp_omit
-	as
-	select r._refs_key, a.accid pubmed
-	from bib_refs r join bib_workflow_status bs
-	    on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
-	    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
-	    join acc_accession a
-	    on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
-		and a._mgitype_key=1 )
-	where 
-	    (
-		(bs._status_key = 31576673 and bs._group_key = 31576666 and 
-		    bs._createdby_key = 1571) -- index for GO by pm2geneload
-
-		and bsv.ap_status in ('Not Routed', 'Rejected')
-		and bsv.gxd_status in ('Not Routed', 'Rejected')
-		and bsv.tumor_status in ('Not Routed', 'Rejected')
-		and bsv.qtl_status in ('Not Routed', 'Rejected')
-		and r.creation_date >= '%s'
-	    )
-    ''' % (START_DATE),
-    '''
-	create index tmp_idx1 on tmp_omit(_refs_key)
-    ''',
-	# tmp table of references matching initial criteria. Need this tmp tble
-	#  to make subsequent selects run fast.
+	# tmp table of references w/ extracted text.
+	# Need this tmp tble and indexes to make subsequent selects run fast.
     '''
 	create temporary table tmp_refs
 	as
 	select distinct r._refs_key, r.creation_date
-	from bib_refs r join bib_workflow_data bd on (r._refs_key = bd._refs_key)
-	where r._createdby_key != 1609          -- not littriage_discard user
-	   and bd.extractedtext is not null
-	   and not exists (select 1 from tmp_omit t where t._refs_key = r._refs_key)
+	from bib_refs r join bib_workflow_data bd on (r._refs_key =bd._refs_key)
+	where bd.extractedtext is not null
     ''',
     '''
 	create index tmp_idx2 on tmp_refs(_refs_key)
@@ -197,17 +164,17 @@ class BaseRefSearch (object): # {
 	suppTerm.term as supp_status,
 	r.journal, r.title, r.abstract,
 	a.accid pubmed,
-	bs.ap_status,
-	bs.gxd_status, 
-	bs.go_status, 
-	bs.tumor_status, 
-	bs.qtl_status
+	bsv.ap_status,
+	bsv.gxd_status, 
+	bsv.go_status, 
+	bsv.tumor_status, 
+	bsv.qtl_status
     '''
     REFINFO_FROM =  \
     '''
     from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
 	join bib_workflow_data bd on (r._refs_key = bd._refs_key)
-	join bib_status_view bs on (r._refs_key = bs._refs_key)
+	join bib_status_view bsv on (r._refs_key = bsv._refs_key)
 	join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
 	join voc_term typeTerm on (r._referencetype_key = typeTerm._term_key)
 	join acc_accession a on
@@ -231,7 +198,7 @@ class BaseRefSearch (object): # {
     from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
 	join bib_workflow_data bd on (r._refs_key = bd._refs_key)
 	join voc_term t on (bd._extractedtext_key = t._term_key)
-	join bib_status_view bs on (r._refs_key = bs._refs_key)
+	join bib_status_view bsv on (r._refs_key = bsv._refs_key)
     '''
     #----------------
     # SQL Parts for getting stats/counts of references
@@ -240,7 +207,7 @@ class BaseRefSearch (object): # {
     COUNT_FROM =  \
     '''
     from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
-	join bib_status_view bs on (r._refs_key = bs._refs_key)
+	join bib_status_view bsv on (r._refs_key = bsv._refs_key)
     '''
     #-----------------------------------
 
@@ -352,7 +319,7 @@ class BaseRefSearch (object): # {
 # ------------------ end BaseRefSearch # }
 
 class UnSelectedAfterRefSearch(BaseRefSearch):  # {
-    """ IS: RefSearch for UNselected papers for a group after new lit triage proces
+    """ IS: RefSearch for UNselected refs for a group after new littriage proces
     """
     def __init__(self, args, group, bsvFieldName):
 	super(type(self), self).__init__(args)
@@ -363,13 +330,18 @@ class UnSelectedAfterRefSearch(BaseRefSearch):  # {
     def getWhereClauses(self):
 	return '''
     -- UNselected after
-    where tr.creation_date > '%s' -- After lit triage release
-    and (r.isdiscard = 1 or bs.%s = 'Rejected')
+    where tr.creation_date > '%s'
+    and ( (r.isdiscard = 1 and r._createdby_key != 1609) --not littriage_discard
+	or bsv.%s = 'Rejected')
     ''' % (self.LIT_TRIAGE_DATE, self.bsvFieldName,)
+	# really want: "r.isdiscard=1 and this discard was set by a curator"
+	#   (rather than automated process),
+	#   but db doesn't keep track of who set discard,
+	#   so "not created by littriage_discard loader" is reasonable approx
 # ----------- }
 
 class SelectedAfterRefSearch(BaseRefSearch):  # {
-    """ IS: RefSearch for selected papers for a group after new lit triage proces
+    """ IS: RefSearch for selected refs for a group after new littriage proces
     """
     def __init__(self, args, group, bsvFieldName):
 	super(type(self), self).__init__(args)
@@ -380,64 +352,121 @@ class SelectedAfterRefSearch(BaseRefSearch):  # {
     def getWhereClauses(self):
 	return '''
     -- selected after
-    where tr.creation_date > '%s' -- After lit triage release
-    and bs.%s in ( 'Chosen', 'Indexed', 'Full-coded')
+    where tr.creation_date > '%s'
+    and r.isdiscard = 0  -- likely unnec., but ensures sel and UNsel disjoint
+    and bsv.%s in ( 'Chosen', 'Indexed', 'Full-coded')
     ''' % (self.LIT_TRIAGE_DATE, self.bsvFieldName)
+# ----------- }
+
+class GoSelectedAfterRefSearch(BaseRefSearch):  # {
+    """ IS: RefSearch for selected refs for GO after new lit triage proces
+    """
+    def __init__(self, args,):
+	super(type(self), self).__init__(args)
+	self.group = 'GO'
+	self.bsvFieldName = 'go_status'	# bib_stat_view field for group
+    def getName(self):
+	return '%s selected_after %s' % (self.group, self.LIT_TRIAGE_DATE)
+    def getWhereClauses(self):
+	return '''
+    -- GO selected after
+    where tr.creation_date > '%s'
+    and r.isdiscard = 0  -- likely unnec., but ensures sel and UNsel disjoint
+    and bsv.%s in ('Chosen', 'Indexed', 'Full-coded')
+    and exists (select 1 from bib_workflow_status bs
+	    where bs._refs_key = r._refs_key
+	    and bs._group_key = 31576666		-- GO
+	    and bs._status_key in (31576671, 31576673, 31576674)
+				    -- Chosen, Indexed, Full-coded
+	    and bs._createdby_key != 1571 -- pm2geneload
+	    )
+    ''' % (self.LIT_TRIAGE_DATE, self.bsvFieldName)
+# ----------- }
+
+class GoSelectedBeforeRefSearch(BaseRefSearch):  # {
+    """ IS: RefSearch for selected refs for GO before new lit triage proces
+    """
+    def __init__(self, args, startDate=None):
+	super(type(self), self).__init__(args)
+	self.group = 'GO'
+	self.bsvFieldName = 'go_status'	# bib_stat_view field for group
+	self.startDate = startDate
+    def getName(self):
+	if self.startDate:
+	    return '%s selected_before %s-%s' % \
+			(self.group, self.startDate, self.LIT_TRIAGE_DATE)
+	else:
+	    return '%s selected_before %s' % (self.group, self.LIT_TRIAGE_DATE)
+    def getWhereClauses(self):
+	if self.startDate:
+	    startDateClause = "and tr.creation_date >= '%s'" % self.startDate
+	else:
+	    startDateClause = ''
+	return '''
+    -- GO selected before
+    where tr.creation_date <= '%s'
+    and r.isdiscard = 0  -- likely unnec., but ensures sel and UNsel disjoint
+    and bsv.%s in ('Chosen', 'Indexed', 'Full-coded')
+    and exists (select 1 from bib_workflow_status bs
+	    where bs._refs_key = r._refs_key
+	    and bs._group_key = 31576666		-- GO
+	    and bs._status_key in (31576671, 31576673, 31576674)
+				    -- Chosen, Indexed, Full-coded
+	    and bs._createdby_key != 1571 -- pm2geneload
+	    )
+    ''' % (self.LIT_TRIAGE_DATE, self.bsvFieldName) + startDateClause
+# ----------- }
+
+class SelectedBeforeRefSearch(BaseRefSearch):  # {
+    """ IS: RefSearch for selected refs for a group before new littriage proces
+    """
+    def __init__(self, args, group, bsvFieldName, startDate=None):
+	super(type(self), self).__init__(args)
+	self.group = group
+	self.bsvFieldName = bsvFieldName	# bib_stat_view field for group
+	self.startDate = startDate
+    def getName(self):
+	if self.startDate:
+	    return '%s selected_before %s-%s' % \
+			(self.group, self.startDate, self.LIT_TRIAGE_DATE)
+	else:
+	    return '%s selected_before %s' % (self.group, self.LIT_TRIAGE_DATE)
+    def getWhereClauses(self):
+	if self.startDate:
+	    startDateClause = "and tr.creation_date >= '%s'" % self.startDate
+	else:
+	    startDateClause = ''
+	return '''
+    -- selected before
+    where 
+     bsv.%s in ('Chosen', 'Indexed', 'Full-coded')
+     and tr.creation_date <= '%s' -- before start date
+    ''' % ( self.bsvFieldName, self.LIT_TRIAGE_DATE, ) + startDateClause
 # ----------- }
 
 dataSets = {
     'ap' :	{
-	    'unselected_after': UnSelectedAfterRefSearch(args,'AP','ap_status'),
-	    'selected_after'  : SelectedAfterRefSearch(args,'AP','ap_status'),
-	    },
+	'unselected_after': UnSelectedAfterRefSearch(args,'AP','ap_status'),
+	'selected_after'  : SelectedAfterRefSearch(args,'AP','ap_status'),
+	'selected_before' : SelectedBeforeRefSearch(args,'AP','ap_status',
+				    startDate='6/1/2015'),
+	},
     'go' :	{
-	    'unselected_after': UnSelectedAfterRefSearch(args,'GO','go_status'),
-	    'selected_after'  : SelectedAfterRefSearch(args,'GO','go_status'),
-	    },
+	'unselected_after': UnSelectedAfterRefSearch(args,'GO','go_status'),
+	'selected_after'  : GoSelectedAfterRefSearch(args,),
+	'selected_before' : GoSelectedBeforeRefSearch(args,startDate='1/1/2014'),
+	},
     'gxd':	{
-	    'unselected_after': UnSelectedAfterRefSearch(args,'GXD','gxd_status'),
-	    'selected_after'  : SelectedAfterRefSearch(args,'GXD','gxd_status'),
-#		'keep_before'	: GXD_keep_before(),
-	    },
+	'unselected_after': UnSelectedAfterRefSearch(args,'GXD','gxd_status'),
+	'selected_after'  : SelectedAfterRefSearch(args,'GXD','gxd_status'),
+	'selected_before' : SelectedBeforeRefSearch(args,'GXD','gxd_status'),
+	},
     'tumor':	{
-	    'unselected_after': UnSelectedAfterRefSearch(args,'Tumor','tumor_status'),
-	    'selected_after'  : SelectedAfterRefSearch(args,'Tumor','tumor_status'),
-#		'keep_before'	: GXD_keep_before(),
-	    },
+	'unselected_after': UnSelectedAfterRefSearch(args,'Tumor','tumor_status'),
+	'selected_after' : SelectedAfterRefSearch(args,'Tumor','tumor_status'),
+	'selected_before': SelectedBeforeRefSearch(args,'Tumor','tumor_status'),
+	},
     }
-
-
-#----------------
-# SQL where clauses for each subset of refs to get
-#----------------
-# Dict of where clause components for specific queries,
-#  these should be non-overlapping result sets
-# These where clauses are shared between the basic ref SQL, extracted
-#  text SQL, and stats SQL
-
-WHERE_CLAUSES = { \
-'keep_before' :
-    '''
-    -- keep_before
-    where 
-    (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
-    )
-    and tr.creation_date >= '%s' -- after start date
-    and tr.creation_date <= '%s' -- before lit triage release
-    ''' ,#   % (START_DATE, LIT_TRIAGE_DATE, ),
-'keep_tumor' :
-    '''
-    -- keep_tumor
-    where 
-     bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
-     and tr.creation_date >= '%s' -- after tumor start date
-     and tr.creation_date <= '%s' -- before start date
-    ''' #   % ( TUMOR_START_DATE, START_DATE, ),
-}	# end WHERE_CLAUSES
 #-----------------------------------
 
 class ExtractedTextSet (object): # {
@@ -539,20 +568,25 @@ def main():
 
     verbose( "Hitting database %s %s as mgd_public\n" % (args.host, args.db))
     verbose( "Query option:  %s\n" % args.group)
-    if args.restrictArticles:
-	verbose("Omitting review and non-peer reviewed articles\n")
-    else:
-	verbose("Including review and non-peer reviewed articles\n")
 
     startTime = time.time()
 
     if args.counts:
 	writeCounts(args)
     else:
-	rf = correctRefSearch(args)
-	results = rf.getRefRecords()
-	writeSamples(results)
+	if args.restrictArticles:
+	    verbose("Omitting review and non-peer reviewed articles\n")
+	else:
+	    verbose("Including review and non-peer reviewed articles\n")
 
+	refSearch = dataSets[args.group].get(args.queryKey)
+	if refSearch:
+	    results = refSearch.getRefRecords()
+	    writeSamples(results)
+	else:
+	    sys.stderr.write("'%s' is not a valid search for group %s\n" % \
+						    (args.queryKey, args.group))
+	    return
     verbose( "Total time: %8.3f seconds\n\n" % (time.time()-startTime))
 #-----------------------------------
 
@@ -564,14 +598,24 @@ def writeCounts(args):
     else:
 	sys.stdout.write("Including review and non-peer reviewed articles\n")
 
+    counts = []
+    total  = 0.0
     searches = dataSets[args.group]
+
     for sName in sorted(searches.keys()):
 	ds = searches[sName]
-	sys.stdout.write("%s:   \t%d\n" % (ds.getName(), ds.getCount(),))
+	count = ds.getCount()
+	counts.append( {'name': ds.getName(), 'count': count} )
+	total += count
+
+    for countInfo in counts:
+	percent = 100 * countInfo['count']/total
+	sys.stdout.write("%-43s %d\t%4.1f%%\n" % \
+			(countInfo['name'], countInfo['count'], percent))
     return
 #-----------------------------------
     
-def writeSamples( i, results	# list of records from SQL query (dicts)
+def writeSamples(results	# list of records from SQL query (dicts)
     ):
     """
     Write records to stdout
@@ -583,7 +627,7 @@ def writeSamples( i, results	# list of records from SQL query (dicts)
 	sample = sqlRecord2ClassifiedSample( r)
 	sampleSet.addSample( sample)
 
-    sampleSet.write(sys.stdout, writeHeader= i==0)
+    sampleSet.write(sys.stdout, writeHeader=True)
     return len(results)
 #-----------------------------------
 
