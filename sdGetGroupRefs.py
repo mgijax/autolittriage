@@ -582,10 +582,12 @@ def main():
 	refSearch = dataSets[args.group].get(args.queryKey)
 	if refSearch:
 	    results = refSearch.getRefRecords()
-	    writeSamples(results)
+	    n = writeSamples(results)
+	    verbose("%d samples written\n" % n)
 	else:
 	    sys.stderr.write("'%s' is not a valid search for group %s\n" % \
 						    (args.queryKey, args.group))
+	    sys.stderr.write("Valid vals: %s\n" % str(dataSets[args.group].keys()))
 	    return
     verbose( "Total time: %8.3f seconds\n\n" % (time.time()-startTime))
 #-----------------------------------
@@ -599,7 +601,7 @@ def writeCounts(args):
 	sys.stdout.write("Including review and non-peer reviewed articles\n")
 
     counts = []
-    total  = 0.0
+    total  = 0
     searches = dataSets[args.group]
 
     for sName in sorted(searches.keys()):
@@ -609,7 +611,7 @@ def writeCounts(args):
 	total += count
 
     for countInfo in counts:
-	percent = 100 * countInfo['count']/total
+	percent = 100.0 * countInfo['count']/total
 	sys.stdout.write("%-43s %d\t%4.1f%%\n" % \
 			(countInfo['name'], countInfo['count'], percent))
     return
@@ -624,8 +626,7 @@ def writeSamples(results	# list of records from SQL query (dicts)
     sampleSet = sampleDataLib.ClassifiedSampleSet()
 
     for r in results:
-	sample = sqlRecord2ClassifiedSample( r)
-	sampleSet.addSample( sample)
+	sapleSet.addSample( sqlRecord2ClassifiedSample(r) )
 
     sampleSet.write(sys.stdout, writeHeader=True)
     return len(results)
@@ -651,7 +652,6 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newR['title']         = cleanUpTextField(r, 'title')
     newR['abstract']      = cleanUpTextField(r, 'abstract')
     newR['extractedText'] = cleanUpTextField(r, 'ext_text')
-
     newR['isReview']      = str(r['isreviewarticle'])
     newR['refType']       = str(r['ref_type'])
     newR['suppStatus']    = str(r['supp_status'])

@@ -1208,3 +1208,35 @@ Aug 8, 2019
 	    ModelAnalysis/gxd
 	    ...
 	
+Aug 12, 2019
+    initial version of sdGetGroupRefs.py - to pull curation group training sets out
+	of the db.
+    Having some trouble verifying that I'm getting the correct number of
+	selected/unselected references as I'm not getting consistent counts as
+	the PWI.
+Aug 13, 2019
+    Thinking through the SQL. For determining selected/UNselected for AP, GXD,
+    Tumor, the status of GO via pm2geneload is irrelevant.
+    The tmp_omit table was intended to skip pm2geneload indexed papers.
+    So I've removed this from queries for AP, GXD, Tumor.
+
+    Comparing counts I get from PWI and sdGetGroupRefs.py:
+    https://docs.google.com/spreadsheets/d/1gXrhODiIndzBq_adl0QM4P1kbeOdl50CAjakC8uCRcw/edit#gid=0
+    AP, GXD, Tumor counts agree. So I feel confident about their SQL
+
+    "Selected for GO" is more problematic. Thought I could get this by:
+	take chosen, indexed, full-coded by GO
+	    minus currently indexed for GO by pm2geneload
+	(thinking indexed by pm2geneload means curator has not looked at yet)
+    BUT the pm2geneload indexes some papers that already have been chosen by GO
+    (in addition to papers that have not yet been chosen). 
+    SO subtracting these removes a lot of papers that truly have been selected by 
+    curators.
+    Perhaps: "not discard & current status is not Rejected and some previous status
+    was chosen, indexed, full-coded by a non-pm2geneload user". This is what I'll
+    implement. But I don't think I can get this info from the PWI to verify
+
+    ASIDE: as I look at these counts & SQL carefully, I think the sql to build the
+    discard/keep sample sets is off too. Hopefully, these errors only resulted in
+    my missing some samples that could accurately been called as a discard/keep.
+    But will need some more pondering
