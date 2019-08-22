@@ -1232,11 +1232,49 @@ Aug 13, 2019
     (in addition to papers that have not yet been chosen). 
     SO subtracting these removes a lot of papers that truly have been selected by 
     curators.
-    Perhaps: "not discard & current status is not Rejected and some previous status
-    was chosen, indexed, full-coded by a non-pm2geneload user". This is what I'll
-    implement. But I don't think I can get this info from the PWI to verify
+    Instead: "not discard & current status is not Rejected and some previous status
+    was chosen, indexed, full-coded by a non-pm2geneload user (actually chosen
+    covers all the references). This is what I'll implement.
+    Can get this from PWI by querying current status and status history
 
     ASIDE: as I look at these counts & SQL carefully, I think the sql to build the
     discard/keep sample sets is off too. Hopefully, these errors only resulted in
     my missing some samples that could accurately been called as a discard/keep.
     But will need some more pondering
+
+Aug 20, 2019
+    Finished sdGetGroupRefs.py last week. Lots of refactoring from original
+    sdGetRaw.py. Could/should merge sdGetRaw into the other at some point.
+    Reworked sdBuilt2Fig.sh, sdBuild3Pre.sh, sdBuild4Split.sh to optionally handle
+    files for curation group selected/not in addition to discard/keep.
+
+    Running RF
+    On tumor: Overfit:
+    ### Metrics: Training Set
+	       precision    recall  f1-score   support
+    Train keep       0.88      0.91      0.90     18581
+
+    ### Metrics: Test Set
+	       precision    recall  f1-score   support
+    Test  keep       0.65      0.77      0.70      1486
+
+    On gxd: Overfit:
+    ### Metrics: Training Set
+	       precision    recall  f1-score   support
+    Train keep       0.95      0.92      0.93     33615
+
+    ### Metrics: Test Set
+	       precision    recall  f1-score   support
+    Test  keep       0.79      0.77      0.78      2518
+
+    Not too awesome.
+
+    Thoughts on what to do if going straight to secondary triage doesn't work well
+    for a particular group:
+    1) run discard/keep (primary) first. Anything that is keep, run through 2ndary
+	triage report and select those.
+	Would need to script this to compute P, R, NPV
+    2) run discard/keep first. Train a model for selection by the group only on the
+	keeps. See how that works. The 2nd model doesn't have to learn anything
+	about discards. Would have more balanced training sets since discard is
+	60% of refs.
