@@ -1278,3 +1278,34 @@ Aug 20, 2019
 	keeps. See how that works. The 2nd model doesn't have to learn anything
 	about discards. Would have more balanced training sets since discard is
 	60% of refs.
+Aug 22, 2019
+    HOLD THE PHONE on the RF results from Aug 20.
+    The distributions of selected/non-selected in the test/validation sets
+    compared to selected_after and unselected_after are quite off for curation
+    groups, especially tumor and gxd.
+
+    See
+    https://docs.google.com/spreadsheets/d/1gXrhODiIndzBq_adl0QM4P1kbeOdl50CAjakC8uCRcw/edit#gid=1390163507
+
+    Realized sdSplitByJournal.py is messed up in the way it applies the
+    split-fraction to each journal separately.
+    E.g., if some journal with lots of references
+    has more positives than the average journal, choosing split-fraction of refs
+    from that journal will add more positives than expected.
+
+    SO "splitting by journal" doesn't seem to make sense. Just flip a coin across
+    all articles, independent of journal instead.
+
+    SO should change/replace sdSplitByJournal.py to NOT apply the fraction to
+    each individ journal.
+
+    This problem does not seem to be in the full discard/keep data sets (compare
+    ratios in "after" set and test/validation sets).
+    Probably because there is a more uniform spread of positives/negatives across
+    enough journals.
+
+    BUT should rerun discard/keep analysis after changing sdSplitByJournal.py.
+Aug 23, 2019
+    adding sdSplitSamples.py
+    add Y_POSITIVE to config
+    add getNumPositives/Negatives() to ClassifiedSampleSet

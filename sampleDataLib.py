@@ -20,6 +20,7 @@ cp.read(cl)
 FIELDSEP     = eval( cp.get("DEFAULT", "FIELDSEP") )
 RECORDEND    = eval( cp.get("DEFAULT", "RECORDEND") )
 CLASS_NAMES  = eval( cp.get("CLASS_NAMES", "y_class_names") )
+Y_POSITIVE   = cp.getint("CLASS_NAMES", "y_positive")
 
 FIG_CONVERSION        = cp.get("DEFAULT", "FIG_CONVERSION")
 FIG_CONVERSION_NWORDS = cp.getint("DEFAULT", "FIG_CONVERSION_NWORDS")
@@ -47,6 +48,8 @@ class ClassifiedSampleSet (object):
     """
     def __init__(self,):
 	self.samples = []
+	self.numPositives = 0
+	self.numNegatives = 0
     #-------------------------
 
     def read(self, inFile,	# file pathname or open file obj for reading
@@ -67,7 +70,8 @@ class ClassifiedSampleSet (object):
 	del rcds[0]             # header line
 	del rcds[-1]            # empty string after end of split
 
-	self.samples = [ ClassifiedSample().parseSampleRecordText(sr) for sr in rcds ]
+	for sr in rcds:
+	    self.addSample( ClassifiedSample().parseSampleRecordText(sr) )
 	return self
     #-------------------------
 
@@ -105,11 +109,15 @@ class ClassifiedSampleSet (object):
 	if not isinstance(sample, ClassifiedSample):
 	    raise TypeError('Invalid sample type %s' % str(type(sample)))
 	self.samples.append(sample)
+	if sample.isPositive(): self.numPositives += 1
+	else:                   self.numNegatives += 1
 	return self
     #-------------------------
 
     def getSamples(self):	return self.samples
     def getNumSamples(self):	return len(self.samples)
+    def getNumPositives(self):	return self.numPositives
+    def getNumNegatives(self):	return self.numNegatives
     def getRecordEnd(self):	return RECORDEND
     def getHeaderLine(self):	return ClassifiedSample.getHeaderLine()
     def getExtraInfoFieldNames(self):
@@ -369,6 +377,10 @@ class ClassifiedSample (BaseSample):
 
     def getKnownClassName(self): return self.values['knownClassName']
     def getKnownYvalue(self):    return CLASS_NAMES.index(self.getKnownClassName())
+    def isPositive(self):
+	return CLASS_NAMES.index(self.getKnownClassName()) == Y_POSITIVE 
+    def isNegative(self):
+	return not self.isPositive()
 
     def setID(self, t): self.values['ID'] = t
     def getID(self,  ): return self.values['ID']
@@ -438,6 +450,8 @@ if __name__ == "__main__":	# ad hoc test code
 	print "ClassifiedSample tests\n"
 	print "classname: '%s'"		% r1.getKnownClassName()
 	print "Y value: %d"		% r1.getKnownYvalue()
+	print "Positive? %d"		% r1.isPositive()
+	print "Negative? %d"		% r1.isNegative()
 	print "SampleName: '%s'"	% r1.getSampleName()
 	print "Journal: '%s'"		% r1.getJournal()
 	print "title: \n'%s'\n"		% r1.getTitle()
@@ -464,6 +478,8 @@ if __name__ == "__main__":	# ad hoc test code
 	ss.addSample(r1)
 	ss.addSample(r2)
 	print "1st sample: \n'%s'\n'" % ss.getSamples()[0].getSampleAsText()
+	print "numPositives: %d" % ss.getNumPositives()
+	print "numNegatives: %d" % ss.getNumNegatives()
 	print "Output file:"
 	ss.write(sys.stdout)
 	print "\nEnd Output file"
@@ -478,7 +494,7 @@ if __name__ == "__main__":	# ad hoc test code
 	ss.write(sys.stdout)
 	print "\nEnd Output file"
 	
-    if True:		# preprocessor tests
+    if False:		# preprocessor tests
 	print "---------------"
 	print "Preprocessor tests\n"
 	r1.addJournalFeature()
