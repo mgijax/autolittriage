@@ -50,6 +50,7 @@ class ClassifiedSampleSet (object):
 	self.samples = []
 	self.numPositives = 0
 	self.numNegatives = 0
+	self.journals     = set()	# set of all journal names in the samples
     #-------------------------
 
     def read(self, inFile,	# file pathname or open file obj for reading
@@ -111,6 +112,7 @@ class ClassifiedSampleSet (object):
 	self.samples.append(sample)
 	if sample.isPositive(): self.numPositives += 1
 	else:                   self.numNegatives += 1
+	self.journals.add(sample.getJournal())
 	return self
     #-------------------------
 
@@ -118,6 +120,7 @@ class ClassifiedSampleSet (object):
     def getNumSamples(self):	return len(self.samples)
     def getNumPositives(self):	return self.numPositives
     def getNumNegatives(self):	return self.numNegatives
+    def getJournals(self):	return self.journals	# set of names
     def getRecordEnd(self):	return RECORDEND
     def getHeaderLine(self):	return ClassifiedSample.getHeaderLine()
     def getExtraInfoFieldNames(self):
@@ -480,6 +483,8 @@ if __name__ == "__main__":	# ad hoc test code
 	print "1st sample: \n'%s'\n'" % ss.getSamples()[0].getSampleAsText()
 	print "numPositives: %d" % ss.getNumPositives()
 	print "numNegatives: %d" % ss.getNumNegatives()
+	print "Journals:"
+	print ss.getJournals()
 	print "Output file:"
 	ss.write(sys.stdout)
 	print "\nEnd Output file"
