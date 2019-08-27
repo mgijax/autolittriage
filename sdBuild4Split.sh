@@ -25,10 +25,10 @@ ENDTEXT
 
 projectHome=~/work/autolittriage
 
-splitByJournal=$projectHome/sdSplitByJournal.py
+splitCmd=$projectHome/sdSplitSamples.py
 mgiJournals=$projectHome/journalsMonitored.txt	# mgi journals file
 
-splitTestLog=splitTest.log
+splitTestLog=splitSamples.log
 
 testFraction="0.15"		# 15% of {keep|discard}_after for test set
 valFraction="0.235"		# want 20% {keep|discard}_after
@@ -86,10 +86,10 @@ echo "splitting test validation training sets"
 date >$splitTestLog
 set -x
 # random test set + leftovers
-$splitByJournal --alljournals --mgijournals $mgiJournals -f $testFraction --selectedfile testSet.txt  --leftoverfile LeftoversTest.txt $after >>$splitTestLog 2>&1
+$splitCmd --mgijournals $mgiJournals -f $testFraction --retainedfile testSet.txt  --leftoverfile LeftoversTest.txt $after >>$splitTestLog 2>&1
 
 # random validation set from test set leftovers
-$splitByJournal --alljournals --mgijournals $mgiJournals -f $valFraction --selectedfile valSet.txt  --leftoverfile LeftoversVal.txt LeftoversTest.txt >>$splitTestLog 2>&1
+$splitCmd --mgijournals $mgiJournals -f $valFraction --retainedfile valSet.txt  --leftoverfile LeftoversVal.txt LeftoversTest.txt >>$splitTestLog 2>&1
 
 # trainSet is valSet leftovers + $before
 # (preprocess w/ no preprocessing steps just intelligently concats files)

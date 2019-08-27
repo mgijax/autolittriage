@@ -1308,4 +1308,10 @@ Aug 22, 2019
 Aug 23, 2019
     adding sdSplitSamples.py
     add Y_POSITIVE to config
-    add getNumPositives/Negatives() to ClassifiedSampleSet
+    add getNumPositives/Negatives() and getJournals() to ClassifiedSampleSet
+
+Aug 27, 2019
+    completed sdSplitSamples.py and changes to sdBuild4Split.sh.
+    Re-split each curator group's dataset.
+    Retrained/evaluated each curator group.  (all RF)
+    Overfitting on all 4 curation groups. So will need to try addressing that.
