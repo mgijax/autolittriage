@@ -6,24 +6,20 @@
 import sys
 import string
 import re
-import ConfigParser
+import sklearnHelperLib as skhelper
 import figureText
 import featureTransform
 #-----------------------------------
-cp = ConfigParser.ConfigParser()
-cp.optionxform = str # make keys case sensitive
+config = skhelper.getConfig()
 
-# generate a path up multiple parent directories to search for config file
-cl = ['/'.join(l)+'/config.cfg' for l in [['.']]+[['..']*i for i in range(1,6)]]
-cp.read(cl)
+FIELDSEP     = eval( config.get("DEFAULT", "FIELDSEP") )
+RECORDEND    = eval( config.get("DEFAULT", "RECORDEND") )
+CLASS_NAMES  = eval( config.get("CLASS_NAMES", "y_class_names") )
+Y_POSITIVE   = config.getint("CLASS_NAMES", "y_positive")
+SAMPLE_OBJ_TYPE_NAME = config.get("CLASS_NAMES", "SAMPLE_OBJ_TYPE_NAME")
 
-FIELDSEP     = eval( cp.get("DEFAULT", "FIELDSEP") )
-RECORDEND    = eval( cp.get("DEFAULT", "RECORDEND") )
-CLASS_NAMES  = eval( cp.get("CLASS_NAMES", "y_class_names") )
-Y_POSITIVE   = cp.getint("CLASS_NAMES", "y_positive")
-
-FIG_CONVERSION        = cp.get("DEFAULT", "FIG_CONVERSION")
-FIG_CONVERSION_NWORDS = cp.getint("DEFAULT", "FIG_CONVERSION_NWORDS")
+FIG_CONVERSION        = config.get("DEFAULT", "FIG_CONVERSION")
+FIG_CONVERSION_NWORDS = config.getint("DEFAULT", "FIG_CONVERSION_NWORDS")
 figConverter = figureText.Text2FigConverter(conversionType=FIG_CONVERSION,
 						numWords=FIG_CONVERSION_NWORDS)
 
@@ -50,7 +46,9 @@ class ClassifiedSampleSet (object):
 	self.samples = []
 	self.numPositives = 0
 	self.numNegatives = 0
-	self.journals     = set()	# set of all journal names in the samples
+	self.journals     = set()   # set of all journal names in the samples
+				    # The python class of sample objects
+	self.sampleClass = getattr(sys.modules[__name__], SAMPLE_OBJ_TYPE_NAME)
     #-------------------------
 
     def read(self, inFile,	# file pathname or open file obj for reading
@@ -72,7 +70,8 @@ class ClassifiedSampleSet (object):
 	del rcds[-1]            # empty string after end of split
 
 	for sr in rcds:
-	    self.addSample( ClassifiedSample().parseSampleRecordText(sr) )
+	    			# need to know which class to instantiate
+	    self.addSample( self.sampleClass().parseSampleRecordText(sr) )
 	return self
     #-------------------------
 
@@ -107,7 +106,8 @@ class ClassifiedSampleSet (object):
 
     def addSample(self, sample,		# ClassifiedSample
 	):
-	if not isinstance(sample, ClassifiedSample):
+				# need to know which class
+	if not isinstance(sample, self.sampleClass):
 	    raise TypeError('Invalid sample type %s' % str(type(sample)))
 	self.samples.append(sample)
 	if sample.isPositive(): self.numPositives += 1
@@ -122,14 +122,15 @@ class ClassifiedSampleSet (object):
     def getNumNegatives(self):	return self.numNegatives
     def getJournals(self):	return self.journals	# set of names
     def getRecordEnd(self):	return RECORDEND
-    def getHeaderLine(self):	return ClassifiedSample.getHeaderLine()
+	    # need to know which class
+    def getHeaderLine(self):	return self.sampleClass.getHeaderLine()
     def getExtraInfoFieldNames(self):
-	return ClassifiedSample.getExtraInfoFieldNames()
+	return self.sampleClass.getExtraInfoFieldNames()
 
 # end class ClassifiedSampleSet -----------------------------------
 
 #-----------------------------------
-# Regex's preprocessors
+# Regex's sample preprocessors
 urls_re      = re.compile(r'\b(?:https?://|www[.]|doi)\S*',re.IGNORECASE)
 token_re     = re.compile(r'\b([a-z_]\w+)\b',re.IGNORECASE)
 
@@ -154,7 +155,7 @@ class BaseSample (object):
 
     def constructDoc(self):
 	return '\n'.join([self.getTitle(), self.getAbstract(),
-							self.getExtractedText()])
+						    self.getExtractedText()])
 
     #----------------------
     def getSampleName(self):	return self.getID()
@@ -170,8 +171,8 @@ class BaseSample (object):
     #----------------------
 
     def figureText(self):		# preprocessor
-	self.setExtractedText( '\n'.join( \
-			    figConverter.text2FigText(self.getExtractedText()) ) )
+	self.setExtractedText('\n'.join( \
+			    figConverter.text2FigText(self.getExtractedText())))
 	return self
     # ---------------------------
 
@@ -238,7 +239,7 @@ class BaseSample (object):
 	"""
 	Convert text to have one token per line.
 	Makes it easier to examine the tokens/features
-	FIXME: (?) maybe this should just break on whitespace and not tokenize
+	(?) maybe this should just break on whitespace and not tokenize
 	    punctuation away ??
 	"""
 	#------
@@ -259,7 +260,7 @@ class BaseSample (object):
 	
 	self.setTitle( self.getTitle()[:10].replace('\n',' ') )
 	self.setAbstract( self.getAbstract()[:20].replace('\n',' ') )
-	self.setExtractedText( self.getExtractedText()[:20].replace('\n',' ')+'\n' )
+	self.setExtractedText(self.getExtractedText()[:20].replace('\n',' ')+'\n')
 	return self
     # ---------------------------
 
@@ -274,7 +275,8 @@ class BaseSample (object):
 
 class ClassifiedSample (BaseSample):
     """
-    Represents a training sample that has a known classification (keep/discard)
+    Abstract class. Represents a training sample that has a known classification
+	(e.g. discard/keep, selected/unselected)
     Knows how to take a text representation of a record (a text string with
 	delimitted fields) and parse into its fields
     Has "extraInfoFields", information about the sample that don't necessarily
@@ -283,43 +285,12 @@ class ClassifiedSample (BaseSample):
 	(e.g., if we want to analyze precision/recall for individual journals)
     """
     # fields of a sample as an input/output record (as text), in order
-    fieldNames = [ \
-	    'knownClassName',
-	    'ID'            ,
-	    'creationDate'  ,
-	    'year'          ,
-	    'isReview'      ,
-	    'refType'       ,
-	    'suppStatus'    ,
-	    'apStatus'      ,
-	    'gxdStatus'     ,
-	    'goStatus'      ,
-	    'tumorStatus'   ,
-	    'qtlStatus'     ,
-	    'journal'       ,
-	    'title'         ,
-	    'abstract'      ,
-	    'extractedText' ,
-	    ]
-    				# should be [] if no extraInfoFields
-    extraInfoFieldNames = [ \
-	    'creationDate'  ,
-	    'year'          ,
-	    'isReview'      ,
-	    'refType'       ,
-	    'suppStatus'    ,
-	    'apStatus'      ,
-	    'gxdStatus'     ,
-	    'goStatus'      ,
-	    'tumorStatus'   ,
-	    'qtlStatus'     ,
-	    'journal'       ,
-	    'abstractLen'   ,
-	    'textLen'       ,
-	    ]
+    # Need to be specified by subclasses
+    fieldNames = [  ]
+    extraInfoFieldNames = [  ] # should be [] if no extraInfoFields
 
     def __init__(self,):
-	super(type(self), self).__init__()
+	BaseSample.__init__(self)
     #----------------------
 
     def parseSampleRecordText(self, text):
@@ -356,30 +327,31 @@ class ClassifiedSample (BaseSample):
 	return self
     #----------------------
 	
-    def validateClassName(self, name):
+    def validateClassName(self, className):
 	"""
-	1) validate name is a CLASS_NAME
+	1) validate className is a CLASS_NAME
 	2) transform it as needed: remove any leading/trailing spaces and punct
-	Return the cleaned up name.
+	Return the cleaned up name, or raise ValueError.
 	The orig need for cleaning up arose when using ';;' as the record sep
 	    and having some extracted text ending in ';'.
 	    So splitting records on ';;' left the record's class as ';discard'
 	    which caused problems down the line.
 	"""
 	className_re = re.compile(r'\b(\w+)\b')	# all alpha numeric
-	m = className_re.search(name)
+	m = className_re.search(className)
 
 	if m and m.group() in CLASS_NAMES:
 	    return m.group()
 	else:
-	    raise ValueError("Invalid sample class name '%s'\n" % str(name))
+	    raise ValueError("Invalid sample classification '%s'\n" % \
+								str(className))
     #----------------------
 
     def setKnownClassName(self, t):
 	self.values['knownClassName'] = self.validateClassName(t)
 
     def getKnownClassName(self): return self.values['knownClassName']
-    def getKnownYvalue(self):    return CLASS_NAMES.index(self.getKnownClassName())
+    def getKnownYvalue(self): return CLASS_NAMES.index(self.getKnownClassName())
     def isPositive(self):
 	return CLASS_NAMES.index(self.getKnownClassName()) == Y_POSITIVE 
     def isNegative(self):
@@ -397,14 +369,14 @@ class ClassifiedSample (BaseSample):
     def setTitle(self, t): self.values['title'] = t
     def getTitle(self,  ): return self.values['title']
 
-    def getJournal(self):	return self.values['journal']
+    def getJournal(self):  return self.values['journal']
 
     #----------------------
     @classmethod
     def getExtraInfoFieldNames(cls): return cls.extraInfoFieldNames
     def getExtraInfo(self):
 	self.extraInfo = { fn : str(self.values.get(fn,'none')) \
-					for fn in self.getExtraInfoFieldNames() }
+				    for fn in self.getExtraInfoFieldNames() }
 	self.setComputedExtraInfoFields()
 	return [ self.extraInfo[x] for x in self.getExtraInfoFieldNames() ]
 	
@@ -432,6 +404,90 @@ class ClassifiedSample (BaseSample):
     # ---------------------------
 # end class ClassifiedSample ------------------------
 
+class PrimTriageClassifiedSample(ClassifiedSample):
+    """
+    Represents a training sample for primary triage that has a known
+	classification (discard/keep)
+    """
+    # fields of a sample as an input/output record (as text), in order
+    fieldNames = [ \
+	    'knownClassName',
+	    'ID'            ,
+	    'creationDate'  ,
+	    'year'          ,
+	    'isReview'      ,
+	    'refType'       ,
+	    'suppStatus'    ,
+	    'apStatus'      ,
+	    'gxdStatus'     ,
+	    'goStatus'      ,
+	    'tumorStatus'   ,
+	    'qtlStatus'     ,
+	    'journal'       ,
+	    'title'         ,
+	    'abstract'      ,
+	    'extractedText' ,
+	    ]
+    extraInfoFieldNames = [ \
+	    'creationDate'  ,
+	    'year'          ,
+	    'isReview'      ,
+	    'refType'       ,
+	    'suppStatus'    ,
+	    'apStatus'      ,
+	    'gxdStatus'     ,
+	    'goStatus'      ,
+	    'tumorStatus'   ,
+	    'qtlStatus'     ,
+	    'journal'       ,
+	    'abstractLen'   ,
+	    'textLen'       ,
+	    ]
+# end class PrimTriageClassifiedSample ------------------------
+
+class CurGroupClassifiedSample(ClassifiedSample):
+    """
+    Represents a training sample from a curation group that has a known
+	classification (selected/unselected)
+    """
+    # fields of a sample as an input/output record (as text), in order
+    fieldNames = [ \
+	    'knownClassName',
+	    'ID'            ,
+	    'creationDate'  ,
+	    'year'          ,
+	    'discardKeep'   ,
+	    'isReview'      ,
+	    'refType'       ,
+	    'suppStatus'    ,
+	    'apStatus'      ,
+	    'gxdStatus'     ,
+	    'goStatus'      ,
+	    'tumorStatus'   ,
+	    'qtlStatus'     ,
+	    'journal'       ,
+	    'title'         ,
+	    'abstract'      ,
+	    'extractedText' ,
+	    ]
+    extraInfoFieldNames = [ \
+	    'creationDate'  ,
+	    'year'          ,
+	    'discardKeep'   ,
+	    'isReview'      ,
+	    'refType'       ,
+	    'suppStatus'    ,
+	    'apStatus'      ,
+	    'gxdStatus'     ,
+	    'goStatus'      ,
+	    'tumorStatus'   ,
+	    'qtlStatus'     ,
+	    'journal'       ,
+	    'abstractLen'   ,
+	    'textLen'       ,
+	    ]
+# end class CurGroupClassifiedSample ------------------------
+
 
 class UnclassifiedSample (BaseSample):
     """
@@ -442,15 +498,45 @@ class UnclassifiedSample (BaseSample):
 # end class UnclassifiedSample ------------------------
 
 if __name__ == "__main__":	# ad hoc test code
-    r2 = ClassifiedSample().parseSampleRecordText(\
-    ''';discard...|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
-    r1 = ClassifiedSample().parseSampleRecordText(\
-    '''keep|pmID1|01/01/1900|1900|0|non-peer1|supp type1|apstat1|gxdstat1|goStat1|tumorstat1|qtlStat1|Journal of Insomnia|My Title|
+    ss = ClassifiedSampleSet()
+    if True:	# basic CurGroupClassified Sample tests
+	r3 = CurGroupClassifiedSample().parseSampleRecordText(\
+    '''unselected|pmID1|01/01/1900|1900|keep|0|non-peer1|supp type1|apstat1|gxdstat1|goStat1|tumorstat1|qtlStat1|Journal of Insomnia|My Title|
     My Abstract|My text: it's a knock out https://foo text www.foo.org word word  -/- the final words'''
     )
-    if True:	# basic Classified Sample tests
 	print "----------------------"
-	print "ClassifiedSample tests\n"
+	print "CurGroupClassifiedSample tests\n"
+	print "classname: '%s'"		% r3.getKnownClassName()
+	print "Y value: %d"		% r3.getKnownYvalue()
+	print "Positive? %d"		% r3.isPositive()
+	print "Negative? %d"		% r3.isNegative()
+	print "sample as text: \n'%s'\n" % r3.getSampleAsText()
+	print "ExtraInfoFieldNames:\n'%s'\n" % ' '.join(r3.getExtraInfoFieldNames())
+	print "ExtraInfo:" 
+	for e in r3.getExtraInfo(): print e
+	print
+	print "---------------"
+	print "SampleSet tests\n"
+	print r3.getKnownClassName()
+	ss = ClassifiedSampleSet()
+	print "header line: \n'%s'\n" % ss.getHeaderLine()
+	print "Record End: \n'%s'\n" % ss.getRecordEnd()
+	print "ExtraInfoFieldNames:\n'%s'\n" % ' '.join(ss.getExtraInfoFieldNames())
+	ss.addSample(r3)
+	print "1st sample: \n'%s'\n'" % ss.getSamples()[0].getSampleAsText()
+	print "numPositives: %d" % ss.getNumPositives()
+	print "numNegatives: %d" % ss.getNumNegatives()
+	print "Journals:"
+	print ss.getJournals()
+    if False:	# basic PrimTriageClassified Sample tests
+	r2 = PrimTriageClassifiedSample().parseSampleRecordText(\
+	''';discard|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
+	r1 = PrimTriageClassifiedSample().parseSampleRecordText(\
+	'''keep|pmID1|01/01/1900|1900|0|non-peer1|supp type1|apstat1|gxdstat1|goStat1|tumorstat1|qtlStat1|Journal of Insomnia|My Title|
+	My Abstract|My text: it's a knock out https://foo text www.foo.org word word  -/- the final words'''
+	)
+	print "----------------------"
+	print "PrimTriageClassifiedSample tests\n"
 	print "classname: '%s'"		% r1.getKnownClassName()
 	print "Y value: %d"		% r1.getKnownYvalue()
 	print "Positive? %d"		% r1.isPositive()
@@ -470,7 +556,7 @@ if __name__ == "__main__":	# ad hoc test code
 	for e in r1.getExtraInfo(): print e
 	print
 
-    if True: # ClassifiedSampleSet tests
+    if False: # ClassifiedSampleSet (for PrimTriageClassifiedSample) tests
 	print "---------------"
 	print "SampleSet tests\n"
 	print r2.getKnownClassName()

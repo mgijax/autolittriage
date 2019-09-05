@@ -1315,3 +1315,67 @@ Aug 27, 2019
     Re-split each curator group's dataset.
     Retrained/evaluated each curator group.  (all RF)
     Overfitting on all 4 curation groups. So will need to try addressing that.
+
+Aug 28, 2019
+    Analyzing the selected/unselected counts in the sample set vs. what is in the
+    Test set. Things didn't jive. E.g., for tumor:
+	selected_after = 1,675 (3% of "after" set),
+	but "selected" in the test set = 1,412 (19% of test set)
+	(and all test set positives come from selected_after)
+
+	Similar skews toward more positives for all the other curation group's
+	dataset.
+
+    Figured out what was going on.
+	the "discard/keep" column was serving 2 purposes:
+	    (1) is the value in the database for the reference
+	    (2) was used to determine the "positive" class in sampleDatalib and
+		scripts that use it, including textTuningLib.
+		And here "keep" was being treated as "selected".
+		But there are lots of articles that are "keep" but "rejected" by
+		tumor (or other group), and so should be treated as "negative".
+		So when training/testing, lots of articles got erroneously treated
+		as positive.
+	Subtle and confusing.
+	For primary triage, these two purposes have the same meaning.
+	For curation group prediction, they are distinct.
+
+	So the structure of datafiles for curation group prediction requires
+	another field beyond "discard/keep" -needs a separate "selected/unselected"
+	field. This complicates ClassifiedSample and the various scripts that use
+	it.
+Aug 30, 2019
+    Converting things to address the curation group problem.
+	* need to subclass ClassifiedSample:
+	    PrimTriageClassifiedSample
+	    CurGroupClassifiedSample
+	    (hopefully I can use shorter names!)
+	* decided to use config vars to specify which subclass to use and
+	    what the y_values and class_names are ("discard/keep" vs.
+	    "selected/unselected")
+	    (could use cmd line args for various scripts, or have these valuse
+	    defined in each subclass. For now, we won't go there)
+	    ONE DOWNSIDE to this: each script that uses the config file can
+		only operate on one sample type at a time. E.g., couldn't
+		write a getRaw.py that would get both CurGroupClassifiedSamples
+		and PrimTriageClassifiedSamples in one invocation.
+	* requires having separate config files for different datasets
+	* helpful to restructure directories
+	    to put model/training code near data so they can use the
+	    same config files:
+	    <project home>/Train/{primary_triage|tumor|gxd|ap|go}
+		a sub config.cfg goes here
+		/data/date/...
+
+Sep 4, 2019
+    Restructured tumor directories to as the first g. pig.
+    Figured out config files for specific curation groups.
+    Factored out config file finding/reading into sklearnHelperLib.py.
+	Group specific config files take precedence.
+
+Sep 5, 2019
+    Split out ClassifiedSample into PrimTriageClassifiedSample and
+	CurGroupClassifiedSample.
+    Added SAMPLE_OBJECT_TYPE_NAME to config files and chged
+    ClassifiedSampleSet to use this class when instantiating new
+	samples.
