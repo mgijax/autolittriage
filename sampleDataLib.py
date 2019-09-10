@@ -6,7 +6,7 @@
 import sys
 import string
 import re
-import sklearnHelperLib as skhelper
+import utilsLib
 import figureText
 import featureTransform
 #-----------------------------------
@@ -22,9 +22,9 @@ import featureTransform
 #      of a python class is passed as a config parameter to specify which
 #      ClassifiedSample subclass to instantiate.
 #  * so try to use "python class" or "object type" for these
+#-----------------------------------
 
-
-config = skhelper.getConfig()
+config = utilsLib.getConfig()
 
 FIELDSEP     = eval( config.get("DEFAULT", "FIELDSEP") )
 RECORDEND    = eval( config.get("DEFAULT", "RECORDEND") )
@@ -34,6 +34,7 @@ FIG_CONVERSION        = config.get("DEFAULT", "FIG_CONVERSION")
 FIG_CONVERSION_NWORDS = config.getint("DEFAULT", "FIG_CONVERSION_NWORDS")
 figConverter = figureText.Text2FigConverter(conversionType=FIG_CONVERSION,
 						numWords=FIG_CONVERSION_NWORDS)
+#-----------------------------------
 
 class ClassifiedSampleSet (object):
     """
@@ -348,7 +349,7 @@ class ClassifiedSample (BaseSample):
     def getHeaderLine(cls):
 	""" Return sample output file column header line
 	"""
-	return self.fieldSep.join( cls.fieldNames)
+	return cls.fieldSep.join( cls.fieldNames)
     #----------------------
 
     def setFields(self, values,		# dict
@@ -615,7 +616,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print "---------------"
 	print "SampleSet tests\n"
 	print r2.getKnownClassName()
-	ss = ClassifiedSampleSet(sampleObjType=CurGroupClassifiedSample)
+	ss = ClassifiedSampleSet(sampleObjType=PrimTriageClassifiedSample)
 	print "header line: \n'%s'\n" % ss.getHeaderLine()
 	print "Record End: \n'%s'\n" % ss.getRecordEnd()
 	print "ExtraInfoFieldNames:\n'%s'\n" % ' '.join(ss.getExtraInfoFieldNames())

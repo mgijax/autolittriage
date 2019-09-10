@@ -19,10 +19,10 @@ import re
 import time
 import argparse
 import db
+import utilsLib
 import sampleDataLib
-import sklearnHelperLib as skhelper
 #-----------------------------------
-cp = skhelper.getConfig()
+cp = utilsLib.getConfig()
 
 # for the output delimited file
 FIELDSEP     = eval(cp.get("DEFAULT", "FIELDSEP"))
@@ -637,7 +637,7 @@ def writeSamples(results	# list of records from SQL query (dicts)
     Write records to stdout
     Return count of records written
     """
-    sampleSet = sampleDataLib.ClassifiedSampleSet(sampleClass=SAMPLE_CLASS)
+    sampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=SAMPLE_CLASS)
 
     for r in results:
 	sampleSet.addSample( sqlRecord2ClassifiedSample(r) )
@@ -688,7 +688,7 @@ def cleanUpTextField(rcd,
     if args.maxTextLength:	# handy for debugging
 	text    = text[:args.maxTextLength]
 
-    text = skhelper.removeNonAscii( cleanDelimiters( text))
+    text = utilsLib.removeNonAscii( cleanDelimiters( text))
     return text
 #-----------------------------------
 
