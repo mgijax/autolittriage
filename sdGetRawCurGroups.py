@@ -22,15 +22,16 @@ import db
 import sampleDataLib
 import sklearnHelperLib as skhelper
 #-----------------------------------
-cp = skhelper.getConfig()
+#cp = skhelper.getConfig()
 
+SAMPLE_OBJ_TYPE = sampleDataLib.CurGroupClassifiedSample
+sampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=SAMPLE_OBJ_TYPE)
 # for the output delimited file
-FIELDSEP     = eval(cp.get("DEFAULT", "FIELDSEP"))
-RECORDEND    = eval(cp.get("DEFAULT", "RECORDEND"))
-CLASS_NAMES  = eval(cp.get("CLASS_NAMES", "y_class_names"))
-Y_POSITIVE   = cp.getint("CLASS_NAMES", "y_positive")
+FIELDSEP     = SAMPLE_OBJ_TYPE.getFieldSep()
+RECORDEND    = sampleSet.getRecordEnd()
 
-SAMPLE_CLASS = sampleDataLib.CurGroupClassifiedSample
+CLASS_NAMES  = SAMPLE_OBJ_TYPE.getSampleClassNames()
+Y_POSITIVE   = SAMPLE_OBJ_TYPE.getY_positive()
 
 #-----------------------------------
 
@@ -637,7 +638,7 @@ def writeSamples(results	# list of records from SQL query (dicts)
     Write records to stdout
     Return count of records written
     """
-    sampleSet = sampleDataLib.ClassifiedSampleSet(sampleClass=SAMPLE_CLASS)
+    global sampleSet
 
     for r in results:
 	sampleSet.addSample( sqlRecord2ClassifiedSample(r) )
@@ -675,7 +676,7 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newR['tumorStatus']   = str(r['tumor_status']) 
     newR['qtlStatus']     = str(r['qtl_status'])
 
-    return SAMPLE_CLASS().setFields(newR)
+    return SAMPLE_OBJ_TYPE().setFields(newR)
 #-----------------------------------
 
 def cleanUpTextField(rcd,
