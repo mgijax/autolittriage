@@ -18,27 +18,25 @@ import string
 import re
 import time
 import argparse
-import ConfigParser
 import db
 import sampleDataLib
+import sklearnHelperLib as skhelper
 #-----------------------------------
-cp = ConfigParser.ConfigParser()
-cp.optionxform = str # make keys case sensitive
-cl = ['/'.join(l)+'/config.cfg' for l in [['.']]+[['..']*i for i in range(1,4)]]
-configFiles = cp.read(cl)
-#print configFiles
+cp = skhelper.getConfig()
 
 # for the output delimited file
 FIELDSEP     = eval(cp.get("DEFAULT", "FIELDSEP"))
 RECORDEND    = eval(cp.get("DEFAULT", "RECORDEND"))
 CLASS_NAMES  = eval(cp.get("CLASS_NAMES", "y_class_names"))
-INDEX_OF_KEEP    = 1		# index in CLASS_NAMES of the keep label
-INDEX_OF_DISCARD = 0		# index in CLASS_NAMES of the discard label
+Y_POSITIVE   = cp.getint("CLASS_NAMES", "y_positive")
+
+SAMPLE_CLASS = sampleDataLib.CurGroupClassifiedSample
+
 #-----------------------------------
 
 def getArgs():
     parser = argparse.ArgumentParser( \
-	description='Get littriage relevance training samples, write to stdout')
+	description='Get training samples for curation group select/unselect, write to stdout')
 
     parser.add_argument('--test', dest='test', action='store_true',
         required=False,
@@ -157,6 +155,7 @@ class BaseRefSearch (object): # {
     REFINFO_SELECT =  \
     '''
     select distinct r._refs_key,
+	'%s' as "known_class_name",
 	r.isdiscard, r.year,
 	to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
 	r.isreviewarticle,
@@ -169,7 +168,8 @@ class BaseRefSearch (object): # {
 	bsv.go_status, 
 	bsv.tumor_status, 
 	bsv.qtl_status
-    '''
+    '''		# "known_class_name" is a constant determined by whether this ref
+    		#    search returns positive or negative samples
     REFINFO_FROM =  \
     '''
     from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
@@ -211,8 +211,19 @@ class BaseRefSearch (object): # {
     '''
     #-----------------------------------
 
-    def __init__(self, args):
+    def __init__(self,
+	args,
+	ispositive,	# True if refs from this search are in the positive class
+	):
 	self.args = args
+	self.knownClassName = self.determineKnownClassName(ispositive)
+
+    def determineKnownClassName(self, ispositive):
+	if ispositive:
+	    knownClassName = CLASS_NAMES[Y_POSITIVE]
+	else:
+	    knownClassName = CLASS_NAMES[1 - Y_POSITIVE]
+	return knownClassName
 
     #@abstract
     def getName(self):
@@ -288,7 +299,10 @@ class BaseRefSearch (object): # {
 	if self.args.nResults > 0: limitSQL ="\nlimit %d\n" % self.args.nResults
 	else: limitSQL = ''
 
-	refInfoSQL = self.REFINFO_SELECT + self.REFINFO_FROM + where + \
+	# set constant field in the select clause for the known class name
+	refInfoSelect = self.REFINFO_SELECT % self.knownClassName
+
+	refInfoSQL = refInfoSelect + self.REFINFO_FROM + where + \
 							    restrict + limitSQL
 	extTextSQL = self.EXTTEXT_SELECT + self.EXTTEXT_FROM + where + \
 							    restrict + limitSQL
@@ -322,7 +336,7 @@ class UnSelectedAfterRefSearch(BaseRefSearch):  # {
     """ IS: RefSearch for UNselected refs for a group after new littriage proces
     """
     def __init__(self, args, group, bsvFieldName):
-	super(type(self), self).__init__(args)
+	super(type(self), self).__init__(args, False)
 	self.group = group
 	self.bsvFieldName = bsvFieldName	# bib_stat_view field for group
     def getName(self):
@@ -344,7 +358,7 @@ class SelectedAfterRefSearch(BaseRefSearch):  # {
     """ IS: RefSearch for selected refs for a group after new littriage proces
     """
     def __init__(self, args, group, bsvFieldName):
-	super(type(self), self).__init__(args)
+	super(type(self), self).__init__(args, True)
 	self.group = group
 	self.bsvFieldName = bsvFieldName	# bib_stat_view field for group
     def getName(self):
@@ -362,7 +376,7 @@ class GoSelectedAfterRefSearch(BaseRefSearch):  # {
     """ IS: RefSearch for selected refs for GO after new lit triage proces
     """
     def __init__(self, args,):
-	super(type(self), self).__init__(args)
+	super(type(self), self).__init__(args, True)
 	self.group = 'GO'
 	self.bsvFieldName = 'go_status'	# bib_stat_view field for group
     def getName(self):
@@ -387,7 +401,7 @@ class GoSelectedBeforeRefSearch(BaseRefSearch):  # {
     """ IS: RefSearch for selected refs for GO before new lit triage proces
     """
     def __init__(self, args, startDate=None):
-	super(type(self), self).__init__(args)
+	super(type(self), self).__init__(args, True)
 	self.group = 'GO'
 	self.bsvFieldName = 'go_status'	# bib_stat_view field for group
 	self.startDate = startDate
@@ -421,7 +435,7 @@ class SelectedBeforeRefSearch(BaseRefSearch):  # {
     """ IS: RefSearch for selected refs for a group before new littriage proces
     """
     def __init__(self, args, group, bsvFieldName, startDate=None):
-	super(type(self), self).__init__(args)
+	super(type(self), self).__init__(args, True)
 	self.group = group
 	self.bsvFieldName = bsvFieldName	# bib_stat_view field for group
 	self.startDate = startDate
@@ -471,13 +485,13 @@ dataSets = {
 
 class ExtractedTextSet (object): # {
     """
-    IS	a collection of extracted text records (from multiple references)
-    Has	each record is dict with fields
-	{'_refs_key' : int, 'text_type': (e.g, 'body', 'references'), 
+    IS:	a collection of extracted text records (from multiple references)
+    Has: each record is dict with fields
+	 {'_refs_key' : int, 'text_type': (e.g, 'body', 'references'), 
 	 'text_part': text} 
 	The records may have other fields too that are not used here.
 	The field names '_refs_key', 'text_type', 'text_part' are specifiable.
-    DOES (1)collects and concatenates all the fields for a given _refs_key into
+    DOES: (1)collects and concatenates all the fields for a given _refs_key into
 	a single text field in the correct order - thus recapitulating the 
 	full extracted text.
 	(2) join a set of basic reference records to their extracted text
@@ -623,7 +637,7 @@ def writeSamples(results	# list of records from SQL query (dicts)
     Write records to stdout
     Return count of records written
     """
-    sampleSet = sampleDataLib.ClassifiedSampleSet()
+    sampleSet = sampleDataLib.ClassifiedSampleSet(sampleClass=SAMPLE_CLASS)
 
     for r in results:
 	sampleSet.addSample( sqlRecord2ClassifiedSample(r) )
@@ -638,13 +652,12 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     Encapsulates knowledge of ClassifiedSample.setFields() field names
     """
     newR = {}
-
-    if r['isdiscard'] == 1:
-	sampleClass = CLASS_NAMES[INDEX_OF_DISCARD]
+    if str(r['isdiscard']) == '0':
+	discardKeep = 'keep'
     else:
-	sampleClass = CLASS_NAMES[INDEX_OF_KEEP]
+	discardKeep = 'discard'
 
-    newR['knownClassName']= sampleClass
+    newR['knownClassName']= str(r['known_class_name'])
     newR['ID']            = str(r['pubmed'])
     newR['creationDate']  = str(r['creation_date'])
     newR['year']          = str(r['year'])
@@ -652,6 +665,7 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newR['title']         = cleanUpTextField(r, 'title')
     newR['abstract']      = cleanUpTextField(r, 'abstract')
     newR['extractedText'] = cleanUpTextField(r, 'ext_text')
+    newR['discardKeep']   = discardKeep
     newR['isReview']      = str(r['isreviewarticle'])
     newR['refType']       = str(r['ref_type'])
     newR['suppStatus']    = str(r['supp_status'])
@@ -661,7 +675,7 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newR['tumorStatus']   = str(r['tumor_status']) 
     newR['qtlStatus']     = str(r['qtl_status'])
 
-    return sampleDataLib.ClassifiedSample().setFields(newR)
+    return SAMPLE_CLASS().setFields(newR)
 #-----------------------------------
 
 def cleanUpTextField(rcd,
@@ -674,7 +688,7 @@ def cleanUpTextField(rcd,
     if args.maxTextLength:	# handy for debugging
 	text    = text[:args.maxTextLength]
 
-    text = removeNonAscii( cleanDelimiters( text))
+    text = skhelper.removeNonAscii( cleanDelimiters( text))
     return text
 #-----------------------------------
 
@@ -683,11 +697,6 @@ def cleanDelimiters(text):
     """
     new = text.replace(RECORDEND,' ').replace(FIELDSEP,' ')
     return new
-#-----------------------------------
-
-nonAsciiRE = re.compile(r'[^\x00-\x7f]')	# match non-ascii chars
-def removeNonAscii(text):
-    return nonAsciiRE.sub(' ',text)
 #-----------------------------------
 
 def verbose(text):

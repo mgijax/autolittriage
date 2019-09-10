@@ -10,12 +10,24 @@ import sklearnHelperLib as skhelper
 import figureText
 import featureTransform
 #-----------------------------------
+#
+# Naming conventions:
+#  * use camelCase for most things
+#  * but stick to sklearn convention for y_*  which are the indexes of
+#      sample classification names, e.g., 'discard', 'keep'
+#  * use "class" or "classname" to mean the sample classification names
+#      (e.g., so a ClassifiedSample is a sample where we know if it is
+#       'discard' or 'keep')
+#  * this is confusing with python "classes" and with the fact that the name
+#      of a python class is passed as a config parameter to specify which
+#      ClassifiedSample subclass to instantiate.
+#  * so try to use "python class" or "object type" for these
+
+
 config = skhelper.getConfig()
 
 FIELDSEP     = eval( config.get("DEFAULT", "FIELDSEP") )
 RECORDEND    = eval( config.get("DEFAULT", "RECORDEND") )
-CLASS_NAMES  = eval( config.get("CLASS_NAMES", "y_class_names") )
-Y_POSITIVE   = config.getint("CLASS_NAMES", "y_positive")
 SAMPLE_OBJ_TYPE_NAME = config.get("CLASS_NAMES", "SAMPLE_OBJ_TYPE_NAME")
 
 FIG_CONVERSION        = config.get("DEFAULT", "FIG_CONVERSION")
@@ -42,13 +54,17 @@ class ClassifiedSampleSet (object):
 	For now, lets not worry and hope garbage collection takes care of 
 	things ok.
     """
-    def __init__(self,):
+    def __init__(self, sampleObjType=None):
 	self.samples = []
 	self.numPositives = 0
 	self.numNegatives = 0
 	self.journals     = set()   # set of all journal names in the samples
-				    # The python class of sample objects
-	self.sampleClass = getattr(sys.modules[__name__], SAMPLE_OBJ_TYPE_NAME)
+				   
+	if sampleObjType: # The python class of sample objects
+	    self.sampleObjType = sampleObjType
+	else:		# get from config
+	    self.sampleObjType = \
+			    getattr(sys.modules[__name__], SAMPLE_OBJ_TYPE_NAME)
     #-------------------------
 
     def read(self, inFile,	# file pathname or open file obj for reading
@@ -71,7 +87,7 @@ class ClassifiedSampleSet (object):
 
 	for sr in rcds:
 	    			# need to know which class to instantiate
-	    self.addSample( self.sampleClass().parseSampleRecordText(sr) )
+	    self.addSample( self.sampleObjType().parseSampleRecordText(sr) )
 	return self
     #-------------------------
 
@@ -97,7 +113,7 @@ class ClassifiedSampleSet (object):
 	    yield s
     #-------------------------
 
-    def addSamples(self, samples,	# [ ClassifiedSamples ]
+    def addSamples(self, samples,	# samples is a [ ClassifiedSamples ]
 	):
 	for s in samples:
 	    self.addSample(s)
@@ -106,8 +122,7 @@ class ClassifiedSampleSet (object):
 
     def addSample(self, sample,		# ClassifiedSample
 	):
-				# need to know which class
-	if not isinstance(sample, self.sampleClass):
+	if not isinstance(sample, self.sampleObjType):
 	    raise TypeError('Invalid sample type %s' % str(type(sample)))
 	self.samples.append(sample)
 	if sample.isPositive(): self.numPositives += 1
@@ -122,10 +137,16 @@ class ClassifiedSampleSet (object):
     def getNumNegatives(self):	return self.numNegatives
     def getJournals(self):	return self.journals	# set of names
     def getRecordEnd(self):	return RECORDEND
-	    # need to know which class
-    def getHeaderLine(self):	return self.sampleClass.getHeaderLine()
+
+    def getSampleObjType(self): return self.sampleObjType
+    def getSampleClassNames(self):
+	return self.sampleObjType.getSampleClassNames()
+    def getY_positive(self):	return self.sampleObjType.getY_positive()
+    def getY_negative(self):	return self.sampleObjType.getY_negative()
+
+    def getHeaderLine(self):	return self.sampleObjType.getHeaderLine()
     def getExtraInfoFieldNames(self):
-	return self.sampleClass.getExtraInfoFieldNames()
+	return self.sampleObjType.getExtraInfoFieldNames()
 
 # end class ClassifiedSampleSet -----------------------------------
 
@@ -284,10 +305,20 @@ class ClassifiedSample (BaseSample):
 	be used to subset the sample set when analyzing prediction results.
 	(e.g., if we want to analyze precision/recall for individual journals)
     """
+		# I think these need to be in alpha order if you
+		#  load samples using sklearn's load_files() function.
+		#  (and they need to match the directory names where the
+		#  sample files are stored)
+    sampleClassNames = ['no','yes']
+    y_positive = 1	# sampleClassNames[y_positive] is the "positive" class
+    y_negative = 0	# ... negative
+
     # fields of a sample as an input/output record (as text), in order
     # Need to be specified by subclasses
     fieldNames = [  ]
     extraInfoFieldNames = [  ] # should be [] if no extraInfoFields
+
+    fieldSep = FIELDSEP
 
     def __init__(self,):
 	BaseSample.__init__(self)
@@ -299,7 +330,7 @@ class ClassifiedSample (BaseSample):
 	with that record
 	"""
 	values = {}
-	fields = text.split(FIELDSEP)
+	fields = text.split(self.fieldSep)
 
 	for i, fn in enumerate(self.fieldNames):
 	    values[ fn ] = fields[i]
@@ -310,14 +341,14 @@ class ClassifiedSample (BaseSample):
     def getSampleAsText(self):
 	""" Return this record as a text string
 	"""
-	return FIELDSEP.join( [ self.values[fn] for fn in self.fieldNames ] )
+	return self.fieldSep.join([ self.values[fn] for fn in self.fieldNames])
     #----------------------
 
     @classmethod
     def getHeaderLine(cls):
 	""" Return sample output file column header line
 	"""
-	return FIELDSEP.join( cls.fieldNames)
+	return self.fieldSep.join( cls.fieldNames)
     #----------------------
 
     def setFields(self, values,		# dict
@@ -326,10 +357,15 @@ class ClassifiedSample (BaseSample):
 	self.setKnownClassName( values['knownClassName'] )
 	return self
     #----------------------
+
+    def setKnownClassName(self, t):
+	self.values['knownClassName'] = self.validateClassName(t)
 	
-    def validateClassName(self, className):
+    className_re = re.compile(r'\b(\w+)\b')	# all alpha numeric
+    @classmethod
+    def validateClassName(cls, className):
 	"""
-	1) validate className is a CLASS_NAME
+	1) validate className is a sampleClassName
 	2) transform it as needed: remove any leading/trailing spaces and punct
 	Return the cleaned up name, or raise ValueError.
 	The orig need for cleaning up arose when using ';;' as the record sep
@@ -337,23 +373,20 @@ class ClassifiedSample (BaseSample):
 	    So splitting records on ';;' left the record's class as ';discard'
 	    which caused problems down the line.
 	"""
-	className_re = re.compile(r'\b(\w+)\b')	# all alpha numeric
-	m = className_re.search(className)
+	m = cls.className_re.search(className)
 
-	if m and m.group() in CLASS_NAMES:
+	if m and m.group() in cls.sampleClassNames:
 	    return m.group()
 	else:
 	    raise ValueError("Invalid sample classification '%s'\n" % \
 								str(className))
     #----------------------
 
-    def setKnownClassName(self, t):
-	self.values['knownClassName'] = self.validateClassName(t)
-
     def getKnownClassName(self): return self.values['knownClassName']
-    def getKnownYvalue(self): return CLASS_NAMES.index(self.getKnownClassName())
+    def getKnownYvalue(self):
+	return self.sampleClassNames.index(self.getKnownClassName())
     def isPositive(self):
-	return CLASS_NAMES.index(self.getKnownClassName()) == Y_POSITIVE 
+	return self.getKnownYvalue() == self.y_positive 
     def isNegative(self):
 	return not self.isPositive()
 
@@ -372,6 +405,15 @@ class ClassifiedSample (BaseSample):
     def getJournal(self):  return self.values['journal']
 
     #----------------------
+    @classmethod
+    def getSampleClassNames(cls): return cls.sampleClassNames
+    @classmethod
+    def getY_positive(cls): return cls.y_positive
+    @classmethod
+    def getY_negative(cls): return cls.y_negative
+    #----------------------
+    @classmethod
+    def getFieldSep(cls):   return cls.fieldSep
     @classmethod
     def getExtraInfoFieldNames(cls): return cls.extraInfoFieldNames
     def getExtraInfo(self):
@@ -409,6 +451,10 @@ class PrimTriageClassifiedSample(ClassifiedSample):
     Represents a training sample for primary triage that has a known
 	classification (discard/keep)
     """
+    sampleClassNames = ['discard','keep']
+    y_positive = 1
+    y_negative = 0
+
     # fields of a sample as an input/output record (as text), in order
     fieldNames = [ \
 	    'knownClassName',
@@ -450,6 +496,10 @@ class CurGroupClassifiedSample(ClassifiedSample):
     Represents a training sample from a curation group that has a known
 	classification (selected/unselected)
     """
+    sampleClassNames = ['selected','unselected']
+    y_positive = 0
+    y_negative = 1
+
     # fields of a sample as an input/output record (as text), in order
     fieldNames = [ \
 	    'knownClassName',
@@ -498,8 +548,13 @@ class UnclassifiedSample (BaseSample):
 # end class UnclassifiedSample ------------------------
 
 if __name__ == "__main__":	# ad hoc test code
-    ss = ClassifiedSampleSet()
-    if True:	# basic CurGroupClassified Sample tests
+    ss = ClassifiedSampleSet(sampleObjType=PrimTriageClassifiedSample)
+    print ss.getExtraInfoFieldNames()
+    print ss.getSampleObjType()
+    print ss.getSampleClassNames()
+    print ss.getY_positive()
+    print ss.getY_negative()
+    if False:	# basic CurGroupClassified Sample tests
 	r3 = CurGroupClassifiedSample().parseSampleRecordText(\
     '''unselected|pmID1|01/01/1900|1900|keep|0|non-peer1|supp type1|apstat1|gxdstat1|goStat1|tumorstat1|qtlStat1|Journal of Insomnia|My Title|
     My Abstract|My text: it's a knock out https://foo text www.foo.org word word  -/- the final words'''
@@ -518,7 +573,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print "---------------"
 	print "SampleSet tests\n"
 	print r3.getKnownClassName()
-	ss = ClassifiedSampleSet()
+	ss = ClassifiedSampleSet(sampleObjType=CurGroupClassifiedSample)
 	print "header line: \n'%s'\n" % ss.getHeaderLine()
 	print "Record End: \n'%s'\n" % ss.getRecordEnd()
 	print "ExtraInfoFieldNames:\n'%s'\n" % ' '.join(ss.getExtraInfoFieldNames())
@@ -528,7 +583,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print "numNegatives: %d" % ss.getNumNegatives()
 	print "Journals:"
 	print ss.getJournals()
-    if False:	# basic PrimTriageClassified Sample tests
+    if True:	# basic PrimTriageClassified Sample tests
 	r2 = PrimTriageClassifiedSample().parseSampleRecordText(\
 	''';discard|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
 	r1 = PrimTriageClassifiedSample().parseSampleRecordText(\
@@ -556,11 +611,11 @@ if __name__ == "__main__":	# ad hoc test code
 	for e in r1.getExtraInfo(): print e
 	print
 
-    if False: # ClassifiedSampleSet (for PrimTriageClassifiedSample) tests
+    if True: # ClassifiedSampleSet (for PrimTriageClassifiedSample) tests
 	print "---------------"
 	print "SampleSet tests\n"
 	print r2.getKnownClassName()
-	ss = ClassifiedSampleSet()
+	ss = ClassifiedSampleSet(sampleObjType=CurGroupClassifiedSample)
 	print "header line: \n'%s'\n" % ss.getHeaderLine()
 	print "Record End: \n'%s'\n" % ss.getRecordEnd()
 	print "ExtraInfoFieldNames:\n'%s'\n" % ' '.join(ss.getExtraInfoFieldNames())
