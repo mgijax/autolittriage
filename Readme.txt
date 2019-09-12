@@ -1022,17 +1022,18 @@ June 4, 2019
     https://docs.google.com/spreadsheets/d/1MQmKSkqv3rOhrD3Xxjk2uLchQx1BU25IebBwAnlLjuw/edit?pli=1#gid=925762984
 
     sci_transl_med is journal w/ reasonable size FP and poor Precision.
-    Looking at examples to see if text extraction, figure text extraction is messed.
+    Looking at examples to see if text extraction, figure text extraction
+	is messed.
 
     Looking at 29093181 it is TN
-	some paragraph boundaries are missing so Legends+Words bleeds across some
-	paragraphs. See "KIT activation loop mutants display affinity for
+	some paragraph boundaries are missing so Legends+Words bleeds across
+	some paragraphs. See "KIT activation loop mutants display affinity for
 	type I inhibitors". The next two paragraphs are joined
 
-	Also the paragraph flow order is pretty weird - but probably doesn't affect
+	Also paragraph flow order is pretty weird - but probably doesn't affect
 	anything (even crosses page boundaries)
     Looking at 28931657 FP
-	WAS marked as discard on Apr 22, but now is not discard and is AP indexed.
+	WAS marked as discard on Apr 22, but now is not discard & is AP indexed.
 	So it is really a TP not an FP
 	similar issues to 29093181. Fig legend that is only recognized as a fig
 	paragraph because page footer bleads into "Fig. 1."
@@ -1045,9 +1046,9 @@ June 4, 2019
     nat_genet - low precision, but only has 2 keeps of 52 articles,
 	predictor has 5 FP so numbers too small to be significant.
 
-	Looked at 25362484. Just one example of issues. "Figure 1" is not recognized
-	as legend because the 1st word in the image "Measurable" is extracted as
-	the word before "Figure 1". Nothing is perfect!
+	Looked at 25362484. Just 1 example of issues. "Figure 1" is not
+	recognized as legend because the 1st word in the image "Measurable"
+	is extracted as the word before "Figure 1". Nothing is perfect!
 June 10, 2019
     Looking into confidence scores for SGDlog (from jan 2 data) - item (3) from
     May 17 meeting.
@@ -1055,8 +1056,8 @@ June 10, 2019
     https://docs.google.com/spreadsheets/d/1FIu615HU48mVaVF71nl7jXMVNI-MZ4qHhS2cMJLdiBQ/edit#gid=1635760950
 
     Bottom line:
-	yes, NPV does correlate with negative prediction "confidence" for SGDlog,
-	however since NPV is pretty high even for low confidence, it is not clear
+	yes, NPV does correlate w/ negative prediction "confidence" for SGDlog,
+	however since NPV is pretty high even for low confidence, not clear
 	that it would be worth curator time to look at lower confidence
 	predictions (i.e., curators would have to look at a log of TN to find a
 	small number of FN).
@@ -1069,16 +1070,16 @@ July 9, 2019
     Long digression.
     THE BASIC IDEA: include more fields in sample files that are not nec.
     used in training/predictions, BUT are useful for prediction analysis
-    This generalizes what I've been doing with journal and curation group status,
+    This generalizes what I've been doing w/ journal and curation group status,
     and supports better analysis
     1) Learned about google sheets pivot tables for analyzing prediction results
 	for various article subsets
-    2) changing sampleDataLib.py and tuningTemplate.py to add "extra info fields"
-	to prediction output file (e.g., review status, curator group status, ...)
+    2) changing sampleDataLib.py & tuningTemplate.py to add "extra info fields"
+	to prediction output file (e.g. review status, curator group status, etc
     3) Lots of refactoring to sdGetRaw.py and sdBuild1Get.sh:
 	a) use sampleDataLib.py for output of samples, including new extra info
 	    fields. Encapsulates the sample file knowledge in sampleDataLib
-	b) lots of refactoring sampleDataLib. Includes speed up of preprocessors.
+	b) lots of refactoring sampleDataLib. Includes speed up of preprocessors
 	c) stop creating separate refStatus file - these fields are now included
 	    in sample file
 	d) stop finding/removing review articles that are not marked as review
@@ -1086,7 +1087,7 @@ July 9, 2019
 	    Also building 2 instances of sample set, one with review papers and
 	    non-peer review papers omitted, one keeping all these refs.
 	    Will analyze the difference here. See thoughts below.
-	e) handle schema change with extracted text split into multiple sections.
+	e) handle schema change w/ extracted text split into multiple sections.
 	    This was trickier than it sounds as there is no easy to concat the
 	    sections in the right order with SQL and it was somewhat useful to
 	    do the concatenation in Python anyway. Had to do fussing to get
@@ -1097,9 +1098,9 @@ July 9, 2019
     Pros and Cons. (and note, we could separate these two criteria)
     
     Omit)
-	a) presumably most curators have not been looking at these, so maybe they
-	    do not have very accurate ground truth (?), Jackie, Debbie, is this
-	    true?
+	a) presumably most curators have not been looking at these, so maybe
+	    they do not have very accurate ground truth (?),
+	    Jackie, Debbie, is this true?
 	b) will not be learning Tumor review papers
 	c) when we go to production
 	    i) Can either omit these types of papers from prediction process
@@ -1149,7 +1150,8 @@ Aug 8, 2019
 	Reran RF and SGDlog on these to get comparable results w/ "extra info"
 
     Organized RF and SGDlog analysis google sheets and did a bunch of analysis:
-	P, NPV, R by journal, by year of publication, by "confidence", by text len
+	P, NPV, R by journal, by year of publication, by "confidence",
+	    by text len
 	Identified some journals w/ low NPV to look at.
 	SGDlog P and NPV doesn't correlate with "confidence" very well.
 	RF P and NPV correlates better.
@@ -1170,23 +1172,25 @@ Aug 8, 2019
 
 	* GO selected = 21664 - 5881 indexed by pm2geneload
 
-	For AP, easily balance by adding some selected papers from before 10/31/2017
-	For GO, easily balance by adding some selected papers from before 10/31/2017
+	For AP, easily balance by adding some selected papers from before
+	10/31/2017
+	For GO, easily balance by adding some selected papers from before
+	10/31/2017
 
 	Balancing GXD and Tumor are a little harder, but close enough:
 	For GXD,   selected papers before 10/31/2017:  25210	34% selected
 	For Tumor, selected papers before 10/31/2017:  14547	25% selected
 						    (or 16795 including reviews)
 
-	SO, it seems feasible to do a classifier for each group by balancing each
-	dataset with selected papers from before 10/31/2017.
+	SO, it seems feasible to do a classifier for each group by balancing
+	each dataset with selected papers from before 10/31/2017.
 
 	One thought:
 	We do already have secondary triage reports.
 
 	In general:
-	Does it make sense to use current autolittriage classifier (keep/discard)
-	    followed by secondary triage report for each group?
+	Does it make sense to use current autolittriage classifier
+	    (keep/discard) followed by secondary triage report for each group?
 
 	Fallback for specific group:
 	if specific classifier for any group doesn't work too well, could
@@ -1230,23 +1234,23 @@ Aug 13, 2019
 	(thinking indexed by pm2geneload means curator has not looked at yet)
     BUT the pm2geneload indexes some papers that already have been chosen by GO
     (in addition to papers that have not yet been chosen). 
-    SO subtracting these removes a lot of papers that truly have been selected by 
-    curators.
-    Instead: "not discard & current status is not Rejected and some previous status
-    was chosen, indexed, full-coded by a non-pm2geneload user (actually chosen
-    covers all the references). This is what I'll implement.
+    SO subtracting these removes a lot of papers that truly have been selected
+    by curators.
+    Instead: "not discard & current status is not Rejected and some previous
+    status was chosen, indexed, full-coded by a non-pm2geneload user (actually
+    chosen covers all the references). This is what I'll implement.
     Can get this from PWI by querying current status and status history
 
-    ASIDE: as I look at these counts & SQL carefully, I think the sql to build the
-    discard/keep sample sets is off too. Hopefully, these errors only resulted in
-    my missing some samples that could accurately been called as a discard/keep.
-    But will need some more pondering
+    ASIDE: as I look at these counts & SQL carefully, I think the sql to build
+    the discard/keep sample sets is off too. Hopefully, these errors only
+    resulted in my missing some samples that could accurately been called as a
+    discard/keep.  But will need some more pondering
 
 Aug 20, 2019
     Finished sdGetGroupRefs.py last week. Lots of refactoring from original
     sdGetRaw.py. Could/should merge sdGetRaw into the other at some point.
-    Reworked sdBuilt2Fig.sh, sdBuild3Pre.sh, sdBuild4Split.sh to optionally handle
-    files for curation group selected/not in addition to discard/keep.
+    Reworked sdBuilt2Fig.sh, sdBuild3Pre.sh, sdBuild4Split.sh to optionally
+    handle files for curation group selected/not in addition to discard/keep.
 
     Running RF
     On tumor: Overfit:
@@ -1269,13 +1273,14 @@ Aug 20, 2019
 
     Not too awesome.
 
-    Thoughts on what to do if going straight to secondary triage doesn't work well
+    Thoughts on what to do if going straight to 2nd triage doesn't work well
     for a particular group:
-    1) run discard/keep (primary) first. Anything that is keep, run through 2ndary
-	triage report and select those.
+    1) run discard/keep (primary) first. Anything that is keep, run through
+	2ndary triage report and select those.
 	Would need to script this to compute P, R, NPV
-    2) run discard/keep first. Train a model for selection by the group only on the
-	keeps. See how that works. The 2nd model doesn't have to learn anything
+    2) run discard/keep first. Train a model for selection by the group only
+	on the keeps.
+	See how that works. The 2nd model doesn't have to learn anything
 	about discards. Would have more balanced training sets since discard is
 	60% of refs.
 Aug 22, 2019
@@ -1293,16 +1298,16 @@ Aug 22, 2019
     has more positives than the average journal, choosing split-fraction of refs
     from that journal will add more positives than expected.
 
-    SO "splitting by journal" doesn't seem to make sense. Just flip a coin across
-    all articles, independent of journal instead.
+    SO "splitting by journal" doesn't seem to make sense.
+    Just flip a coin across all articles, independent of journal instead.
 
     SO should change/replace sdSplitByJournal.py to NOT apply the fraction to
     each individ journal.
 
     This problem does not seem to be in the full discard/keep data sets (compare
     ratios in "after" set and test/validation sets).
-    Probably because there is a more uniform spread of positives/negatives across
-    enough journals.
+    Probably because there is a more uniform spread of positives/negatives
+    across enough journals.
 
     BUT should rerun discard/keep analysis after changing sdSplitByJournal.py.
 Aug 23, 2019
@@ -1317,7 +1322,7 @@ Aug 27, 2019
     Overfitting on all 4 curation groups. So will need to try addressing that.
 
 Aug 28, 2019
-    Analyzing the selected/unselected counts in the sample set vs. what is in the
+    Analyzing the selected/unselected counts in the sample set vs what is in the
     Test set. Things didn't jive. E.g., for tumor:
 	selected_after = 1,675 (3% of "after" set),
 	but "selected" in the test set = 1,412 (19% of test set)
@@ -1334,16 +1339,16 @@ Aug 28, 2019
 		And here "keep" was being treated as "selected".
 		But there are lots of articles that are "keep" but "rejected" by
 		tumor (or other group), and so should be treated as "negative".
-		So when training/testing, lots of articles got erroneously treated
-		as positive.
+		So when training/testing, lots of articles got erroneously
+		treated as positive.
 	Subtle and confusing.
 	For primary triage, these two purposes have the same meaning.
 	For curation group prediction, they are distinct.
 
 	So the structure of datafiles for curation group prediction requires
-	another field beyond "discard/keep" -needs a separate "selected/unselected"
-	field. This complicates ClassifiedSample and the various scripts that use
-	it.
+	another field beyond "discard/keep" -needs a separate
+	"selected/unselected" field.
+	This complicates ClassifiedSample and the various scripts that use it.
 Aug 30, 2019
     Converting things to address the curation group problem.
 	* need to subclass ClassifiedSample:
@@ -1370,7 +1375,8 @@ Aug 30, 2019
 Sep 4, 2019
     Restructured tumor directories to as the first g. pig.
     Figured out config files for specific curation groups.
-    Factored out config file finding/reading into sklearnHelperLib.py.
+    Factored out config file finding/reading into sklearnHelperLib.py (actually
+	new utilsLib.py).
 	Group specific config files take precedence.
 
 Sep 5, 2019
@@ -1379,3 +1385,9 @@ Sep 5, 2019
     Added SAMPLE_OBJECT_TYPE_NAME to config files and chged
     ClassifiedSampleSet to use this class when instantiating new
 	samples.
+Sep 11,2019
+    Continue
+	Refactoring ClassifiedSamples in sdGetRawCurGroups.py,
+	Moving some config params to ClassifiedSample classes
+	Fixing bugs
+	Got sdGetRawCurGroups.py working for tumor. Moving on to preprocessing.

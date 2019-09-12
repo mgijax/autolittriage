@@ -22,7 +22,6 @@ import db
 import utilsLib
 import sampleDataLib
 #-----------------------------------
-cp = utilsLib.getConfig()
 
 SAMPLE_OBJ_TYPE = sampleDataLib.CurGroupClassifiedSample
 sampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=SAMPLE_OBJ_TYPE)
@@ -67,7 +66,7 @@ def getArgs():
 
     parser.add_argument('--textlength', dest='maxTextLength',
 	type=int, required=False, default=None,
-	help="only include the 1st n chars of text fields (for debugging)")
+	help="only include 1st n chars of text fields & 1 rcd/line (for debugging)")
 
     parser.add_argument('--norestrict', dest='restrictArticles',
 	action='store_false', required=False,
@@ -161,7 +160,8 @@ class BaseRefSearch (object): # {
 	to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
 	r.isreviewarticle,
 	typeTerm.term as ref_type,
-	suppTerm.term as supp_status,
+	'ignore supp term' as supp_status,
+	-- suppTerm.term as supp_status,
 	r.journal, r.title, r.abstract,
 	a.accid pubmed,
 	bsv.ap_status,
@@ -169,14 +169,20 @@ class BaseRefSearch (object): # {
 	bsv.go_status, 
 	bsv.tumor_status, 
 	bsv.qtl_status
-    '''		# "known_class_name" is a constant determined by whether this ref
-    		#    search returns positive or negative samples
+    '''		# "known_class_name" is a constant determined by whether this
+    		#    ref search returns positive or negative samples
+		# Skipping suppTerm for now since in bib_workflow_data there
+		#    are multiple records that don't always agree on the
+		#    supplemental status term. If we include these, (1) we get
+		#    multiple records returned in the join (2) would take some
+		#    work to get the right status (the one associated with the
+		#    extracted *body* text)
     REFINFO_FROM =  \
     '''
     from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
 	join bib_workflow_data bd on (r._refs_key = bd._refs_key)
 	join bib_status_view bsv on (r._refs_key = bsv._refs_key)
-	join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
+	-- join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
 	join voc_term typeTerm on (r._referencetype_key = typeTerm._term_key)
 	join acc_accession a on
 	     (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
@@ -209,12 +215,16 @@ class BaseRefSearch (object): # {
     '''
     from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
 	join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+	join acc_accession a on (r._refs_key = a._object_key
+		and a._logicaldb_key = 29 and a._mgitype_key=1)
     '''
+	    # Need acc_accession join so we dont count refs that don't have
+	    #   pubmed IDs.
     #-----------------------------------
 
     def __init__(self,
 	args,
-	ispositive,	# True if refs from this search are in the positive class
+	ispositive,	# True if refs from this search are in the pos class
 	):
 	self.args = args
 	self.knownClassName = self.determineKnownClassName(ispositive)
@@ -665,7 +675,8 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newR['journal']       = '_'.join(str(r['journal']).split(' '))
     newR['title']         = cleanUpTextField(r, 'title')
     newR['abstract']      = cleanUpTextField(r, 'abstract')
-    newR['extractedText'] = cleanUpTextField(r, 'ext_text')
+    newR['extractedText'] = cleanUpTextField(r, 'ext_text') 
+    if args.maxTextLength: newR['extractedText'] += '\n'
     newR['discardKeep']   = discardKeep
     newR['isReview']      = str(r['isreviewarticle'])
     newR['refType']       = str(r['ref_type'])
@@ -687,7 +698,8 @@ def cleanUpTextField(rcd,
     else: text = ''
 
     if args.maxTextLength:	# handy for debugging
-	text    = text[:args.maxTextLength]
+	text = text[:args.maxTextLength]
+	text = text.replace('\n',' ')
 
     text = utilsLib.removeNonAscii( cleanDelimiters( text))
     return text
