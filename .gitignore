@@ -10,6 +10,7 @@ __pycache__/
 venv/
 ENV/
 
+ModelAnalysis/
 Data/
 cache/
 *.ipynb_checkpoints

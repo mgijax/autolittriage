@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.7 
 #
 # sdSplitSamples.py
-# Takes one or more files of samples and randomly splits the samples into 2 outputs
+# Takes 1 or more files of samples & randomly splits the samples into 2 outputs
 #   1) the "retained" samples (some specified fraction of the input samples)
 #      - can be restricted to only MGI monitored journals or
 #        unrestricted and retained from any journals in the input sample sets
@@ -12,9 +12,9 @@
 #   a Summary report is written to stdout
 #
 # This simply flips a weighted coin for each reference in the input. It does
-#  not try to keep the journal or positive/negative distributions in the retained
+#  not try to keep the journal or pos/neg distributions in the retained
 #  file consistent with the inputs.
-#  (although, by random selection, those distributions are likely to be maintained)
+#  (although, by random selection, the distributions will likely be maintained)
 #
 # ClassifiedSampleRecord Class in sampleDataLib.py is responsible for the sample
 #   handling
@@ -28,7 +28,7 @@ import time
 import argparse
 import random
 # extend path up multiple parent dirs, hoping we can import sampleDataLib
-sys.path = ['/'.join(dots) for dots in [['..']*i for i in range(1,4)]] + \
+sys.path = ['/'.join(dots) for dots in [['..']*i for i in range(1,8)]] + \
 		sys.path
 import sampleDataLib
 
@@ -39,8 +39,8 @@ DEFAULT_MGI_JOURNALS_FILE = 'journalsMonitored.txt'
 
 def parseCmdLine():
     parser = argparse.ArgumentParser( \
-    description='Randomly split sample files into "retained" set & "leftovers".' +
-		' Summary stats to stdout')
+    description='Randomly split sample files into "retained" set & ' +
+		'"leftovers". Summary stats to stdout.')
 
     parser.add_argument('inputFiles', nargs=argparse.REMAINDER,
     	help='files of samples')
@@ -51,24 +51,24 @@ def parseCmdLine():
 
     parser.add_argument('--retainedfile', dest='retainedFile', action='store',
 	required=False, default=DEFAULT_OUTPUT_RETAINED,
-    	help='where to write retained articles. Default: ' +DEFAULT_OUTPUT_RETAINED)
+    	help='retained output file. Default: ' + DEFAULT_OUTPUT_RETAINED)
 
     parser.add_argument('--leftoverfile', dest='leftoverFile', action='store',
 	required=False, default=DEFAULT_OUTPUT_LEFTOVER,
-    	help='where to write leftover articles. Default: ' +DEFAULT_OUTPUT_LEFTOVER)
+    	help='leftover output file. Default: ' + DEFAULT_OUTPUT_LEFTOVER)
 
-    parser.add_argument('--mgijournalsfile', dest='mgiJournalsFile', action='store',
-	required=False, default=DEFAULT_MGI_JOURNALS_FILE,
+    parser.add_argument('--mgijournalsfile', dest='mgiJournalsFile',
+	action='store', required=False, default=DEFAULT_MGI_JOURNALS_FILE,
     	help='file containing the list of MGI journal names. Default: '
 						+ DEFAULT_MGI_JOURNALS_FILE)
 
     parser.add_argument('--onlymgi', dest='onlyMgi', action='store_true',
 	required=False,
-	help="only retain refs from MGI monitored journals. Default: all journals")
+	help="only retain refs from MGI journals. Default: all journals")
 
     parser.add_argument('--seed', dest='seed', action='store',
 	required=False, type=int, default=int(time.time()),
-    	help='int seed for random.random(). Default: a new seed will be generated')
+    	help='int seed for random(). Default: a new seed will be generated')
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
 	required=False, help="skip helpful messages to stderr")
@@ -116,8 +116,8 @@ def main():
 	allJournals |= inputSampleSet.getJournals()
 
 	for sample in inputSampleSet.sampleIterator():
-	    if args.onlyMgi and \
-		    not cleanJournalName(sample.getJournal()) in mgiJournalsNames:
+	    if args.onlyMgi and not cleanJournalName(sample.getJournal()) \
+							in mgiJournalsNames:
 		retain = False
 	    else:
 		retain = random.random() < float(args.fraction)
@@ -132,7 +132,8 @@ def main():
 
     ### Write summary report
     summary = "\nSummary:  "
-    summary += "Retaining random set of articles. Fraction: %5.3f\n" % args.fraction
+    summary += "Retaining random set of articles. Fraction: %5.3f\n" \
+							    % args.fraction
     summary += time.ctime() + '\n'
     summary += "Seed:  %d\n" % args.seed
     if args.onlyMgi:
@@ -142,7 +143,8 @@ def main():
     summary += str(args.inputFiles) + '\n'
 
     summary += "Input Totals:\n"
-    totRefs = retainedSampleSet.getNumSamples() + leftoverSampleSet.getNumSamples()
+    totRefs = retainedSampleSet.getNumSamples() + \
+					    leftoverSampleSet.getNumSamples()
     totPos  = retainedSampleSet.getNumPositives() + \
 					    leftoverSampleSet.getNumPositives()
     totNeg  = retainedSampleSet.getNumNegatives() + \
@@ -171,7 +173,7 @@ def main():
 
 def formatSummary(numRefs, numPos, numNeg, numJournals):
 
-    sum = "%d refs:  %d positive (%4.1f%%) %d negative (%4.1f%%) %d Journals\n" \
+    sum = "%d refs: %d positive (%4.1f%%) %d negative (%4.1f%%) %d Journals\n" \
 		    % (numRefs,
 		    numPos, (100.0 * numPos/numRefs),
 		    numNeg, (100.0 * numNeg/numRefs),
