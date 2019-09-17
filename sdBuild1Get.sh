@@ -53,7 +53,7 @@ while [ $# -gt 0 ]; do
     case "$1" in
     -h|--help)   Usage ;;
     --group)     doGroup=yes;group="$2"; shift; shift; ;;
-    --getraw)    doGroup=no; shift; ;;
+    --discard)   doGroup=no; shift; ;;
     --norestrict) restrictOpt=--norestrict; shift; ;;
     --limit)     limit="$2"; shift; shift; ;;
     --server)    server="$2"; shift; shift; ;;
@@ -68,20 +68,22 @@ fi
 # Pull raw subsets from db
 #######################################
 echo "getting raw data from db: ${server}" | tee -a $getRawLog
+date >> $getRawLog
+rm -f counts
 if [ "$doGroup" == "yes" ]; then
     getRaw=$projectHome/sdGetRawCurGroups.py
-    $getRaw --server $server $restrictOpt --group $group --counts | tee -a $getRawLog
+    $getRaw --server $server $restrictOpt --group $group --counts | tee -a $getRawLog counts
     for f in $curGroupRawFiles; do
 	set -x
 	$getRaw --server $server -l $limit $restrictOpt  --group $group --query $f > $f 2>> $getRawLog
+	set +x
     done
-    set +x
 else
     getRaw=$projectHome/sdGetRawPrimTriage.py
-    $getRaw --server $server $restrictOpt --stats | tee -a $getRawLog
+    $getRaw --server $server $restrictOpt --counts | tee -a $getRawLog counts
     for f in $primTriageRawFiles; do
 	set -x
 	$getRaw --server $server -l $limit $restrictOpt --query $f > $f 2>> $getRawLog
+	set +x
     done
-    set +x
 fi

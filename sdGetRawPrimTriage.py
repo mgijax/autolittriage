@@ -18,22 +18,19 @@ import string
 import re
 import time
 import argparse
-import ConfigParser
 import db
 import sampleDataLib
 #-----------------------------------
-cp = ConfigParser.ConfigParser()
-cp.optionxform = str # make keys case sensitive
-cl = ['/'.join(l)+'/config.cfg' for l in [['.']]+[['..']*i for i in range(1,4)]]
-configFiles = cp.read(cl)
-#print configFiles
-
+SAMPLE_OBJ_TYPE = sampleDataLib.PrimTriageClassifiedSample
+sampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=SAMPLE_OBJ_TYPE)
 # for the output delimited file
-FIELDSEP     = eval(cp.get("DEFAULT", "FIELDSEP"))
-RECORDEND    = eval(cp.get("DEFAULT", "RECORDEND"))
-CLASS_NAMES  = eval(cp.get("CLASS_NAMES", "y_class_names"))
-INDEX_OF_KEEP    = 1		# index in CLASS_NAMES of the keep label
-INDEX_OF_DISCARD = 0		# index in CLASS_NAMES of the discard label
+FIELDSEP     = SAMPLE_OBJ_TYPE.getFieldSep()
+RECORDEND    = sampleSet.getRecordEnd()
+
+CLASS_NAMES  = SAMPLE_OBJ_TYPE.getSampleClassNames()
+Y_POSITIVE   = SAMPLE_OBJ_TYPE.getY_positive()
+INDEX_OF_KEEP    = Y_POSITIVE	# index in CLASS_NAMES of the keep label
+INDEX_OF_DISCARD = 1-Y_POSITIVE	# index in CLASS_NAMES of the discard label
 #-----------------------------------
 
 def getArgs():
@@ -58,9 +55,9 @@ def getArgs():
 		    'keep_tumor'],
         help='which subset of the training samples to get. Default: "all"')
 
-    parser.add_argument('--stats', dest='stats', action='store_true',
+    parser.add_argument('--counts', dest='counts', action='store_true',
         required=False,
-	help="don't get samples, just get counts/stats of samples in db")
+	help="don't get samples, just get counts")
 
     parser.add_argument('-l', '--limit', dest='nResults',
 	required=False, type=int, default=0, 		# 0 means ALL
@@ -216,10 +213,10 @@ from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
 '''
 
 #----------------
-# SQL Parts for getting stats/counts of references
+# SQL Parts for getting counts of references
 #----------------
-STATS_FIELDS = 'select count(distinct r._refs_key) as num\n'
-STATS_FROM =  \
+COUNTS_FIELDS = 'select count(distinct r._refs_key) as num\n'
+COUNTS_FROM =  \
 '''
 from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
     join bib_status_view bs on (r._refs_key = bs._refs_key)
@@ -231,7 +228,7 @@ from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
 # Dict of where clause components for specific queries,
 #  these should be non-overlapping result sets
 # These where clauses are shared between the basic ref SQL, extracted
-#  text SQL, and stats SQL
+#  text SQL, and counts SQL
 
 WHERE_CLAUSES = { \
 'discard_after' :
@@ -382,7 +379,7 @@ def main():
 
     startTime = time.time()
 
-    if args.stats: getStats(args)
+    if args.counts: getCounts(args)
     else: getSamples(args)
 
     verbose( "Total time: %8.3f seconds\n\n" % (time.time()-startTime))
@@ -484,7 +481,7 @@ def writeSamples( i, results	# list of records from SQL query (dicts)
     Write records to stdout
     Return count of records written
     """
-    sampleSet = sampleDataLib.ClassifiedSampleSet()
+    global sampleSet
 
     for r in results:
 	sample = sqlRecord2ClassifiedSample( r)
@@ -524,7 +521,7 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newR['tumorStatus']   = str(r['tumor_status']) 
     newR['qtlStatus']     = str(r['qtl_status'])
 
-    return sampleDataLib.ClassifiedSample().setFields(newR)
+    return SAMPLE_OBJ_TYPE().setFields(newR)
 #-----------------------------------
 
 def cleanUpTextField(rcd,
@@ -535,13 +532,14 @@ def cleanUpTextField(rcd,
     else: text = ''
 
     if args.maxTextLength:	# handy for debugging
-	text    = text[:args.maxTextLength]
+	text = text[:args.maxTextLength]
+	text = text.replace('\n', ' ')
 
     text = removeNonAscii( cleanDelimiters( text))
     return text
 #-----------------------------------
 
-def getStats(args):
+def getCounts(args):
     '''
     Get counts of sample records from db and write them to stdout
     '''
@@ -554,7 +552,7 @@ def getStats(args):
     
     writeStat("Omitted references (only pm2gene indexed)", SQLSEPARATOR.join(q))
 
-    baseSQL = STATS_FIELDS + STATS_FROM
+    baseSQL = COUNTS_FIELDS + COUNTS_FROM
     if args.restrictArticles:
 	restrict = RESTRICT_REF_TYPE
 	sys.stdout.write("Omitting review and non-peer reviewed articles\n")
