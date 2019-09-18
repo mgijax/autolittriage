@@ -1213,8 +1213,8 @@ Aug 8, 2019
 	    ...
 	
 Aug 12, 2019
-    initial version of sdGetGroupRefs.py - to pull curation group training sets out
-	of the db.
+    initial version of sdGetGroupRefs.py - to pull curation group training
+	sets out of the db.
     Having some trouble verifying that I'm getting the correct number of
 	selected/unselected references as I'm not getting consistent counts as
 	the PWI.
@@ -1355,7 +1355,8 @@ Aug 30, 2019
 	    PrimTriageClassifiedSample
 	    CurGroupClassifiedSample
 	    (hopefully I can use shorter names!)
-	* decided to use config vars to specify which subclass to use and
+	* (backed off on this decision Sept 5)
+	    decided to use config vars to specify which subclass to use and
 	    what the y_values and class_names are ("discard/keep" vs.
 	    "selected/unselected")
 	    (could use cmd line args for various scripts, or have these valuse
@@ -1385,9 +1386,41 @@ Sep 5, 2019
     Added SAMPLE_OBJECT_TYPE_NAME to config files and chged
     ClassifiedSampleSet to use this class when instantiating new
 	samples.
+    Moved y_values and class_names to ClassifiedSample subclasses and removed
+	then from config files. better encapsulation within the classes.
 Sep 11,2019
     Continue
 	Refactoring ClassifiedSamples in sdGetRawCurGroups.py,
 	Moving some config params to ClassifiedSample classes
 	Fixing bugs
 	Got sdGetRawCurGroups.py working for tumor. Moving on to preprocessing.
+
+Sep 17, 2019
+    Updated sdGetRawPrimTriage.py to work with the new subclass of
+    ClassifiedSample and SampleSet.
+    Have sdGetRawCurGroups.py working and changed all the sdBuild*.sh scripts
+    to support primTriage and curation group datasets.
+
+    Have created sample datasets for all:  tumor, gxd, go, ap, primtriage.
+    Working on fig text extraction, preprocessing, splitting, and training
+    for primtriage first.
+
+    Started including journal name as one of the features. Realized by adding
+    journal name as a token to the extracted text, it effectively does one-hot
+    encoding (since each article is in exactly one journal). Figure it can't
+    hurt.
+
+Sep 18, 2019
+    sdGetRawPrimTriage.py
+    Have run into output from --counts differing the counts of the actual
+    references retrieved. Changes:
+	* commented out suppTerm from SQL since bib_workflow_data
+	    has multiple records with different suppTerm values. Refs were
+	    coming back multiple times w/ the diff suppTerms
+	    (this fixed most of the issues)
+	* added acc_accession join on COUNTS sql to make sure we return refs
+	    that have pubmed IDs (this really had no effect)
+	* bib_status_view has duplicate records for some
+	    refs (TR 13187). This has caused only a few duplicated refs.
+    Spent the better part of a day trying to figure out why the counts were
+    so different.

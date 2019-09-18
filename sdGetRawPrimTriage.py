@@ -172,25 +172,26 @@ select distinct r._refs_key,
     to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
     r.isreviewarticle,
     typeTerm.term as ref_type,
-    suppTerm.term as supp_status,
+    'ignore supp term' as supp_status,
+    -- suppTerm.term as supp_status,
     r.journal, r.title, r.abstract,
     a.accid pubmed,
-    bs.ap_status,
-    bs.gxd_status, 
-    bs.go_status, 
-    bs.tumor_status, 
-    bs.qtl_status
+    bsv.ap_status,
+    bsv.gxd_status, 
+    bsv.go_status, 
+    bsv.tumor_status, 
+    bsv.qtl_status
 '''
 BASE_FROM =  \
 '''
 from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
     join bib_workflow_data bd on (r._refs_key = bd._refs_key)
-    join bib_status_view bs on (r._refs_key = bs._refs_key)
-    join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
+    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+    -- join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
     join voc_term typeTerm on (r._referencetype_key = typeTerm._term_key)
     join acc_accession a on
          (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
-          and a._mgitype_key=1 )
+          and a._mgitype_key=1 and a.preferred=1 )
 '''
 RESTRICT_REF_TYPE = \
 '''
@@ -209,9 +210,8 @@ EXTTEXT_FROM =  \
 from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
     join bib_workflow_data bd on (r._refs_key = bd._refs_key)
     join voc_term t on (bd._extractedtext_key = t._term_key)
-    join bib_status_view bs on (r._refs_key = bs._refs_key)
+    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
 '''
-
 #----------------
 # SQL Parts for getting counts of references
 #----------------
@@ -219,9 +219,11 @@ COUNTS_FIELDS = 'select count(distinct r._refs_key) as num\n'
 COUNTS_FROM =  \
 '''
 from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
-    join bib_status_view bs on (r._refs_key = bs._refs_key)
+    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+    join acc_accession a on
+         (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
+          and a._mgitype_key=1 and a.preferred=1)
 '''
-
 #----------------
 # SQL where clauses for each subset of refs to get
 #----------------
@@ -241,11 +243,11 @@ WHERE_CLAUSES = { \
     '''
     -- keep_after
     where 
-    (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+    (bsv.ap_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bsv.go_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bsv.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bsv.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
     and tr.creation_date > '%s' -- After lit triage release
     ''' % LIT_TRIAGE_DATE,
@@ -253,11 +255,11 @@ WHERE_CLAUSES = { \
     '''
     -- keep_before
     where 
-    (bs.ap_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.go_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+    (bsv.ap_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bsv.go_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bsv.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bsv.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
+     or bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
     and tr.creation_date >= '%s' -- after start date
     and tr.creation_date <= '%s' -- before lit triage release
@@ -266,7 +268,7 @@ WHERE_CLAUSES = { \
     '''
     -- keep_tumor
     where 
-     bs.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+     bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
      and tr.creation_date >= '%s' -- after tumor start date
      and tr.creation_date <= '%s' -- before start date
     ''' % ( TUMOR_START_DATE, START_DATE, ),
@@ -433,7 +435,7 @@ def getSamples(args):
 	samples += getQueryResults(i, baseQ, textQ)
 
 	startTime = time.time()
-	verbose( "writing samples:\n")
+	verbose("writing samples:\n")
 
 	nResults = writeSamples(i, samples)
 	verbose( "%8.3f seconds\n\n" %  (time.time()-startTime))
@@ -511,7 +513,7 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newR['title']         = cleanUpTextField(r, 'title')
     newR['abstract']      = cleanUpTextField(r, 'abstract')
     newR['extractedText'] = cleanUpTextField(r, 'ext_text')
-
+    if args.maxTextLength: newR['extractedText'] += '\n'
     newR['isReview']      = str(r['isreviewarticle'])
     newR['refType']       = str(r['ref_type'])
     newR['suppStatus']    = str(r['supp_status'])
@@ -566,7 +568,7 @@ def getCounts(args):
     writeStat("Keep after %s" % LIT_TRIAGE_DATE,
 			baseSQL + WHERE_CLAUSES['keep_after'] + restrict)
 
-    writeStat("Keep %s through %s" % (START_DATE, LIT_TRIAGE_DATE),
+    writeStat("Keep before %s through %s" % (START_DATE, LIT_TRIAGE_DATE),
 			baseSQL + WHERE_CLAUSES['keep_before'] + restrict)
 
     writeStat("Tumor papers %s through %s" % (TUMOR_START_DATE, START_DATE),
