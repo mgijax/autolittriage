@@ -1408,7 +1408,8 @@ Sep 17, 2019
     Started including journal name as one of the features. Realized by adding
     journal name as a token to the extracted text, it effectively does one-hot
     encoding (since each article is in exactly one journal). Figure it can't
-    hurt.
+    hurt. Turns out, very few journals (6) pass the min_df, max_df feature limits,
+    so probably is meaningless.
 
 Sep 18, 2019
     sdGetRawPrimTriage.py
@@ -1424,3 +1425,8 @@ Sep 18, 2019
 	    refs (TR 13187). This has caused only a few duplicated refs.
     Spent the better part of a day trying to figure out why the counts were
     so different.
+
+    sdGetRawCurGroup.py sdSplitSamples.py- tumor counts are all consistent
+
+Sep 19, 2019
+    fixed sampleFile2Ref.py to use ClassifiedSample subclasses.
