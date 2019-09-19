@@ -1,3 +1,6 @@
 #
 # from stdin, convert input records delimited by ';;' to \n
-cat - | awk '{gsub(/;;/,";;\n\n"); print}'
+#cat - | awk '{gsub(/;;/,";;\n\n"); print}'
+
+# in sed (this works in bash)
+grep ';;' | sed "s/;;/\\`echo -e '\n'`;;/g"
