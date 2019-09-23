@@ -193,7 +193,7 @@ class BaseSample (object):
     #----------------------
 
     def figureText(self):		# preprocessor
-	self.setExtractedText('\n'.join( \
+	self.setExtractedText('\n\n'.join( \
 			    figConverter.text2FigText(self.getExtractedText())))
 	return self
     # ---------------------------
