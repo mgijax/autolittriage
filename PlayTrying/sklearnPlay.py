@@ -1,7 +1,7 @@
 #!/usr/bin/env python2.7
 
 """
-    play with vectorizers
+    play with vectorizers, classifiers, etc.
 """
 
 import sys
@@ -25,6 +25,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.preprocessing import StandardScaler, MaxAbsScaler
 from sklearn.linear_model import SGDClassifier
+from sklearn.ensemble import RandomForestClassifier
 import textTuningLib as ttl
 
 
@@ -62,7 +63,7 @@ if False:
     print x_train.toarray()
 
 # try vectorizing full documents
-if True:
+if False:
     startTime = time.time()
 
     path = '/Users/jak/work/autolittriage/Data/jan2/trainSetFig.txt'
@@ -98,3 +99,29 @@ if True:
 
     print ttl.getVectorizerReport(vect)
     print "total time: %8.3f seconds" % time.time() - startTime
+
+# Playing with RandomForest params.
+if True:
+    docs = [
+	"let them eat cake",
+	"I like cake too and eat cake.",
+	"you can't have your cake and eat it too",
+	"that was a piece of cake!",
+	]
+
+    vect = CountVectorizer( \
+			    min_df=2,
+			    #stop_words="english",
+			    ngram_range=(1,1),
+			    )
+    vect.fit(docs)
+
+    x_train = vect.transform(docs)
+
+    rf = RandomForestClassifier()
+
+    rf.fit(x_train, [1,0,1,0])
+
+    print(rf.feature_importances_)
+
+
