@@ -7,6 +7,8 @@ import sys
 import argparse
 import utilsLib
 
+DEFAULT_SAMPLE_TYPE  = "BaseSample"
+
 def parseCmdLine():
     parser = argparse.ArgumentParser( \
     description='read article rcds from stdin & write selected rcds to stdout')
@@ -14,9 +16,10 @@ def parseCmdLine():
     parser.add_argument('pmids', nargs=argparse.REMAINDER,
 	help='pubmed IDs for articles to select')
 
-    parser.add_argument('--sampletype', dest='sampleType', 
-	choices=['discard', 'group'], default='discard',
-        help="default is discard (primary triage)")
+    parser.add_argument('--sampletype', dest='sampleObjTypeName',
+	default=DEFAULT_SAMPLE_TYPE,
+	help="Sample class name in sampleDataLib. Default: %s" \
+							% DEFAULT_SAMPLE_TYPE)
 
     parser.add_argument('--justtext', dest='justText', action='store_true',
         help="output just the text of the article, not the full sample record")
@@ -43,12 +46,15 @@ def main():
                     sys.path
     import sampleDataLib
 
-    if args.sampleType == 'discard':
-	sampleObjType = sampleDataLib.PrimTriageClassifiedSample
-    else:
-	sampleObjType = sampleDataLib.CurGroupClassifiedSample
+    if not hasattr(sampleDataLib, args.sampleObjTypeName):
+        sys.stderr.write("invalid sample class name '%s'" \
+                                                    % args.sampleObjTypeName)
+        exit(5)
 
-    sampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=sampleObjType)
+    sampleObjType = getattr(sampleDataLib, args.sampleObjTypeName)
+    verbose("Sample type '%s'\n" % args.sampleObjTypeName)
+
+    sampleSet = sampleDataLib.SampleSet(sampleObjType)
     sampleSet.read(args.sampleFile)
 
     recordEnd = sampleSet.getRecordEnd()
