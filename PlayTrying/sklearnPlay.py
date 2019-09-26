@@ -122,6 +122,8 @@ if True:
 
     rf.fit(x_train, [1,0,1,0])
 
-    print(rf.feature_importances_)
+    selCoef = lambda x: x[1]
+    pairList = zip(vect.get_feature_names(), rf.feature_importances_)
 
+    print(sorted(pairList, key=selCoef, reverse=True))
 
