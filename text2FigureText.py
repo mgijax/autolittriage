@@ -13,7 +13,7 @@ def parseCmdLine():
     description='Read text from stdin, write figure text to stdout.')
 
     parser.add_argument('--figoption', dest='figOption', action='store',
-        choices=['legend', 'paragraph', 'words', 'close words'], default='legend',
+        choices=['legend', 'paragraph', 'words', 'close words'], default='words',
 	help="the type of fig text extraction. See figureText.py")
 
     parser.add_argument('--numwords', '--words', dest='numWords', action='store',
