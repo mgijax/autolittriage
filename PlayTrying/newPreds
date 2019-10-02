@@ -1,0 +1,17 @@
+#!/bin/bash
+# for specified PDF file, using new pdftotext, extract text and re-predict
+#  so we can see if the new text extraction affects predictions at all
+
+#  $1 = pubmed ID
+
+sampleFile=sampleFile
+pdftotext=newpdftotext
+model=model.pkl
+sampleType=PrimTriageClassifiedSample
+
+$pdftotext $1.pdf > $1.new.txt
+
+#preprocessSamples.py --sampletype $sampleType -p replaceText -p figureText -p addJournalFeature sampleFile > sampleFile.new
+preprocessSamples.py --sampletype $sampleType -p replaceText -p figureText -p removeURLsCleanStem -p addJournalFeature sampleFile > sampleFile.new
+
+predict.py -m $model --sampletype $sampleType sampleFile.new
