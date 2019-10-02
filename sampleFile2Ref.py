@@ -27,6 +27,9 @@ def parseCmdLine():
     parser.add_argument('--oneline', dest='oneLine', action='store_true',
         help="smoosh article records into one line each.")
 
+    parser.add_argument('--header', dest='header', action='store_true',
+        help="include a header line in the output.")
+
     parser.add_argument('-v', '--verbose', dest='verbose', action='store_true',
         required=False, help="include helpful messages to stderr")
 
@@ -58,6 +61,7 @@ def main():
     sampleSet.read(args.sampleFile)
 
     recordEnd = sampleSet.getRecordEnd()
+    wroteHeader = False
 
     for rcdnum, sample in enumerate(sampleSet.sampleIterator()):
 
@@ -67,6 +71,9 @@ def main():
 	    if args.justText:
 		text = sample.getDocument()
 	    else:
+		if args.header and not wroteHeader:
+		    sys.stdout.write(sampleSet.getHeaderLine() + recordEnd)
+		    wroteHeader = True
 		text = sample.getSampleAsText()
 
 	    if args.oneLine:
