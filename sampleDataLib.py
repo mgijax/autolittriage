@@ -4,6 +4,7 @@
 #  samples to predict)
 #
 import sys
+import os.path
 import string
 import re
 import utilsLib
@@ -406,6 +407,18 @@ class BaseSample (object):
 	self.setTitle( self.getTitle()[:10].replace('\n',' ') )
 	self.setAbstract( 'abstract...' )
 	self.setExtractedText( 'extracted text...\n' )
+	return self
+    # ---------------------------
+
+    def replaceText(self):		# preprocessor
+	""" for debugging, replace the extracted text with text from a file
+	    Filename is <ID>.new.txt
+	"""
+	
+	fileName = self.getID() + ".new.txt"
+	if os.path.isfile(fileName):
+	    newText = open(fileName, 'r').read()
+	    self.setExtractedText(newText)
 	return self
     # ---------------------------
 
