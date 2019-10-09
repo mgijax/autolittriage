@@ -1,4 +1,4 @@
 #!/bin/bash
 # use the new, xpdf pdftotext extractor. Use awk to add \n after each paragraph break
 # PDF filename is $1, writes extracted text to stdout
-~/xpdf/bin64/pdftotext -enc UTF-8 "$1"  - | awk '{gsub(/\|/," ");sub(/$/,"\n"); print}'
+~/xpdf/bin64/pdftotext -enc ASCII7 -nopgbrk -q "$1"  - | awk '{gsub(/\|/," ");sub(/$/,"\n"); print}'

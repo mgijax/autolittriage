@@ -1430,3 +1430,143 @@ Sep 18, 2019
 
 Sep 19, 2019
     fixed sampleFile2Ref.py to use ClassifiedSample subclasses.
+
+Sep 20, 2019
+    ran RF on primTriage (from sep18 data). Get (P 84, R 87 recall a bit low)
+    ap             selected papers:  3631 predicted keep:  3325 recall: 0.916
+    gxd            selected papers:   328 predicted keep:   302 recall: 0.921
+    go             selected papers:  3094 predicted keep:  2730 recall: 0.882
+    tumor          selected papers:   222 predicted keep:   197 recall: 0.887
+    qtl            selected papers:    18 predicted keep:    13 recall: 0.722
+    Totals         keep     papers:  4188 predicted keep:  3657 recall: 0.873
+    Predictions from RF_test_pred.txt - Thu Sep 19 12:50:28 2019
+
+    FN example:  29603384 - Glia paper. Extracted text/figure text pretty
+    garbled. See FIGURE 1 and Figure 2. Text of legends seems missing. Text
+    of surround paragraphs seems to be there in place of legend text BUT it
+    is not recognizing column boundaries and is reading right across the 2
+    cols.
+    FN example: 29359518 - text extraction seems mostly ok, but paragraph
+    boundaries are not very tight. See "Figure 1" - legend bleeds into next
+    paragraph.
+    FN example: 29070491 - text extraction seems mostly ok, but some paragraph
+    boundaries not very tight See "Fig. 1."
+
+Sep 21, 2019
+    report high/low weighted features for RF.
+    output trained model to pickle file.
+
+Sep 26, 2019
+    resurrected predict.py. Lots of refactoring sampleDataLib to support
+    UnclassifiedSamples and SampleSets. Much improved moving most functionality
+    to SampleSet and BaseSample.
+    Can now run predict.py, preprocessSamples.py, sampleFile2Ref.py on
+	classified or unclassified samples (sample type as parameter).
+    Looked at https://simply-python.com/tag/pdf2text/
+	- PDF tool python library. requires poppler which I didn't want to fuss
+	    with
+	- looked at https://www.pdftron.com/ - node.js. commercial product,
+	    expensive.
+    Downloaded pdftotext from https://www.xpdfreader.com/download.html &
+	installed on my Mac.
+
+Sep 30, 2019
+    Which options to use on this version?
+    -layout: reads across columns - DON"T USE
+    -simple: also reads across columns - DON"T USE
+    Only use the default.
+
+    Compared original extracted text to  new pdf2text output:
+    29603384:
+	Note: This is a weird paper - has fair amount of spacing between
+	    text lines, so probably not a typical paper.
+	orig: Has a blank line after each line of text, so each line is
+	    treated as its own paragraph
+	    Reads across columns where there are section headers
+	    Doesn't get the columns in order in some places.
+	new: Does line spacing ok
+	    Each paragraph is a whole line. SO line boundaries are
+		paragraph boundaries (diff from orig)
+	    SO TO COMPARE figure extracted text, I'd need to alter the
+	    figure text finder. <--- See Oct 1 note. we can postprocess the
+		new pdftotext and add extra \n for paragraph boundaries
+	    Seems to get column orders correct.
+    29070491:
+	More normal looking paper.
+	orig: Misses most paragraph boundaries
+	new: Gets paragraph boundaries right.
+
+    Ran it on 29603384.pdf and 29070491.pdf,two FN above. Extracted text
+    is quite different on the new. Seems better but hard to tell for sure.
+
+Oct 1, 2019
+    Looking at 28545845
+	which has columns screwed up in orig pdftotext.
+	Page 27, orig has right col first (find by searching for "fig" in PDF
+	and the two extracted text files).
+	New pdftotext has them in right order.
+	Same difference for page 29.
+
+    looking for examples in
+    https://docs.google.com/spreadsheets/d/1DmHxixXB46BrvzLcuS4ixI3IwOlGKVYNwVvo6HnyREM/edit#gid=0
+    Looking at: 29931362
+	orig: messes up reference numbers in ref section. treats the numbers as
+	    a separate column.
+	    On page 1252, starts References on right side, then goes to left
+	    column
+	new: gets column order right. On page 1253, has everything in right
+	    order, but misses paragraph boundaries starting at reference 33.
+	    BUT it is ultimately better than orig.
+
+    SO new pdftotext seems to do a better job with column order and other
+    things.
+
+    Questions about switching to new:
+	1) it ends paragraphs with just a \n and whole paragraph is 1 line.
+	    Orig ends with \n\n.
+	    b) created a wrapper script that, adds an extra \n. (done)
+	2) do we go back and re-extract text for all the old papers in the db?
+	3) does the old (orig) text extraction issues affect the autolittriage
+	    training/prediction. While the old algorithm has some problems with
+	    paragraph boundaries that affect fig text detection, my guess is
+	    that it doesn't affect training/prediction too much. But how to
+	    verify w/o re-extracting text for some 60k articles?
+
+    Trying to look at (3) for a bit.
+	Taking FN from test set from the most recent RF training/predictions.
+	Created newPreds script. Given PDF, re-extract text, get figure text,
+	preprocess, run predict.py, see if there is any change in predictions.
+
+	For example 29359518. - no change. still predicted discard.
+
+	Also no change for 28088781 and 29070491.
+
+	Conclusion: (based on n=3) it doesn't seem worth re-extracting text
+	    for the thousands of PDFs to retrain.
+Oct 8, 2019
+    created TR for new pdftotext:
+    http://wts.informatics.jax.org/searches/tr.detail.cgi?TR_NR=13190
+
+    Tried SGDlog on primTriage
+               precision    recall  f1-score   support
+
+    Test  keep       0.80      0.85      0.82      4188
+
+    Recall for papers selected by each curation group. 9694 papers analyzed
+    ap             selected papers:  3631 predicted keep:  3197 recall: 0.880
+    gxd            selected papers:   328 predicted keep:   303 recall: 0.924
+    go             selected papers:  3094 predicted keep:  2685 recall: 0.868
+    tumor          selected papers:   222 predicted keep:   186 recall: 0.838
+    
+    Not too bad, but a little worse than RF
+
+    Few FP/FN's looked at.
+    30274781 is on both RF and SGDlog FP - asking Debbie if it is
+	correctly marked as discard
+    28855256 is on both as FP - it's a historic review, therefore discard, but
+				is "peer reviewed" and looks relevant
+    28088781 is on both as FN - text looks ok
+
+    Upgraded Anaconda2 to the latest version. Seemed to fix bug with Gradient
+    Boosted tree classifier when it died expecting a non-sparse numpy matrix.
+
