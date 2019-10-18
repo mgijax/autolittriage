@@ -1570,3 +1570,63 @@ Oct 8, 2019
     Upgraded Anaconda2 to the latest version. Seemed to fix bug with Gradient
     Boosted tree classifier when it died expecting a non-sparse numpy matrix.
 
+Oct9, 2019
+    Latest version of Anaconda2 seems to have bug/warning when using n_jobs>1.
+    Changed textTuningLib.py to take n_jobs for GridSearchCV from config file.
+
+    Running GB training, some promising results. Need to read more on tuning.
+Oct 10, 2019
+    GB: for 150 estimators and learning_rate = 0.1, get:
+    2019/10/09-13-06-54	PRF2,F1	0.86	0.87	0.87	0.87	GB.py
+    Good recall for individual groups:
+    Recall for papers selected by each curation group. 9694 papers analyzed
+    ap             selected papers:  3631 predicted keep:  3288 recall: 0.906
+    gxd            selected papers:   328 predicted keep:   303 recall: 0.924
+    go             selected papers:  3094 predicted keep:  2709 recall: 0.876
+    tumor          selected papers:   222 predicted keep:   201 recall: 0.905
+    qtl            selected papers:    18 predicted keep:    11 recall: 0.611
+    Totals         keep     papers:  4188 predicted keep:  3629 recall: 0.867
+
+    for 200 estimators:
+    2019/10/10-09-47-49	PRF2,F1	0.87	0.87	0.87	0.87	GB.py
+    Recall for papers selected by each curation group. 9694 papers analyzed
+    ap             selected papers:  3631 predicted keep:  3296 recall: 0.908
+    gxd            selected papers:   328 predicted keep:   304 recall: 0.927
+    go             selected papers:  3094 predicted keep:  2721 recall: 0.879
+    tumor          selected papers:   222 predicted keep:   203 recall: 0.914
+    qtl            selected papers:    18 predicted keep:    11 recall: 0.611
+    Totals         keep     papers:  4188 predicted keep:  3646 recall: 0.871
+    Predictions from GB_test_pred.txt - Thu Oct 10 12:02:09 2019
+
+    So 200 a bit better than 150
+
+Oct 18, 2019
+    Finished reading Andrew Ng's online book.
+    Read: https://www.analyticsvidhya.com/blog/2016/02/complete-guide-parameter-tuning-gradient-boosting-gbm-python/
+
+    Lots of rethinking my handling of validation and test sets.
+    Realized:
+	(a) by print reports, FN, FP, etc. on the test set, I was really tuning
+	    the classifiers toward the test set. Should be the validation set.
+	(b) really should save test set completely to the end and never use
+	    it to decide what to try next. Should be the validation set.
+	(c) So what do we use test set for?
+	    (i) periodically compare test and validation set results.
+		If they diverge by much, could be overfitting validation set
+		or some other problem. May need to regenerate the sets.
+	    (ii) at the very end, after we are satisfied w/ validation set
+		results, use it to report precision, recall, etc.
+		These values should be what we expect to happen on future data.
+    So I made a more careful split in textTuningLib.py, particularly the fit()
+    method, for valSetEstimator and testSetEstimator (rather than just
+    best_estimator_) AND rejiggered everything to use validation set instead
+    of test set. In this approach, the test set is optional.
+
+    Also optimized the fit() method for the case when the pipeline parameters
+    to try have only one permutation. I do this a fair amount to try things out.
+    The way GridSearchCV works, it runs many unnecessary training steps.
+    Doing this hurt my head, but I feel confident that I have it right now -
+    famous last words).
+    For testing, Train/smallTest is super great.
+
+    Cleaned up metrics reporting and index file (include NPV)
