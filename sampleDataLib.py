@@ -7,6 +7,7 @@ import sys
 import os.path
 import string
 import re
+from copy import copy
 import utilsLib
 import figureText
 import featureTransform
@@ -56,15 +57,18 @@ class SampleSet (object):
 	For now, lets not worry and hope garbage collection takes care of 
 	things ok.
     """
-    def __init__(self, sampleObjType):
+    def __init__(self, sampleObjType=None,
+	):
 	self.sampleObjType = sampleObjType
+	self.meta = None # optional metadata from sample set file
+			# The only thing we actually use is "sampleObjType"
 	self.samples = []
     #-------------------------
 
     def read(self, inFile,	# file pathname or open file obj for reading
 	):
 	"""
-	Assumes sample record file is not empty and has a header line
+	Assumes sample record file is not empty and has header text
 	"""
 	if type(inFile) == type(''): fp = open(inFile, 'r')
 	else: fp = inFile
@@ -76,7 +80,18 @@ class SampleSet (object):
     def textToSamples(self, text,
 	):
 	rcds = text.split(RECORDEND)
-	del rcds[0]             # header line
+
+	self.meta = SampleSetMetaData(rcds[0])
+	if self.meta.hasMetaData():
+	    del rcds[0]
+	    val = self.meta.getMetaItem('sampleObjType')
+	    if val:
+		# note sampleObjType in the file overrides what is passed
+		#  during instantiation. Might want to rethink this.
+		self.sampleObjType = getattr(sys.modules[__name__], val)
+	    # else: assume set upon instantiation
+
+	del rcds[0]             # header text
 	del rcds[-1]            # empty string after end of split
 
 	for sr in rcds:
@@ -85,13 +100,22 @@ class SampleSet (object):
     #-------------------------
 
     def write(self, outFile,	# file pathname or open file obj for writing
+	writeMeta=True,
 	writeHeader=True,
 	omitRejects=False,
 	):
 	if type(outFile) == type(''): fp = open(outFile, 'w')
 	else: fp = outFile
 
-	if writeHeader:  fp.write(self.getHeaderLine() + RECORDEND)
+	if writeMeta:
+	    if self.meta == None:
+		self.meta = SampleSetMetaData('')
+
+	    			# make sure we include the actual object type
+	    self.meta.setMetaItem('sampleObjType', self.sampleObjType.__name__)
+	    fp.write( self.meta.buildMetaLine() + RECORDEND )
+
+	if writeHeader:	fp.write(self.getHeaderLine() + RECORDEND)
 
 	for s in self.sampleIterator(omitRejects=omitRejects):
 	    fp.write(s.getSampleAsText() + RECORDEND)
@@ -106,14 +130,14 @@ class SampleSet (object):
 	    yield s
     #-------------------------
 
-    def addSamples(self, samples,	# samples is a [ ClassifiedSamples ]
+    def addSamples(self, samples,	# list of samples
 	):
 	for s in samples:
 	    self.addSample(s)
 	return self
     #-------------------------
 
-    def addSample(self, sample,		# ClassifiedSample
+    def addSample(self, sample,
 	):
 	if not isinstance(sample, self.sampleObjType):
 	    raise TypeError('Invalid sample type %s' % str(type(sample)))
@@ -143,6 +167,73 @@ class SampleSet (object):
 
 # end class SampleSet -----------------------------------
 
+class SampleSetMetaData (object):
+    """
+    Is:  basically a dictionary of name value pairs that knows how to parse
+	and construct a text string representing the items
+    """
+
+    def __init__(self, text):
+	self.metaTag = '#meta'		# start of meta text
+	self.metaSep = '='		# sep between key and value
+	self.metaData = None		# the key:value pairs
+	self.parseMetaLine(text)
+    #-------------------------
+
+    def parseMetaLine(self,
+		text,	# text that may contain meta info
+		):
+	""" Return dict of meta info or None
+	"""
+	parts = text.split()
+	if not parts or parts[0] != self.metaTag:
+	    self.metaData = None
+	else:
+	    self.metaData = {}
+	    for part in parts[1:]:
+		# split into name:value pair
+		l = part.split(self.metaSep, 1)
+		name = l[0]
+		if len(l) == 1: value = ''
+		else: value = l[1]
+		self.metaData[name.strip()] = value.strip()
+	return self.metaData
+    #-------------------------
+
+    def buildMetaLine(self,):
+	""" Return text containing meta info
+	"""
+	text = self.metaTag + " "
+	if self.metaData:
+	    text += " ".join( [ k + self.metaSep + str(v)
+					for k,v in self.metaData.items() ] )
+	return text
+    #-------------------------
+
+    def setMetaDict(self, d):
+	""" set the meta data to the key:value pairs in d"""
+	self.metaData = copy(d)
+
+    def getMetaDict(self):
+	""" return the meta data as a dict"""
+	return copy(self.metaData)
+
+    def setMetaItem(self, key, value):
+	if self.metaData == None: self.metaData = {}
+	self.metaData[key] = value
+
+    def getMetaItem(self, key):
+	return self.metaData.get(key, None)
+    #-------------------------
+
+    def hasMetaData(self,):
+	return self.metaData != None
+    
+    def __bool__(self):
+	return self.metaData == None
+
+# end class SampleSetMetaData ---------------------
+
 class ClassifiedSampleSet (SampleSet):
     """
     IS:     a SampleSet of ClassifiedSamples
@@ -154,7 +245,7 @@ class ClassifiedSampleSet (SampleSet):
 			    getattr(sys.modules[__name__], SAMPLE_OBJ_TYPE_NAME)
 	else: self.sampleObjType = sampleObjType
 
-	SampleSet.__init__(self, self.sampleObjType)
+	SampleSet.__init__(self, sampleObjType=self.sampleObjType)
 	self.numPositives = 0
 	self.numNegatives = 0
 	self.journals     = set()   # set of all journal names in the samples
@@ -646,7 +737,7 @@ class CurGroupUnClassifiedSample(BaseSample):
 # end class CurGroupUnClassifiedSample ------------------------
 
 if __name__ == "__main__":	# ad hoc test code
-    if True:
+    if False:
 	print "----------------------"
 	print "ClassifiedSampleSet PrimTriageClassifiedSample tests\n"
 	ss = ClassifiedSampleSet(sampleObjType=PrimTriageClassifiedSample)
@@ -656,7 +747,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print ss.getSampleClassNames()
 	print ss.getY_positive()
 	print ss.getY_negative()
-    if True:	# basic CurGroupClassified Sample tests
+    if False:	# basic CurGroupClassified Sample tests
 	r3 = CurGroupClassifiedSample().parseSampleRecordText(\
     '''unselected|pmID1|01/01/1900|1900|keep|0|non-peer1|supp type1|apstat1|gxdstat1|goStat1|tumorstat1|qtlStat1|Journal of Insomnia|My Title|
     My Abstract|My text: it's a knock out https://foo text www.foo.org word word  -/- the final words'''
@@ -685,7 +776,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print "numNegatives: %d" % ss.getNumNegatives()
 	print "Journals:"
 	print ss.getJournals()
-    if True:	# basic PrimTriageClassified Sample tests
+    if False:	# basic PrimTriageClassified Sample tests
 	r2 = PrimTriageClassifiedSample().parseSampleRecordText(\
 	''';discard|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
 	r1 = PrimTriageClassifiedSample().parseSampleRecordText(\
@@ -713,7 +804,7 @@ if __name__ == "__main__":	# ad hoc test code
 	for e in r1.getExtraInfo(): print e
 	print
 
-    if True: # ClassifiedSampleSet (for PrimTriageClassifiedSample) tests
+    if False: # ClassifiedSampleSet (for PrimTriageClassifiedSample) tests
 	r2 = PrimTriageClassifiedSample().parseSampleRecordText(\
 	''';discard|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
 	r1 = PrimTriageClassifiedSample().parseSampleRecordText(\
@@ -747,7 +838,7 @@ if __name__ == "__main__":	# ad hoc test code
 	ss.write(sys.stdout)
 	print "\nEnd Output file"
 	
-    if True:	# PrimTriageUnClassified Sample tests
+    if False:	# PrimTriageUnClassified Sample tests
 	r2 = PrimTriageUnClassifiedSample().parseSampleRecordText(\
 		'''pmID1|1|peer2|journal2|title2|abstract2|text2''')
 	r1 = PrimTriageUnClassifiedSample().parseSampleRecordText(\
@@ -779,3 +870,30 @@ if __name__ == "__main__":	# ad hoc test code
 	r1.truncateText()
 #	r1.tokenPerLine()
 	print r1.getDocument()
+    if True:		# SampleSetMetaData
+	print("\nline1 tests - basic meta data")
+	line1 = "#meta foo=blah   nose=toes	rose=rose"
+	m = SampleSetMetaData(line1)
+	print("Should be True: " + str(m.hasMetaData()) )
+	m.setMetaItem('fiddle', 'around some')
+	print("Should be {'fiddle: ...}: " + str(m.getMetaDict()) )
+	print("Should be toes: " + str(m.getMetaItem('nose')) )
+	print("Should be None: " + str(m.getMetaItem('nothing')) )
+	m.setMetaDict({ 'doe': 'a deer' })
+	print("Should be {'doe': ... }: " + str(m.getMetaDict()) )
+	print("Should be #meta ...: " + str(m.buildMetaLine()) )
+
+	print("\nline2 tests - non-meta data line")
+	line2 = "this is not a metadata line"
+	m = SampleSetMetaData(line2)
+	print("should be False: " + str(m.hasMetaData()))
+	print("should be None: " + str(m.getMetaDict()))
+
+	m.setMetaItem('hairy', 'foot')
+	print("should be {'hairy':... }: " + str(m.getMetaDict()))
+
+	print("\nline3 tests - meta data line w/ no data")
+	line3 = "#meta"
+	m = SampleSetMetaData(line3)
+	print("should be True: " + str(m.hasMetaData()) )
+	print("should be empty dict: " + str(m.getMetaDict()) )

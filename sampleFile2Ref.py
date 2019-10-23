@@ -3,6 +3,8 @@
 # Read a sample file from stdin and extract the sample record
 #  for specified pubmed IDs. Write to stdout.
 #
+# Might be able to move this to MLtextTools
+#
 import sys
 import argparse
 import utilsLib
@@ -18,8 +20,8 @@ def parseCmdLine():
 
     parser.add_argument('--sampletype', dest='sampleObjTypeName',
 	default=DEFAULT_SAMPLE_TYPE,
-	help="Sample class name in sampleDataLib. Default: %s" \
-							% DEFAULT_SAMPLE_TYPE)
+	help="Sample class name to use if not specified in sample file. " +
+					    "Default: %s" % DEFAULT_SAMPLE_TYPE)
 
     parser.add_argument('--justtext', dest='justText', action='store_true',
         help="output just the text of the article, not the full sample record")
@@ -49,16 +51,19 @@ def main():
                     sys.path
     import sampleDataLib
 
+    ### ideally, the sampleObjType will be determined from #meta in the
+    ###    SampleSet file.
+    ### args.sampleObjTypeName will only be used if there is no #meta
     if not hasattr(sampleDataLib, args.sampleObjTypeName):
-        sys.stderr.write("invalid sample class name '%s'" \
+        sys.stderr.write("invalid sample class name '%s'\n" \
                                                     % args.sampleObjTypeName)
         exit(5)
 
     sampleObjType = getattr(sampleDataLib, args.sampleObjTypeName)
-    verbose("Sample type '%s'\n" % args.sampleObjTypeName)
 
-    sampleSet = sampleDataLib.SampleSet(sampleObjType)
+    sampleSet = sampleDataLib.SampleSet(sampleObjType=sampleObjType)
     sampleSet.read(args.sampleFile)
+    verbose("Sample type: '%s'\n" % sampleSet.getSampleObjType().__name__)
 
     recordEnd = sampleSet.getRecordEnd()
     wroteHeader = False

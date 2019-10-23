@@ -1630,3 +1630,9 @@ Oct 18, 2019
     For testing, Train/smallTest is super great.
 
     Cleaned up metrics reporting and index file (include NPV)
+Oct 23, 2019
+    Implemented #meta data in sample files so each file can specify its Sample
+    object type.
+    Scripts that were changed to take advantage of this:
+	sampleFile2Ref.py
+	sdSplitSamples.py

@@ -35,6 +35,7 @@ import sampleDataLib
 DEFAULT_OUTPUT_RETAINED = 'retainedRefs.txt'
 DEFAULT_OUTPUT_LEFTOVER = 'leftoverRefs.txt'
 DEFAULT_MGI_JOURNALS_FILE = 'journalsMonitored.txt'
+DEFAULT_SAMPLE_TYPE = 'PrimTriageClassifiedSample'
 #-----------------------------------
 
 def parseCmdLine():
@@ -65,6 +66,11 @@ def parseCmdLine():
     parser.add_argument('--onlymgi', dest='onlyMgi', action='store_true',
 	required=False,
 	help="only retain refs from MGI journals. Default: all journals")
+
+    parser.add_argument('--sampletype', dest='sampleObjTypeName',
+	default=DEFAULT_SAMPLE_TYPE,
+	help="Sample class name to use if not specified in sample file. " + 
+					"Default: %s" % DEFAULT_SAMPLE_TYPE)
 
     parser.add_argument('--seed', dest='seed', action='store',
 	required=False, type=int, default=int(time.time()),
@@ -104,14 +110,32 @@ def main():
     random.seed(args.seed)
     mgiJournalsNames = getMgiJournals(args.mgiJournalsFile)
 
-    # the final sample sets
-    retainedSampleSet = sampleDataLib.ClassifiedSampleSet()
-    leftoverSampleSet = sampleDataLib.ClassifiedSampleSet()
+    retainedSampleSet = None	# the final sample sets
+    leftoverSampleSet = None	#   ...
+
     allJournals = set()		# all journal names seen in input
+
+    sampleObjType = getattr(sampleDataLib, args.sampleObjTypeName)
 
     for fn in args.inputFiles:
 	verbose("Reading %s\n" % fn)
-	inputSampleSet = sampleDataLib.ClassifiedSampleSet().read(fn)
+	inputSampleSet = sampleDataLib.ClassifiedSampleSet( \
+					sampleObjType=sampleObjType).read(fn)
+
+	if not retainedSampleSet:	# processing 1st input file
+	    sampleObjType     = inputSampleSet.getSampleObjType()
+	    retainedSampleSet = sampleDataLib.ClassifiedSampleSet( \
+						sampleObjType=sampleObjType)
+	    leftoverSampleSet = sampleDataLib.ClassifiedSampleSet( \
+						sampleObjType=sampleObjType)
+	    verbose("Sample type: %s\n" % sampleObjType.__name__)
+	else:
+	    if sampleObjType != inputSampleSet.getSampleObjType():
+		sys.stderr.write( \
+		    "Input files have inconsistent sample types: %s & %s\n" % \
+		    (sampleObjType.__name__,
+		    inputSampleSet.getSampleObjType().__name__) )
+		exit(5)
 
 	allJournals |= inputSampleSet.getJournals()
 
