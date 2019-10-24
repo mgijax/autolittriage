@@ -29,8 +29,8 @@ sampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=SAMPLE_OBJ_TYPE)
 FIELDSEP     = SAMPLE_OBJ_TYPE.getFieldSep()
 RECORDEND    = sampleSet.getRecordEnd()
 
-CLASS_NAMES  = SAMPLE_OBJ_TYPE.getSampleClassNames()
-Y_POSITIVE   = SAMPLE_OBJ_TYPE.getY_positive()
+POS_CLASSNAME = SAMPLE_OBJ_TYPE.getClassNames()[SAMPLE_OBJ_TYPE.getY_positive()]
+NEG_CLASSNAME = SAMPLE_OBJ_TYPE.getClassNames()[SAMPLE_OBJ_TYPE.getY_negative()]
 
 #-----------------------------------
 
@@ -54,8 +54,9 @@ def getArgs():
 	choices=['ap', 'gxd', 'go', 'tumor',], help='which curation group')
 
     parser.add_argument('--query', dest='queryKey', action='store',
-        required=False, default='all',
-        help='which subset of the reference samples to get')
+        required=False, default='selected_after',
+	choices=['unselected_after', 'selected_after', 'selected_before'],
+	help='which subset of the ref samples to get, default: selected_after')
 
     parser.add_argument('--counts', dest='counts', action='store_true',
         required=False, help="don't get references, just get counts")
@@ -66,7 +67,7 @@ def getArgs():
 
     parser.add_argument('--textlength', dest='maxTextLength',
 	type=int, required=False, default=None,
-	help="only include 1st n chars of text fields & 1 rcd/line (for debugging)")
+	help="only include 1st n chars of text fields & 1 rcd/line")
 
     parser.add_argument('--norestrict', dest='restrictArticles',
 	action='store_false', required=False,
@@ -231,9 +232,9 @@ class BaseRefSearch (object): # {
 
     def determineKnownClassName(self, ispositive):
 	if ispositive:
-	    knownClassName = CLASS_NAMES[Y_POSITIVE]
+	    knownClassName = POS_CLASSNAME
 	else:
-	    knownClassName = CLASS_NAMES[1 - Y_POSITIVE]
+	    knownClassName = NEG_CLASSNAME
 	return knownClassName
 
     #@abstract
@@ -612,7 +613,8 @@ def main():
 	else:
 	    sys.stderr.write("'%s' is not a valid search for group %s\n" % \
 						    (args.queryKey, args.group))
-	    sys.stderr.write("Valid vals: %s\n" % str(dataSets[args.group].keys()))
+	    sys.stderr.write("Valid vals: %s\n" % \
+					    str(dataSets[args.group].keys()))
 	    return
     verbose( "Total time: %8.3f seconds\n\n" % (time.time()-startTime))
 #-----------------------------------
@@ -653,7 +655,10 @@ def writeSamples(results	# list of records from SQL query (dicts)
     for r in results:
 	sampleSet.addSample( sqlRecord2ClassifiedSample(r) )
 
-    sampleSet.write(sys.stdout, writeHeader=True)
+    sampleSet.setMetaItem('host', args.host)
+    sampleSet.setMetaItem('db', args.db)
+    sampleSet.setMetaItem('time', time.strftime("%Y/%m/%d-%H:%M:%S"))
+    sampleSet.write(sys.stdout, writeHeader=True, writeMeta=True)
     return len(results)
 #-----------------------------------
 

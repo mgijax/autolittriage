@@ -108,11 +108,8 @@ class SampleSet (object):
 	else: fp = outFile
 
 	if writeMeta:
-	    if self.meta == None:
-		self.meta = SampleSetMetaData('')
-
 	    			# make sure we include the actual object type
-	    self.meta.setMetaItem('sampleObjType', self.sampleObjType.__name__)
+	    self.setMetaItem('sampleObjType', self.sampleObjType.__name__)
 	    fp.write( self.meta.buildMetaLine() + RECORDEND )
 
 	if writeHeader:	fp.write(self.getHeaderLine() + RECORDEND)
@@ -164,6 +161,11 @@ class SampleSet (object):
 
     def getFieldNames(self):	return self.sampleObjType.getFieldNames()
     def getHeaderLine(self):	return self.sampleObjType.getHeaderLine()
+
+    def setMetaItem(self, key, value):
+	if self.meta == None:
+	    self.meta = SampleSetMetaData('')
+	self.meta.setMetaItem(key, value)
 
 # end class SampleSet -----------------------------------
 

@@ -21,16 +21,14 @@ import argparse
 import db
 import sampleDataLib
 #-----------------------------------
-SAMPLE_OBJ_TYPE = sampleDataLib.PrimTriageClassifiedSample
-sampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=SAMPLE_OBJ_TYPE)
-# for the output delimited file
-FIELDSEP     = SAMPLE_OBJ_TYPE.getFieldSep()
-RECORDEND    = sampleSet.getRecordEnd()
 
-CLASS_NAMES  = SAMPLE_OBJ_TYPE.getSampleClassNames()
-Y_POSITIVE   = SAMPLE_OBJ_TYPE.getY_positive()
-INDEX_OF_KEEP    = Y_POSITIVE	# index in CLASS_NAMES of the keep label
-INDEX_OF_DISCARD = 1-Y_POSITIVE	# index in CLASS_NAMES of the discard label
+sampleObjType = sampleDataLib.PrimTriageClassifiedSample
+
+# for the Sample output file
+outputSampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=sampleObjType)
+RECORDEND    = outputSampleSet.getRecordEnd()
+FIELDSEP     = sampleObjType.getFieldSep()
+
 #-----------------------------------
 
 def getArgs():
@@ -381,8 +379,8 @@ def main():
 
     startTime = time.time()
 
-    if args.counts: getCounts(args)
-    else: getSamples(args)
+    if args.counts: doCounts(args)
+    else: doSamples(args)
 
     verbose( "Total time: %8.3f seconds\n\n" % (time.time()-startTime))
 #-----------------------------------
@@ -423,22 +421,25 @@ def buildGetSamplesSQL(args, ):
     return queryPairs
 #-----------------------------------
 
-def getSamples(args):
+def doSamples(args):
     '''
     Run SQL to get samples from DB and output them to stdout
     '''
+    global outputSampleSet
     db.sql( BUILD_TMP_TABLES, 'auto')
 
-    samples = []
-
     for i, (baseQ, textQ) in enumerate(buildGetSamplesSQL(args)):
-	samples += getQueryResults(i, baseQ, textQ)
+	refRecords = getQueryResults(i, baseQ, textQ)
 
-	startTime = time.time()
-	verbose("writing samples:\n")
+	for r in refRecords:
+	    sample = sqlRecord2ClassifiedSample( r)
+	    outputSampleSet.addSample( sample)
 
-	nResults = writeSamples(i, samples)
-	verbose( "%8.3f seconds\n\n" %  (time.time()-startTime))
+    startTime = time.time()
+    verbose("writing %d samples:\n" % outputSampleSet.getNumSamples())
+
+    nResults = writeSamples(outputSampleSet)
+    verbose( "%8.3f seconds\n\n" %  (time.time()-startTime))
     return
 #-----------------------------------
 
@@ -477,20 +478,11 @@ def getQueryResults(i, baseQ, textQ):
     return refRcds
 #-----------------------------------
 
-def writeSamples( i, results	# list of records from SQL query (dicts)
-    ):
-    """
-    Write records to stdout
-    Return count of records written
-    """
-    global sampleSet
-
-    for r in results:
-	sample = sqlRecord2ClassifiedSample( r)
-	sampleSet.addSample( sample)
-
-    sampleSet.write(sys.stdout, writeHeader= i==0)
-    return len(results)
+def writeSamples(sampleSet):
+    sampleSet.setMetaItem('host', args.host)
+    sampleSet.setMetaItem('db', args.db)
+    sampleSet.setMetaItem('time', time.strftime("%Y/%m/%d-%H:%M:%S"))
+    sampleSet.write(sys.stdout)
 #-----------------------------------
 
 def sqlRecord2ClassifiedSample( r,		# sql Result record
@@ -499,13 +491,15 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     Encapsulates knowledge of ClassifiedSample.setFields() field names
     """
     newR = {}
+    newSample = sampleObjType()
 
     if r['isdiscard'] == 1:
-	sampleClass = CLASS_NAMES[INDEX_OF_DISCARD]
+	knownClassIndex = newSample.getY_negative()
     else:
-	sampleClass = CLASS_NAMES[INDEX_OF_KEEP]
+	knownClassIndex = newSample.getY_positive()
 
-    newR['knownClassName']= sampleClass
+    newR['knownClassName']= newSample.getClassNames()[ knownClassIndex ]
+   
     newR['ID']            = str(r['pubmed'])
     newR['creationDate']  = str(r['creation_date'])
     newR['year']          = str(r['year'])
@@ -523,7 +517,7 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newR['tumorStatus']   = str(r['tumor_status']) 
     newR['qtlStatus']     = str(r['qtl_status'])
 
-    return SAMPLE_OBJ_TYPE().setFields(newR)
+    return newSample.setFields(newR)
 #-----------------------------------
 
 def cleanUpTextField(rcd,
@@ -541,7 +535,7 @@ def cleanUpTextField(rcd,
     return text
 #-----------------------------------
 
-def getCounts(args):
+def doCounts(args):
     '''
     Get counts of sample records from db and write them to stdout
     '''
