@@ -1634,5 +1634,45 @@ Oct 23, 2019
     Implemented #meta data in sample files so each file can specify its Sample
     object type.
     Scripts that were changed to take advantage of this:
-	sampleFile2Ref.py
-	sdSplitSamples.py
+	(done) sampleFile2Ref.py
+	(done) sdSplitSamples.py
+	(done) sdGetRawPrimTriage.py	- write #meta line
+	(done) sdGetRawCurGroups.py	- write #meta line
+	(skip) textTuningLib.py - gets sampleobjtype from config file, ok
+	(done) preprocessSamples.py
+	(done) predict.py
+    (a few other small bugs were found and corrected)
+
+Oct 28, 2019
+    Predict.py now outputs additional sample info for each prediction.
+    This is identical to what textTuningLib.py outputs for predictions.
+    Tweaked prediction output format, column orders.
+
+    Tried using RF classifier as initial step in GB, thinking if I start with
+    a pretty good classifier, maybe GB can improve it some.
+
+    Ran into bug using GB init= param:
+    https://github.com/scikit-learn/scikit-learn/issues/12429
+    Trying a workaround described there. Seems to work, need to try it on
+    full primary triage data set.
+
+    Learned about versions of scikit-learn:
+    https://scikit-learn.org/dev/whats_new.html
+    0.20.3 is what I have installed from Anaconda. (small bugs fixed in 0.20.4)
+    0.21.0 is the next version, and it drops support for python 3.4 and below.
+    *** So need to switch to python 3 to start getting any new fixes. ***
+    In particular, the above bug is fixed in 0.21.0
+
+Oct 29, 2019
+    Changed subsetPandR.py to use new/tweaked format of prediction files.
+
+    Added option to textTuninglib.py to not include confidence calculations in
+    prediction output files - this saves extra prediction steps during the run.
+
+    Using RF classifier as initial step in GB improved things only slightly,
+    No RF:
+    2019/10/29-09-53-44	F2PRNPV	0.8730	0.8664	0.8747	0.9054	GB.py
+    vs. RF:
+    2019/10/29-15-50-21	F2PRNPV	0.8740	0.8668	0.8758	0.9061	GB.py
+
+    have only tried one other tuning param with worse results.

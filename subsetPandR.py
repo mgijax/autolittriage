@@ -16,20 +16,20 @@ import time
 import argparse
 
 PREDFILE_RECORDSEP = '\n'
-PREDFILE_FIELDSEP = '\t'
+PREDFILE_FIELDSEP = '|'
 
 NoteToSelf = \
 """
 future thought:
 * it would not be hard to add cmd line option
-    --attr name : would give  P, R, NPV for groups defined by diff values for the
+    --attr name : would give P, R, NPV for groups defined by diff values for the
 	named attr.
 	This could work for attrs that are enumerations like journal,
 	ap_status, gxd_status, ..., supp data status, isreview, ...
 	This would not work well for attr that are counts or that require logic
 	to combine different values
-    This would be a generalization of the --journal option originally implemented
-    here.
+    This would be a generalization of the --journal option originally
+    implemented here.
 
     still need to keep
     --group : since this involves logic using curation group statuses,
@@ -37,7 +37,7 @@ future thought:
 
 * to do --attr, will need
     a subclass of SubsetOfPapers, something like "PapersByAttr".
-    Takes name of extra info field to use and individual value - there would be 1
+    Takes name of extra info field to use & individual value - there would be 1
     instance per value in the field
 
     change report formatting for --attr
@@ -84,11 +84,11 @@ class Prediction (object):
 	# basic prediction fields
 	components = record.lower().split(PREDFILE_FIELDSEP)
 	(self.pubmed,
-	self.trueClass,
 	self.predClass,
-	self.fpFn,
 	self.confidence,
 	self.absValue,
+	self.trueClass,
+	self.fpFn,
 	# extra info fields, hard coded. Yuck.
 	# Needs to match ClassifiedSample extra info fields
 	self.creationDate,
@@ -176,8 +176,8 @@ class SubsetOfPapers (object):
 class CurationGroup (SubsetOfPapers):
     """ IS:   A SubsetOfPapers selected by a curation group, e.g, AP, GO, ...
 	NOTE: Looking at recall for papers selected by an individual curation
-		group makes sense: how many papers actually selected are predicted
-		keep.
+		group makes sense: how many papers actually selected are
+		predicted keep.
 	      But any paper selected by the group is inherently a "keep", so
 		we don't see any true discards *in* a curation group.
 	      So within the group, precision = 1 and NPV = 0: not useful
