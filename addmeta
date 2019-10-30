@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# quick script to take one or more sample files, and add #meta line
+metaLine="#meta sampleObjType=PrimTriageClassifiedSample date=09/18/2019;;"
+
+for f; do
+    echo  $f
+    tmpFile=$f.tmp
+    echo -n $metaLine > $tmpFile
+    cat $f >> $tmpFile
+    touch -r $f $tmpFile
+    mv $tmpFile $f
+done
