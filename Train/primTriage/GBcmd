@@ -1,0 +1,8 @@
+model=GB
+dataDir=~/work/autolittriage/Train/primTriage/data/sep18
+#baseDir=$dataDir/LegendsPara/Proc1
+baseDir=$dataDir/LegendsWords/Proc1
+#mtrun ${model}.py --predict -d $baseDir/trainSet.txt --valpath $baseDir/valSet.txt --testpath  $baseDir/testSet.txt -v --gsverbose
+mtrun ${model}.py --noconfidence -d $baseDir/trainSet.txt --valpath $baseDir/valSet.txt --gsverbose
+# Don't run subsetPandR if you are not using --predict above
+#subsetPandR.py --group ${model}_val_pred.txt | tee -a ${model}.log

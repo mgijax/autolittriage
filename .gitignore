@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.tsv
+*.pkl
 
 
 # virtualenv
@@ -12,6 +13,7 @@ ENV/
 
 ModelAnalysis/
 Data/
+data/
 cache/
 *.ipynb_checkpoints
 *.swp

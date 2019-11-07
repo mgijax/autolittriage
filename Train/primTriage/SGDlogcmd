@@ -1,0 +1,7 @@
+model=SGDlog
+dataDir=~/work/autolittriage/Train/primTriage/data/sep18
+#baseDir=$dataDir/Legends/Proc1
+baseDir=$dataDir/LegendsWords/Proc1
+#baseDir=$dataDir/LegendsPara/Proc1
+mtrun ${model}.py  --predict -d $baseDir/trainSet.txt --valpath $baseDir/valSet.txt --testpath $baseDir/testSet.txt -v --gsverbose
+subsetPandR.py --group ${model}_test_pred.txt | tee -a ${model}.log

@@ -1,0 +1,1437 @@
+Influences of sire conception rate on pregnancy establishment in dairy cattle.
+Establishment of pregnancy in cattle is complex and encompasses ovulation, fertilization, blastocyst formation and growth into an elongated conceptus, pregnancy recognition signaling, and development of the embryo and placenta. The objective here was to investigate sire influences on pregnancy establishment in cattle. First, 10 Holstein bulls were classified as high or low fertility based on their sire conception rate (SCR) value. In a field trial, pregnancy at first timed insemination was not different between high and low SCR bulls. Next, 5 of the 10 sires were phenotyped using in vitro and in vivo embryo production. There was no effect of SCR classification on in vitro embryo cleavage rate, but low SCR sires produced fewer day 8 blastocysts. In superovulated heifers, high SCR bulls produced a lower percentage of unfertilized oocytes and fewer degenerated embryos compared to low SCR bulls. Recipient heifers received three to five in vivo produced embryos from either high or low SCR sires on day 7 postestrus. Day 16 conceptus recovery and length were not different between SCR groups, and the conceptus transcriptome was not appreciably different between high and low SCR sires. The reduced ability of embryos from low SCR bulls to establish pregnancy is multifactorial and encompasses sperm fertilizing ability, preimplantation embryonic development, and development of the embryo and placenta after conceptus elongation and pregnancy recognition. These studies highlight the importance of understanding genetic contributions of the sire to pregnancy establishment that is crucial to increase reproductive efficiency in dairy cattle.
+Biology of Reproduction, 2018, 99(6), 1244-1254
+doi:10.1093/biolre/ioy141
+Research Article
+Advance Access Publication Date: 19 June 2018
+
+Research Article
+
+ G. N. Moraes1 , David J. Patterson1 ,
+M. Sofia Ortega1 , Joao
+Michael F. Smith1 , Susanta K. Behura1 , Scott Poock2 and
+Thomas E. Spencer1,
+1
+
+Division of Animal Sciences, University of Missouri, Columbia, Missouri, USA and 2 College of Veterinary Medicine,
+University of Missouri, Columbia, Missouri, USA
+
+
+Correspondence: Division of Animal Sciences, University of Missouri, 920 East Campus Drive, Columbia, MO 65211, USA.
+Tel: +1-573-882-3467; E-mail: spencerte@missouri.edu
+
+
+Grant Support: This work was supported in part by funds from the Agriculture and Food Research Initiative Competitive
+Grant no. 2013-68004-20365 from the United States Department of Agriculture National Institute of Food and Agriculture
+and National Institutes of Health Grant R01 HD072898.
+MSO and JGNM should be regarded as joint first author.
+
+Edited by Dr. Peter J. Hansen, PhD, University of Florida.
+Received 11 April 2018; Revised 22 May 2018; Accepted 15 June 2018
+
+Abstract
+Establishment of pregnancy in cattle is complex and encompasses ovulation, fertilization, blastocyst formation and growth into an elongated conceptus, pregnancy recognition signaling, and
+development of the embryo and placenta. The objective here was to investigate sire influences on
+pregnancy establishment in cattle. First, 10 Holstein bulls were classified as high or low fertility
+based on their sire conception rate (SCR) value. In a field trial, pregnancy at first timed insemination
+was not different between high and low SCR bulls. Next, 5 of the 10 sires were phenotyped using in
+vitro and in vivo embryo production. There was no effect of SCR classification on in vitro embryo
+cleavage rate, but low SCR sires produced fewer day 8 blastocysts. In superovulated heifers, high
+SCR bulls produced a lower percentage of unfertilized oocytes and fewer degenerated embryos
+compared to low SCR bulls. Recipient heifers received three to five in vivo produced embryos
+from either high or low SCR sires on day 7 postestrus. Day 16 conceptus recovery and length were
+not different between SCR groups, and the conceptus transcriptome was not appreciably different
+between high and low SCR sires. The reduced ability of embryos from low SCR bulls to establish
+pregnancy is multifactorial and encompasses sperm fertilizing ability, preimplantation embryonic
+development, and development of the embryo and placenta after conceptus elongation and pregnancy recognition. These studies highlight the importance of understanding genetic contributions
+of the sire to pregnancy establishment that is crucial to increase reproductive efficiency in dairy
+cattle.
+
+Summary Sentence
+The sire influences preimplantation embryonic development and postelongation establishment of
+pregnancy in dairy cattle.
+Key words: sire, embryo, conceptus, pregnancy, cattle.
+
+1244
+
+C
+
+The Author(s) 2018. Published by Oxford University Press on behalf of Society for the Study of Reproduction. All rights reserved.
+For permissions, please e-mail:journals.permissions@oup.com
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+Influences of sire conception rate on pregnancy
+establishment in dairy cattle
+
+Sire influences on pregnancy establishment, 2018, Vol. 99, No. 6
+
+Introduction
+
+ment of bulls [27, 28]. Thus, understanding paternal contributions
+to pregnancy establishment could improve overall herd fertility. The
+objective here was to investigate the influence of SCR on embryo
+development, conceptus elongation, and pregnancy establishment in
+dairy cattle.
+
+Materials and methods
+All animal procedures were conducted in accordance with the Guide
+for the Care and Use of Agriculture Animals in Research and Teaching and approved by the Institutional Animal Care and Use Committee of the University of Missouri.
+
+Experiment 1: field trial
+Semen from high fertility (SCR  3.3) or low fertility (SCR  -5.1)
+Holstein bulls were generously provided by Select Sires (Columbus,
+Ohio) and used to breed Holstein heifers (n = 208) at a commercial
+dairy farm (Heartland Dairy, LaBelle, Missouri). The most recent
+official SCR evaluation for each bull is presented in Supplemental
+Table S1. Heifers of approximately 13 months of age were bred at
+first AI (n  20 heifers per bull) following synchronization using
+the Co-Synch 48 h + CIDR protocol, which includes GnRH (100
+g, i.m.; Cystorelin, Merial, Duluth, GA) administration concurrent
+with an intravaginal progesterone insert (CIDR, Zoetis) on day -
+9, CIDR removal and prostaglandin F2 alpha (PGF; 25 mg, i.m.;
+Lutalyse, Zoetis) on day -2, and GnRH and AI on day 0. Pregnancy
+was determined on day 33 by the herd veterinarian using real-time
+ultrasonography based on the visualization of a fetus with a heartbeat. Statistical analyses were conducted using SAS (SAS Institute
+Inc., Cary, NC) with significance defined as P < 0.05. Pregnancy
+at first insemination was analyzed by logistic regression using the
+GLIMMIX procedure.
+
+Determination of circulating progesterone
+concentrations
+Blood samples were collected from the median coccygeal vein or
+artery into evacuated tubes containing K3 EDTA (Becton Dickinson Vacutainer Systems, Franklin Lakes, NJ, USA) on days -9, 0,
+19, and 33 for determination of circulating progesterone concentrations. Samples were centrifuged at 1200x g for 20 min at 4 C, and
+plasma collected and stored at -20 C. Progesterone concentrations
+were determined by duplicate in 100 l aliquots of plasma using
+a commercially available progesterone kit (MP Biomedical, Santa
+Ana, CA) following manufacturer instructions. Inter- and intraassay
+coefficients of variation were 1.97% and 1.33%, respectively [29].
+Data of circulating progesterone concentrations were analyzed by
+analysis of variance (ANOVA) for repeated measures using MIXED
+procedure. The models included the effects of SCR class, the day
+of sample collection, the interaction between SCR class and day of
+sample collection, and the random effect of heifer nested within SCR
+class.
+
+Expression of ISG in white blood cells
+Based on the results of the field trial, relative levels of ISG were determined on white blood cells (WBC) on day 0 and on day 19 after
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+One factor affecting reproductive performance is the high rate of
+pregnancy loss. In cattle, early embryo mortality can be defined as
+pregnancies lost between conception (day 0) or embryo transfer (ET;
+day 7) and the first pregnancy determination (days 28-35) [1]. Pregnancy success and embryonic mortality are affected by paternal,
+maternal, and/or embryonic factors [2-4]. Maternal factors contributing to embryo mortality in cattle include poor oocyte quality,
+inadequate progesterone, and inadequate uterine function to promote blastocyst formation and conceptus development as well as
+disease [5, 6]. Studies of beef and dairy heifers bred by artificial insemination (AI) or ET determined that defective uterine receptivity
+is a contributing factor to early embryo mortality in approximately
+25% of pregnancies, but it is only the sole factor in approximately
+5% of pregnancies [7-9]. Accordingly, paternal, embryonic, and environmental factors account for the largest portion of pregnancy loss
+[4].
+After ovulation, the oocyte enters the oviduct and is fertilized
+by sperm to form a zygote [10]. The zygote undergoes consecutive
+cleavages in the oviduct to generate a morula that enters the uterus
+on days 4-6 postmating. A blastocyst is then formed that contains
+an inner cell mass and a blastocoele or central cavity surrounded by
+a monolayer of trophectoderm (TE). After hatching from the zona
+pellucida (days 9-10), the blastocyst slowly grows into an ovoid or
+tubular form on days 12-14 and is then termed a conceptus. The
+bovine conceptus is only about 2 mm in length on day 13, about 6
+mm by day 14, and reaches about 60 mm (6 cm) by day 16, and
+20 cm or more by day 19. Thus, the bovine blastocyst/conceptus
+doubles in length every day between days 9 and 16 with a significant
+increase (10-fold) in trophoblast growth between days 12 and 15
+[11, 12].
+The elongating conceptus secretes interferon tau (IFNT) that acts
+on the endometrium to inhibit the development of the luteolytic
+mechanism resulting in maternal recognition of pregnancy [13-15].
+IFNT also acts in a paracrine manner on the endometrium to induce the expression of IFN-stimulated genes (ISGs), which are hypothesized to regulate uterine receptivity and conceptus elongation
+[16-18]. After day 19 in cattle, the TE of the elongating conceptus
+begins to adhere to the luminal epithelium of the uterus and starts the
+process of placentation that involves differentiation of trophoblast
+giant binucleate cells (BNC) and formation of an embryo and extraembryonic membranes, such as the allantois, that vascularizes the
+chorion of the placenta. Trophoblast BNC are crucial for the formation of placentomes that are vital for fetal and placental growth
+to term [19, 20]. As they begin to form about day 24, BNC express
+specific pregnancy-associated glycoproteins (PAGs) that can be detected in maternal circulation and used to diagnose pregnancy and
+monitor placental function [20-22].
+Early pregnancy events in cattle are directly influenced by genetic
+contributions of the sire [23], but the mechanisms underlying this
+influence remain poorly understood. At present, one of the most utilized indicators of bull fertility to AI is sire conception rate (SCR),
+which is defined as the probability of a unit of semen from a specific
+bull to result in a pregnancy compared with the mean of all other
+bulls that could have been used and is calculated based on farm
+reported confirmation of pregnancy by day 70 after insemination
+[24, 25]. Genetic improvement in cattle depends heavily on the use
+of AI to maximize impact of genetically superior bulls [26]. While
+modest gains can be made by improving female fertility, the largest
+gains depend on improving the selection and reproductive manage-
+
+1245
+
+1246
+
+Determination of circulating concentrations of PAGs in
+plasma
+Plasma from blood samples collected on the day of pregnancy diagnosis (day 33) was procured for analysis of PAGs. The concentration
+of PAGs was determined in animals diagnosed pregnant by ultrasound (n = 127) using a sandwich ELISA that was performed in a
+similar manner as described elsewhere [20, 22]. Product formation
+was measured at 405 nm on a Bio-Tek EL808 plate reader. Assay
+sensitivity was 0.28 ng/ml. Each assay included a standard curve and
+a pooled sample of pregnant cows collected at day 60 of gestation.
+Intra- and interassay coefficients of variation were 7.3 and 15.7%,
+respectively. Continuous data were assessed for normality using the
+UNIVARIATE procedure of SAS and circulating concentrations of
+PAGs were log-transformed to achieve normality. PAGs data were
+analyzed by ANOVA using the GLM procedure of SAS. Tukey adjustment was used in the models investigating the effect of sire on
+outcomes to reduce type I error. Pearson''s correlations for ISG15
+and MX2 expression by WBC on day 19, and circulating PAGs concentrations on day 33, were determined using CORR procedure of
+SAS.
+
+Experiment 2: influence of SCR on production of
+embryos in vitro
+Five sires were used to produce embryos in vitro; three of the selected
+sires were classified as low fertility (sires 8, 9, and 10) and two classified as high fertility (sires 3 and 5). All chemicals were obtained from
+Sigma-Aldrich (St. Louis, MO, USA) or Fisher (Pittsburgh, PA, USA)
+unless otherwise stated. Oocyte washing medium consisted of Tissue
+Culture Medium-199 with Hanks salts plus 25 mM HEPES. Oocyte
+maturation medium consisted of Tissue Culture Medium-199 with
+Earle salts (Gibco, Grand Island, NY, USA) supplemented with 10%
+(v/v) fetal bovine serum, 100 units/ml penicillin, 100 g/ml streptomycin, 0.2 mM sodium pyruvate, 2 mM L-glutamine, 50 ng/ml
+recombinant human epidermal growth factor (Invitrogen, Waltham,
+MA, USA), and 5.0 g/ml of follicle-stimulating hormone (FSH; Folltropin; Bioniche Animal Health, Athens, GA, USA) [33]. Fertilization
+media consisting of Tyrode''s albumin lactate pyruvate (TALP) solutions including HEPES-TALP, Sperm-TALP, and IVF-TALP and
+culture medium were prepared as described [34].
+Cumulus-oocyte complexes (COC) were retrieved by follicular
+aspiration of ovaries collected at a commercial abattoir (DeSoto
+Biosciences, Seymour, TN, USA). COC with at least three layers of
+compact cumulus cells and homogeneous cytoplasm were placed in
+groups of 50 into 2 ml glass sterile vials containing 1 ml of oocyte
+maturation medium equilibrated with air containing 5% (v/v) CO2
+covered with mineral oil. Tubes with COC were shipped overnight
+in a portable incubator (Minitube USA Inc., Verona, WI, USA) at
+38.5 C to the University of Missouri.
+After 22-24 h of maturation, groups of 100 COC were washed
+three times in HEPES-TALP medium and placed in a 35-mm dish
+containing 1.7 ml of IVF-TALP. Each group of COC was fertilized
+with a single sire. Sperm were purified from frozen-thawed straws
+using a gradient [50% (v/v) and 90% (v/v)] of Isolate (Irvine Scientific, Santa Ana, CA), washed two times by centrifugation at 100x g
+using SP-TALP and diluted in IVF-TALP to achieve a final concentration of 1 x 106 /ml in the fertilization dish. In addition, 80 l of
+penicillamine-hypotaurine-epinephrine solution [35] was added to
+each fertilization dish to improve sperm motility and promote fertilization. Fertilization proceeded for 17-19 h at 38.5 C in a humidified
+atmosphere of 5% (v/v) CO2 . Putative zygotes (oocytes exposed to
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+insemination from 5 selected sires [high SCR (sires 3 and 5); low
+SCR (sires 8, 9, and 10)]. A total of 76 heifers subjected to ISG analysis. Blood samples were collected into evacuated tubes containing
+K3 EDTA (Becton Dickinson Vacutainer Systems) and kept refrigerated until processing. Briefly, each blood sample was centrifuged
+at 1200x g for 20 min at 4 C, and the buffy coat transferred to a
+15-ml centrifuge tube containing 12 ml of red blood cell lysis buffer
+(150 mM NH4 Cl, 10 mM NaHCO3 , 1 mM EDTA, pH 7). Tubes
+were vortexed and incubated at room temperature for 5 min, and
+then centrifuged at 300x g for 10 min at 4 C to wash and pellet the
+WBC. After discarding the supernatant, the WBC pellet was washed
+twice (as described above) first using 5 ml of red blood cell lysis
+buffer, and second using 5 ml of ice-cold 1X Dulbecco Phosphate
+Buffered Saline (DPBS). Immediately after, the supernatant was discarded, and the WBC pellet was resuspended in 1.5 ml of RLT Plus
+lysis buffer (Qiagen, Valencia, CA) and stored at -80 C.
+Total RNA was isolated from WBC using the RNeasy Mini Kit
+(Qiagen, Valencia, CA) according to the manufacturer''s protocol.
+To eliminate DNA contamination, RNA was treated with DNase
+I during RNA purification using the RNase-Free DNase Set (Qiagen). Concentrations and purity of extracted total RNA were determined using a NanoDrop spectrophotometer (Fisher Scientific,
+Pittsburgh, PA) and integrity verified using a 1% agarose gel. Total RNA (500 ng) was reverse transcribed using the iScript Reverse
+Transcription Supermix (Bio-Rad, Hercules, CA), using the following conditions: priming for 5 min at 25 C; reverse transcription for
+20 min at 46 C; and inactivation for 1 min at 95 C. The cDNA was
+stored at -20 C.
+Real-time PCR was performed in a CFX384 Touch Real Time
+System (Bio-Rad) using the SsoAdvanced Universal SYBR Green
+Supermix (Bio-Rad). Commercially validated primers for bovine
+ISG15, MX2, GAPDH, and SDHA were acquired from Bio-Rad
+(PrimePCR, Bio-Rad). GAPDH and SDHA were used as reference
+genes. Each sample was run in triplicate in 10  L reactions; each
+one consisting of 0.5 L of PrimePCR primer, 5 L of SYBR Green
+Supermix, 2 L of nuclease-free water, and 2.5 L of cDNA (12.5
+ng). For each primer, reactions without template were used as a negative control, and reactions with template substituted by total RNA
+were used to verify possible genomic contamination. PCR conditions
+were 95 C for 2 min; 95 C for 5 s, and 60 C for 30 s. At the end
+of amplification, a melt curve was created to assess whether a single
+product was amplified. The CT was estimated as the difference between the cycle threshold (CT) for the gene of interest and geometric
+mean of the CT for the reference genes. Fold change was calculated
+relative to the reference genes (2 CT ), and the ratio of the fold change
+between day 19 over day 0 was used for the analyses. ISG expression
+was analyzed by ANOVA using the GLM procedure of SAS.
+A receiver operating characteristics (ROC) analysis was performed in SAS using the LOGISTIC procedure, to determine the
+critical number for the ratio of ISG15 expression by WBC at day 19
+post insemination that would indicate the presence of a conceptus
+based on sensitivity and specificity using data of pregnancy outcome
+on day 33 [30, 31]. This critical value was determined using the
+Youden Index (J) [32], which combines sensitivity and specificity
+into a single value (Sensitivity and 1- Specificity). For this analysis,
+the 76 heifers that were inseminated with the bulls 3, 5, 8, 9, and
+10 were used. Differences in pregnancy at first insemination at day
+19 and day 33 between SCR classes were determined by logistic
+regression using the GLIMMIX procedure, the difference between
+predicted pregnancy at day 19 and observed pregnancy at day 33
+within SCR class was determined by a chi-square test.
+
+M. S. Ortega et al., 2018, Vol. 99, No. 6
+
+Sire influences on pregnancy establishment, 2018, Vol. 99, No. 6
+
+Experiment 3: effect of SCR classification on in vivo
+production of embryos
+Estrous cycles of donor Holstein heifers (n = 60) were synchronized
+using the PG 6-day + CIDR protocol as described elsewhere [9]. In
+the afternoon of day 10, donor heifers received their first injection
+(dose range: 44-60 mg) of FSH (Folltropin; Vetoquinol, Quebec,
+CA) to stimulate multiple follicular development. Decreasing doses
+of FSH were given twice daily on days 11 (dose range: 36-60 mg),
+12 (dose range: 24-54 mg), and 13 (dose range: 16-46 mg), and a
+single FSH injection administered in the morning of day 14 (dose
+range: 16-30 mg) concurrent with a PGF injection and insertion an
+estrus detection patch (Estrotect, Rockway, Inc., Spring Valley, WI)
+to aid in visual detection of estrus.
+Synchronized donor heifers displayed estrus on day 15. Semen
+from the same selected five bulls used in Experiment 2 was used
+for breeding superovulated heifers. Each donor heifer was bred with
+four units of semen; one straw was used at the onset of standing
+estrus, two straws 12 h after the onset of standing estrus, and one
+straw at 24 h after the first breeding. The uterus of each superovulated heifer was flushed to recover embryos on day 7 postestrus
+using a standard nonsurgical technique at Trans Ova Genetics facility (Chillicothe, MO). Recovered embryos were classified by stage of
+development and graded based on gross morphological appearance
+following the guidelines from International Embryo Society [36]. Selected embryos were frozen in ethylene glycol at Trans Ova facility.
+For this analysis, each cow (superovulation procedure) was considered a replicate and the minimum number of replicates per bull was
+10. From the total structures collected (embryos and oocytes), un-
+
+fertilized oocytes (UFO) were analyzed as percentage of the total of
+structures recovered; degenerated and freezable embryos (grade 1
+and 2) were analyzed as percentage of fertilized embryos by logistic
+regression using the GLIMMIX procedure of SAS.
+
+Experiment 4: effect of SCR classification on conceptus
+elongation
+To investigate the effects of SCR classification on conceptus elongation by day 16, synchronized Angus heifers (n = 13) received 3-5 day
+7 Holstein embryos (Grade 1 or 2 compact morulae or early blastocysts) from a single SCR classified sire and dam on day 7 postestrus.
+Individual frozen embryos were thawed in a water bath at 28-32 C
+for at least 30 s, washed three times in holding medium (SYNGRO,
+Agtech, Manhattan, KS, USA), and loaded for transfer in groups
+of 3-5 embryos in holding medium in 0.25 ml straws (Agtech). On
+day 16 (9 days post-transfer), recipient heifers were slaughtered to
+recover the reproductive tract. Intact conceptus(es) were retrieved by
+gently flushing the uterine lumen with 20 ml of sterile and filtered 1X
+DPBS. Conceptus morphology was recorded using a digital camera
+and length and width was determined using a ruler. Each conceptus
+was individually frozen and stored at -80 C.
+Data on the presence of a conceptus in the uterus on day 16 at
+slaughter were analyzed by logistic regression using the GLIMMIX
+procedure of SAS. The effect of SCR classification on conceptus
+length was analyzed by ANOVA, using the repeated subject statement of the GLM procedure to account for the effect of more than
+one conceptus being recovered from the same heifer.
+
+Determination and analysis of the conceptus
+transcriptome
+Total RNA from 12 day-16 conceptuses (n = 4 high SCR and
+n = 8 low SCR) from Experiment 4 was isolated using the AllPrep DNA/RNA/Protein Mini kit (Qiagen, Valencia, CA) according
+to the manufacturer''s protocol. To eliminate DNA contamination,
+samples were treated with DNase as previously described. RNA concentrations and integrity were determined by quantitative high sensitivity RNA analysis on the Fragment Analyzer instrument (Catalog
+# DNF-472, Advanced Analytical Technologies, Inc., Ankeny, IA).
+RNA library preparation and sequencing was conducted by the University of Missouri DNA Core facility as previously described [7].
+Sequencing was performed on an Illumina NextSeq 500 sequencer.
+All the raw data and processed data from this study have been submitted to the Gene Expression Omnibus (GEO accession in progress)
+for public access.
+The quality of fastq files of sequences data was checked
+with a FastQC tool (https://www.bioinformatics.babraham.ac.uk/
+projects/fastqc/). Adapter trimming was performed using the
+cutadpat tool [37]. The program fqtrim (https://ccb.jhu.edu/
+software/fqtrim/) was used to perform quality trimming (Phred
+score > 30) by sliding window scan (6 nucleotides) and select read
+length 30 nucleotides or longer. The quality reads were then mapped
+to the bovine reference genome UMD 3.1 using the Hisat2 mapper
+(https://ccb.jhu.edu/software/hisat2/), which is a fast and sensitive
+alignment program of next-generation sequencing data [38]. FeatureCounts [39] was used to quantify read counts using the sequence
+alignment files of each sample. The differentially expressed genes
+(DEGs) between sample groups were determined by edgeR-robust
+[40]. A false discovery rate (FDR) < 0.05 was used as a threshold
+for statistical significant differential expression of genes. The DEGs
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+sperm) were denuded from the surrounding cumulus cells at the end
+of fertilization by vortexing for 5 min in 400 l of HEPES-TALP.
+Embryos were then cultured in four-well dishes in groups of up to
+50 in 500 l of SOF-BE2 covered with 300 l of mineral oil per well
+at 38.5 C in a humidified atmosphere of 5% (v/v) O2 and 5% (v/v)
+CO2 . Percentage of putative zygotes that cleaved was determined at
+day 3 of development (day 0 = day of insemination) and blastocyst
+rate at day 8 of development.
+At day 8, embryos that became expanded blastocysts (within the
+zona pellucida) and hatched blastocysts (not delimited by a zona
+pellucida) were collected to determine inner cell mass and TE cell
+number by immunolabeling for nuclear CDX2 following procedures
+previously described [35]. Analysis of the images was performed
+using ImageJ V. 1.6 (National Institutes of Health, Bethesda, MD).
+Number was determined by counting nuclei labeled for CDX2 and
+inner cell mass (ICM) cell number was estimated as the difference
+between total and TE cell number.
+The entire IVP procedure and blastocyst cell number determination were repeated four times for each bull. In each procedure,
+embryos were produced simultaneously using high and low fertility bulls. Statistical analyses were performed to determine effects of
+both SCR class and individual sires. Effects of sire on embryonic development were analyzed by logistic regression using the GENMOD
+procedure, and mean separation was performed by the pdiff option
+of the LSMEANS procedure of SAS. Each embryo was considered
+as an observation. Replicate was considered random and SCR class
+or sire fixed. Effects on cell number were analyzed by least-squares
+analysis of variance using the MIXED procedure. In addition, contrasts were used to determine differences in embryos produced with
+each sire class or individual sires. The model included replicate as a
+random effect and SCR class or sire as a fixed effect.
+
+1247
+
+1248
+
+M. S. Ortega et al., 2018, Vol. 99, No. 6
+
+Table 1. Pregnancy at first insemination of fertility classified bulls in the field trial (Experiment 1).
+High SCR
+Sire
+
+3.9
+4.1
+3.3
+3.4
+3.9
+
+n2
+
+P/AI3 (%)
+
+23
+23
+18
+20
+21
+
+a
+
+56.5
+56.5a
+83.3a
+65.0a
+76.2a
+66.7a
+
+Sire
+
+SCR
+
+n
+
+P/AI (%)
+
+6
+7
+8
+9
+10
+
+-5.1
+-5.5
+-5.4
+-6.4
+-9.4
+Average
+
+20
+20
+17
+23
+23
+
+60.0a
+70.0a
+62.5a
+26.1b
+65.2a
+55.9a
+
+Numbers with different superscripts differ (P  0.05).
+SCR: according to SCR evaluation from active bulls for artificial insemination.
+2
+Number of heifers inseminated per sire.
+3
+Average percentage pregnancy per insemination.
+a,b
+1
+
+were subjected to gene enrichment analysis using the ToppFun algorithm [41].
+
+Results
+Effect of SCR classification on pregnancy at first
+insemination (Experiment 1)
+For this experiment, Holstein heifers were synchronized, and timebred using semen from high and low SCR sires at a commercial
+dairy. All heifers used in the current experiment were cycling at
+time of enrollment, as at least one blood sample had progesterone
+concentrations greater than 1 ng/ml on the days tested. One heifer
+presented a circulating progesterone concentration above 1 ng/ml at
+the time of insemination and was removed from further analysis.
+As expected, progesterone concentrations changed across the time
+points measured (P < 0.01) and the mean values were 4.8  0.2,
+0.2  0.2, 7.3  0.2, and 7.7  0.2 ng/ml for days -9, 0, 19 and 33,
+respectively. Progesterone concentrations were not different
+(P > 0.68) at any timepoint in heifers bred with high or low SCR
+bulls.
+Pregnancy was determined on day 32 by transvaginal ultrasound.
+Overall, there was no effect (P = 0.11) of SCR class on pregnancy
+at first insemination (Table 1). Of particular note, pregnancy was
+lower (P < 0.02) in heifers bred with sire 9 compared to heifers bred
+with any other sires. In the subset of heifers analyzed for ISGs, as
+expected, levels of both ISG15 (P = 0.009) and MX2 (P = 0.011)
+mRNA were higher in day 19 WBC of pregnant as compared to
+open or nonpregnant heifers (Figure 1A). There were no differences
+(P > 0.05) in expression of ISG15 or MX2 mRNA in WBC in open
+or pregnant between high and low SCR bulls (Figure 1B).
+In pregnant heifers, circulating PAG concentrations on day 33
+postinsemination was not different (P = 0.52) in high and low
+SCR pregnancies (Figure 2A). Some individual sire differences were
+observed, as circulating day 33 PAG concentrations were higher
+(P = 0.01) in heifers bred with sire 1 than with either sire 5 or sire
+7 (Figure 2B). Among pregnant heifers, there was no correlation between WBC expression of ISG15 on day 19 and PAGs on day 33
+(R = -0.04; P = 0.77) (Figure 3A) or between WBC expression of
+MX2 and PAGs (R = -0.09; P = 0.57) (Figure 3B).
+Regression analysis determined that levels of ISG15 mRNA in
+day 19 WBC was associated (P = 0.047) with risk of pregnancy
+on day 33 (Figure 4). The ROC curve had an area under the curve
+(AUC) of 0.71 that was greater (P < 0.01) than the AUC for the
+diagonal line representing a variable that is not different than guess-
+
+Figure 1. Levels of select interferon-stimulated genes (ISG) in peripheral blood
+mononuclear cells. (A) ISG15 and MX2 mRNA levels were higher at day 19
+postinsemination in pregnant than open heifers. (B) ISG15 and MX2 mRNA
+levels were not different on day 19 in heifers bred to high or low SCR sires
+that maintained pregnancy to day 33 postinsemination. Values are presented
+as fold change (ratio between day 19 and day 0 postinsemination). Bars with
+different letters are statistically different (P < 0.05).
+
+ing or 50% chance. Based on the Youden Index Criterion (J), the
+most appropriate cut-off value for the ratio of ISG15 expression for
+predicting pregnancy is 4.14, with a sensitivity of 0.78 (true positive
+rate) and specificity of 0.60 (true negative rate). Using this analysis,
+by day 19 after insemination estimated pregnancy is 89.6% for high
+SCR and 68% for low SCR bulls (P < 0.029). In the same subset
+of animals, pregnancy at day 33 post insemination was 79.0% for
+high SCR bulls and 49.0% for low SCR bulls (P < 0.0001). Thus,
+the estimated pregnancy loss between days 19 and 33 is 10.6% for
+high SCR and 19% for low SCR bulls (Table 2).
+
+Influence of SCR on production of embryos in vitro
+(Experiment 2)
+For this experiment, oocytes were obtained from ovaries harvested
+at commercial slaughter facilities and used to produce embryos in
+vitro using semen from high and low SCR sires. As summarized
+in Table 3, the number of putative zygotes that cleaved by day 3
+of development (as an indicator of fertilization) was not different
+(P > 0.05) in embryos from high and low SCR sires or among
+individual sires. However, the percentage of embryos that reached
+the blastocyst stage was higher (P = 0.023) for embryos produced
+using semen from high as compared to low SCR sires (Table 3).
+Note that two low SCR sires (sires 9 and 10) had lower (P = 0.032)
+production of blastocysts in vitro as compared to the other sires
+(Table 3).
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+1
+2
+3
+4
+5
+Average
+
+SCR1
+
+Low SCR
+
+Sire influences on pregnancy establishment, 2018, Vol. 99, No. 6
+
+1249
+
+Figure 2. Circulating concentrations of pregnancy-associated glycoproteins
+(PAGs) at day 33 postinsemination. (A) PAG concentrations were not different
+in pregnancies from high and low SCR sires. (B) Circulating PAG concentrations were higher (P = 0.01) in heifers bred with sire 1 than with either sire 5
+or sire 7. Bars with different letters are statistically different (P < 0.05).
+
+There were no differences in ICM cell number between high and
+low SCR bulls in both expanded and hatched blastocysts (Table 4). In
+contrast, low SCR sires produced expanded blastocysts with fewer
+(P = 0.0002) TE cells, but ICM cell number in hatched blastocysts was not different (P > 0.10) in low SCR sires (Supplemental
+Figure S1).
+
+Effect of SCR classification on in vivo production of
+embryos (Experiment 3)
+For this experiment, Holstein heifers were superovulated and bred
+with semen from either high or low SCR sires, and embryos were
+recovered on day 7 postinsemination by nonsurgical uterine flush.
+As summarized in Table 5, the number of UFO was lower (P < 0.05)
+from superovulated Holstein heifers bred with high as compared to
+low SCR sires. One of the low SCR bulls (9) produced significantly
+(P < 0.05) more UFO than the rest of the bulls. Overall, there was
+no effect (P > 0.05) of SCR class on the presence of degenerated
+embryos, or embryos of freezable quality (grade 1 and 2). However,
+there were individual bull differences, one of the low SCR bulls
+(10) produced a higher number of degenerated embryos (P < 0.05)
+compared to the rest of the bulls.
+
+Figure 4. Receiver operating characteristic (ROC) curve of ISG15 expression
+at day 19 postinsemination to predict pregnancy at day 33. The ROC curve
+for ISG15 has area under the curve (AUC) of 0.7 that is greater (P < 0.01) than
+the diagonal line (0.5 chance). The cutoff value of ISG15 expression had a
+sensitivity or true positive rate of 0.78 to predict pregnancy (showed in red in
+the figure).
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+Figure 3. Pearson''s correlations for interferon-stimulated gene (ISG) expression by peripheral blood mononuclear cells at day 19 postinsemination and
+circulating concentrations of PAGs at day 33 in heifers that maintained pregnancy. (A) Correlation between ISG15 and PAGs (R = -0.04; P = 0.77). (B)
+Correlation between MX2 and PAGs (R = -0.09; P = 0.57).
+
+1250
+
+M. S. Ortega et al., 2018, Vol. 99, No. 6
+
+Table 2. Pregnancy differences between day 19 and 33 post insemination (Experiment 1).
+Pregnancy per insemination (%)
+Bull SCR class
+
+n1
+
+Day 19 2
+
+Day 333
+
+P value4
+
+Pregnancy loss (%)
+
+High
+Low
+P value5
+
+29
+47
+
+89.6
+68.0
+0.029
+
+79.0
+49.0
+<0.0001
+
+0.005
+<0.0001
+
+10.6
+19.0
+0.0149
+
+Includes only data from bulls 3, 5, 8, 9, and 10.
+Based on ISG15 expression using ROC analysis.
+3
+Determined by ultrasound.
+4
+Within a row, differences within SCR class between day 19 and day 33.
+5
+Within a column, differences between SCR class.
+2
+
+Table 3. In vitro development of embryos produced with SCR classified bulls (Experiment 2).
+Bull SCR class
+
+Sire
+
+Oocytes (n)
+
+Cleavage at Day 3 (%)1,2
+
+Blastocyst at Day 8 (%)
+
+High
+
+3
+5
+8
+9
+10
+High
+Low
+
+384
+388
+368
+374
+385
+762
+1127
+
+88.7  2.2a
+90.4  2.3a
+87.6  2.3a
+85.5  2.4a
+90.8  2.2a
+89.3  1.1a
+88.2  0.9a
+
+43.7  2.5a
+43.6  2.5a
+43.6  2.5a
+31.7  2.5b
+33.6  2.5b
+42.6  1.7a
+35.6  1.5b
+
+Low
+
+Overall
+1
+2
+
+Values are presented as least-squares means  SEM.
+Values with different superscripts differ (P < 0.05).
+
+Table 4. Cell number of in vitro produced blastocysts (Experiment 2).
+Hatched blastocysts2,3
+
+Expanded blastocysts
+Bull SCR class
+High
+Low
+
+Overall
+
+Sire
+3
+5
+8
+9
+10
+High
+Low
+
+n
+
+Trophectoderm
+
+52
+23
+14
+20
+25
+75
+59
+
+
+
+
+
+
+
+
+
+150
+164
+122
+144
+131
+144
+121
+
+a
+
+5
+10a
+9b,c
+8a,b
+7b,c
+7a
+7b
+
+ICM1
+60
+42
+59
+45
+50
+62
+57
+
+
+
+
+
+
+
+
+
+a
+
+6
+8c
+6a,b
+8b,c
+8a,b,c
+5a
+5a
+
+n
+
+Trophectoderm
+
+34
+19
+32
+20
+30
+53
+82
+
+
+
+
+
+
+
+
+
+232
+252
+184
+225
+243
+227
+216
+
+a
+
+14
+17a
+16b
+16a
+15a
+13a
+11a
+
+ICM
+79
+59
+74
+64
+63
+78
+73
+
+
+
+
+
+
+
+
+
+6a
+7c
+7a,b,c
+7b,c
+6c
+3a
+3a
+
+1
+
+ICM: inner cell mass.
+Values are presented as least-squares means  SEM.
+3
+Values with different superscripts differ (P < 0.05).
+2
+
+Effect of SCR classification on conceptus elongation
+assessed on day 16 (Experiment 4)
+On day 7 postestrus, Angus recipient heifers received 3-5 day 7 in
+vivo produced embryos from Experiment 3. Conceptus length was
+evaluated on day 16 by flushing the uterine lumen to recover intact
+conceptuses. At least one conceptus was recovered from all recipients
+slaughtered on day 16. The percentage of conceptuses recovered on
+day 16 was not different (P = 0.48) in embryos from high SCR
+(60.8  10.3%) and low SCR (55.0  10.0%) bulls. Distribution
+of conceptus lengths by SCR classification and by individual sire is
+presented in Figure 5. Conceptus length on day 16 was not affected
+by SCR class (P = 0.73) and was not different (P > 0.09) among sires.
+The transcriptome of high (n = 4) and low (n = 8) SCR conceptuses
+was determined using RNA-Seq. Subsequent analysis found (FDR
+P < 0.05) only 38 DEGs with 19 increased and 19 decreased in high
+SCR as compared to low SCR conceptuses (Supplementary table S2).
+Out of the 38 DEGs, 10 are novel transcripts of unknown function,
+
+and no gene ontology terms were found enriched in the remaining
+28 genes.
+
+Discussion
+SCR is an index calculated based on confirmation of pregnancy by
+day 70 after insemination [24, 25]. A wide range of biological processes associated with pregnancy establishment and success by the
+second month of gestation can affect SCR. The estimates of SCR
+for the bulls used in the present experiment were calculated based
+on thousands of breedings. As expected, only discrete differences in
+embryonic development and pregnancy success were observed in our
+studies. Similarly, small but significant differences exist among commercially available sires with respect to pregnancy rates [42]. For
+sires with a large number of breedings, differences are detectable,
+and the underlining causes of the reduced capacity of low SCR bulls
+to generate viable pregnancies seems to be variable among individual
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+1
+
+Sire influences on pregnancy establishment, 2018, Vol. 99, No. 6
+
+1251
+
+Table 5. Results from the superovulation (Experiment 3).
+Embryos (%)3,4,5
+Bull SCR class
+High
+Low
+
+3
+5
+8
+9
+10
+High
+Low
+
+n1
+
+Unfertilized oocytes (%)2,4,5
+
+Degenerated
+
+Grade 1
+
+11
+10
+11
+13
+15
+21
+39
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+3.9
+11.9
+6.6
+39.8
+15.0
+3.7
+20.7
+
+a
+
+8.8
+9.3a
+8.8a
+7.9b
+6.9a
+7.4a
+5.0b
+
+17.8
+11.5
+13.8
+26.5
+29.5
+17.0
+23.7
+
+b
+
+4.6
+4.7c
+4.6c
+4.9a,b
+4.1a
+3.6a
+3.0a
+
+63.2
+63.9
+64.2
+56.4
+42.4
+60.1
+52.8
+
+Grade 2
+a
+
+5.4
+5.6a
+5.4a
+5.8a
+4.9b
+4.3a
+3.6a
+
+24.0
+21.0
+19.9
+15.5
+28.9
+24.3
+22.8
+
+
+
+
+
+
+
+
+
+4.5a,b
+4.6a,b
+4.5a,b
+4.8b
+4.0a
+3.5a
+2.9a
+
+1
+
+Number of superovulation rounds.
+Percentage of total structures recovered.
+3
+Percentage of fertilized oocytes.
+4
+Values are presented as least-squares means  SEM.
+5
+Numbers with different superscripts differ (P < 0.05).
+2
+
+Figure 5. Length of conceptuses recovered from the uterine lumen on day
+16. Heifers received 3 to 5 in vivo produced embryos generated using semen
+from high or low SCR sires. (A) Mean conceptus length (red line) was not
+different between embryos from high and low SCR sires. (B) Distribution of
+conceptus length for embryos produced using high SCR (3 and 5) and low
+SCR (8, 9 and 10) sires.
+
+sires and can be multifactorial. Collectively, these results posit that
+the main influences of sire in pregnancy establishment manifest during fertilization, preimplantation development, and after conceptus
+elongation.
+In the present studies, preimplantation period (day 0-7) embryos
+from high SCR bulls were of higher quality based on in vitro and
+in vivo studies. In vivo, more UFO were recovered from superovulated heifers inseminated with low SCR bulls than when inseminated
+with the high SCR bulls. Interestingly, in vitro cleavage rate (as an
+indicator of fertilization) was not different among SCR classes or
+individual sires. Thus, processes involving sperm transport and capacitation in the female tract could be affected in heifers bred with
+
+low SCR semen, resulting in decreased fertilization rates in vivo.
+For example, ATP formation in sperm cells is positively correlated
+with the fertilizing ability of the sperm [43]. Peddinti and coauthors
+[44] identified 125 differentially abundant proteins in sperm of highand low-fertility bulls, and proteins involved in oxidative phosphorylation and pyruvate metabolism pathways were more abundant
+in sperm from high fertility bulls. ATP is required to regulate and
+maintain progressive motility and, ultimately, achieve fertilization of
+the oocyte [45]. The in vitro system is optimized to achieve fertilization by supplementation of energy sources such as sodium pyruvate
+and adjusting heparin concentration to improve capacitation, which
+could explain why fertilization in vitro was not different by SCR
+class or among sires. Similarly, Kropp and coauthors [46] found
+that fertilization rates in vitro were not affected by SCR bull classification.
+In this study, in vitro embryo production by day 8 of development was greater for high SCR bulls than for low SCR bulls. Before embryonic genome activation (8-16 cell stage in the bovine),
+the embryo relies on maternal RNA and proteins stored in the
+oocyte [47]; however, there are noncompensable sperm characteristics related to DNA/chromatin structure integrity that can affect
+embryonic development, particularly at early stages of development
+[48, 49]. Interestingly, the same bulls that produced fewer blastocyst
+in vitro (low SCR bulls 9 and 10) produced more degenerated embryos in vivo, indicating that developmental competency of embryos
+from these bulls is affected by mechanisms that are independent
+of oocyte origin or quality. One possibility is that there are genetic
+contributions of the sire that could result in errors during preimplantation development, particularly at the time of embryonic genome
+activation [50-54]. For instance, sperm from Fleckvieh bulls carrying the homozygous version of a nonsense mutation in TMEM95
+gene had lower in vitro fertility based on blastocyst production [55].
+Cochran and coauthors [53] identified 19 genetic variants in cattle associated with oocyte fertilization and embryonic development.
+Mutations in BSP3 and NEU3, which are involved in sperm motility
+and survival in the female reproductive tract, were associated with
+fertility in dairy bulls [56]. To further understand the influence of
+sire during embryonic preimplantation development, the genome of
+bulls that consistently produce fewer embryos should be examined
+to identify genetic markers and variants associated with preimplantation development.
+In the present study, at day 8 of development expanded blastocyst produced with low SCR bulls had fewer TE cell number than
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+Overall
+
+Sire
+
+1252
+
+PBMC as an indicator of conceptus IFNT production and the presence of viable conceptuses by day 19, serum PAGs between day 24
+and 32 of pregnancy to identify failures in implantation, and presence of an embryo and associated extraembryonic membranes on
+day 32.
+
+Supplementary data
+Supplementary data are available at BIOLRE online.
+Supplementary Table S1. Last official SCR available for each Holstein sire utilized in the experiments.
+Supplementary Table S2. Differentially expressed genes between day
+16 conceptuses from embryos generated using high and low SCR
+sires.
+Supplementary Figure S1. Representative images of embryos from
+high and low SCR bulls immunostained for CDX2. Nuclei were
+visualized by DAPI staining.
+
+Acknowledgments
+The authors thank Dr Mel Dejarnette and Select Sires for supporting this
+project, as well as Heartland Dairy and Transova genetics. Thanks are also
+extended to Gregory Burns for his assistance on bioinformatic analyses and to
+Dave Todd, Linda Rowland, and Eleanore O''Neil in the Spencer laboratory
+for their assistance in sample collection and processing.
+Authors'' contributions: MSO, JGNM, DJP, MFS, SP, and TES participated
+in study execution, analysis, manuscript drafting, and critical discussion. SKB
+performed the RNA sequencing analysis.
+
+References
+1.
+
+2.
+
+3.
+4.
+
+5.
+
+6.
+
+7.
+
+8.
+
+9.
+
+Wiltbank MC, Baez GM, Garcia-Guerra A, Toledo MZ, Monteiro PLJ,
+Melo LF, Ochoa JC, Santos JEP, Sartori R. Pivotal periods for pregnancy
+loss during the first trimester of gestation in lactating dairy cows. Theriogenology 2016; 86(1):239-253.
+Santos JEP, Thatcher WW, Chebel RC, Cerri RLA, Galvao
+ KN. The effect
+of embryonic death rates in cattle on the efficacy of estrus synchronization
+programs. Anim Reprod Sci 2004; 82-83:513-535.
+Diskin M, Morris D. Embryonic and early foetal losses in cattle and other
+ruminants. Reprod Domest Anim 2008; 43:260-267.
+Kropp J, Penagaricano
+F, Salih SM, Khatib H. Invited review: Genetic
+
+contributions underlying the development of preimplantation bovine embryos. J Dairy Sci 2014; 97(3):1187-1201.
+Wiltbank MC, Souza AH, Carvalho PD, Cunha AP, Giordano JO,
+Fricke PM, Baez GM, Diskin MG. Physiological and practical effects
+of progesterone on reproduction in dairy cattle. Animal 2014; 8(s1):70-
+81.
+Ribeiro ES, Gomes G, Greco LF, Cerri RLA, Vieira-Neto A, Monteiro PLJ,
+Jr, Lima FS, Thatcher WW, Santos JEP. Carryover effect of postpartum
+inflammatory diseases on developmental biology and fertility in lactating
+dairy cows. J Dairy Sci 2016; 99(3):2201-2220.
+Geary TW, Burns GW, Moraes JGN, Moss JI, Denicol AC, Dobbs KB,
+Ortega MS, Hansen PJ, Wehrman ME, Neibergs H, O''Neil E, Behura
+S et al. Identification of beef heifers with superior uterine capacity for
+pregnancy. Biol Reprod 2016; 95(2):47.
+Minten MA, Bilby TR, Bruno RGS, Allen CC, Madsen CA, Wang Z,
+Sawyer JE, Tibary A, Neibergs HL, Geary TW, Bauersachs S, Spencer
+TE. Effects of fertility on gene expression and function of the bovine
+endometrium. PLoS One 2013; 8(8):e69444.
+Moraes JGN, Behura SK, Geary TW, Hansen PJ, Neibergs HL,
+Spencer TE. Uterine influences on conceptus development in fertilityclassified animals. Proc Natl Acad Sci USA 2018; 115(8):E1749-
+E1758.
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+those produced with high SCR bulls. However, that difference was
+not maintained once the embryos hatched from the zona pellucida.
+The observed differences could be attributed to developmental stage
+differences at the time of analysis given that the fertilization period
+was 21 h. There is evidence that embryos with higher cell counts
+at the blastocyst stage have an advantage in survival up to day 14
+of development and conceptus length [57]. In the present study, cell
+number was not determined on embryos before transferring, so this
+relationship was not established. However, when in vivo produced
+embryos from high and low SCR sires were transferred into recipient
+heifers, conceptus recovery and length on day 16 was not different
+among SCR groups or individual sires. The substantial variation in
+day 16 conceptus length found in this study has been document in
+others [7, 9, 12, 58, 59]. Thus, it is likely that the ability of a conceptus to survive and elongate is not directly affected by the sire or
+paternal genetics.
+A critical period of pregnancy establishment after conceptus elongation involves implantation of the conceptus that is coincident with
+formation of the allantois, vascularization of the placenta, and trophoblast differentiation. When comparing the transcriptome of conceptuses of different lengths within each SCR class, the amount of
+DEG is similar to what was previously found between short and long
+conceptuses (26 DEG) in a previous study [9]. It is recognized that
+the sample size in the present work is small, which could have limited
+the number of DEGs found. Nevertheless, analyses found that conceptuses from high SCR had increased expression of genes associated
+with trophoblast differentiation in mice such as Cited1 and Id2 [60,
+61]. Those genes may not impact conceptus elongation but compromise postelongation implantation and pregnancy establishment by
+day 32 [9, 62].
+As expected [63, 64], several ISGs in WBC at day 19 post AI
+were higher in heifers that were diagnosed pregnant by transrectal
+ultrasonography by day 33 AI regardless of the bull fertility classification. Measurement of ISGs in PBMC proved to be a useful tool to
+identify females carrying viable conceptuses by day 19 of pregnancy.
+Moreover, ROC analysis was conducted to discriminate between
+preimplantation and postelongation defects in pregnancy establishment and indicated that pregnancy loss between days 19 and 33 was
+two-fold greater in low SCR sires. These results support the idea
+that defects in mechanisms associated with conceptus implantation
+for pregnancy establishment is more prevalent in conceptuses of low
+SCR sires. Of note, lower concentrations of PAGs at day 31 are associated with late embryonic mortality after day 32 [29]. In the present
+study, SCR class and sire did not influence PAG abundance at day 33
+of pregnancy, suggesting that the low SCR sires have problems with
+early embryonic mortality that manifests during the fourth week of
+pregnancy.
+The series of experiments presented identified one Holstein sire
+with particularly high levels of early embryonic mortality. The
+present studies highlight influences of the paternal (sire) genome
+on a continuum of early pregnancy events from fertilization and
+preimplantation development to postelongation implantation and
+embryogenesis. Thus, the inability to develop genetic predictors of
+SCR is due to the various phenotypes involved in the trait. To date,
+genomic regions associated with SCR have been identified in genes
+influencing semen quality and fertilization [65, 66]. Future investigations should focus on identifying genetic variants in bulls that
+govern early embryonic mortality that are not based solely on the
+SCR value and incorporate other traits including return to estrus to
+identify fertilization and preimplantation defects, ISG expression in
+
+M. S. Ortega et al., 2018, Vol. 99, No. 6
+
+Sire influences on pregnancy establishment, 2018, Vol. 99, No. 6
+
+31. Hart PD. Receiver operating characteristic (ROC) curve analysis: A tutorial using body mass index (BMI) as a measure of obesity. J Phys Act Res
+J Phys Act Res 2016; 1:5-8.
+32. Youden WJ. Index for rating diagnostic tests. Cancer 1950; 3:32-35.
+33. Siqueira LG, Tribulo P, Chen Z, Denicol AC, Ortega MS, Negron-P
+erez
+
+VM, Kannampuzha-Francis J, Pohler KG, Rivera RM, Hansen PJ. Colonystimulating factor 2 acts from days 5 to 7 of development to modify
+programming of the bovine conceptus at day 86 of gestation. Biol Reprod
+2017; 96:743-757.
+34. Ortega MS, Rocha-Frigoni NAS, Mingoti GZ, Roth Z, Hansen PJ. Modification of embryonic resistance to heat shock in cattle by melatonin and
+genetic variation in HSPA1L. J Dairy Sci 2016; 99:9152-9164.
+35. Ortega MS, Kurian JJ, McKenna R, Hansen PJ. Characteristics of candidate genes associated with embryonic development in the cow: evidence
+for a role for WBP1 in development to the blastocyst stage. PLoS One
+2017; 12:e0178041.
+36. Stringfellow D, Givens D. Manual of the International Embryo Transfer
+Society. 4th ed. International Embryo Transfer Society, USA, p. 151.
+37. Martin M. Cutadapt removes adapter sequences from high-throughput
+sequencing reads. EMBnet J 2011; 17:10-12.
+38. HISAT: a fast spliced aligner with low memory requirements. Nat Meth
+http://www.nature.com/nmeth/journal/v12/n4/full/nmeth.3317.html.
+Accessed 24 August 2017.
+39. Liao Y, Smyth GK, Shi W. featureCounts: an efficient general purpose
+program for assigning sequence reads to genomic features. Bioinformatics
+2014; 30:923-930.
+40. Zhou X, Lindsay H, Robinson MD. Robustly detecting differential expression in RNA sequencing data using observation weights. Nucleic Acids Res
+2014; 42:e91.
+41. Chen J, Bardes EE, Aronow BJ, Jegga AG. ToppGene Suite for gene list
+enrichment analysis and candidate gene prioritization. Nucleic Acids Res
+2009; 37:W305-W311.
+42. DeJarnette JM, Marshall CE, Lenz RW, Monke DR, Ayars WH, Sattler
+CG. Sustaining the fertility of artificially inseminated dairy cattle: the
+role of the artificial insemination industry. J Dairy Sci 2004; 87:E93-
+E104.
+43. Garrett LJA, Revell SG, Leese HJ. Adenosine triphosphate production
+by bovine spermatozoa and its relationship to semen fertilizing ability. J
+Androl 2008; 29:449-458.
+44. Peddinti D, Nanduri B, Kaya A, Feugang JM, Burgess SC, Memili E. Comprehensive proteomic analysis of bovine spermatozoa of varying fertility
+rates and identification of biomarkers associated with fertility. BMC Syst
+Biol 2008; 2:19.
+45. Harayama H, Minami K, Kishida K, Noda T. Protein biomarkers for
+male artificial insemination subfertility in bovine spermatozoa. Reprod
+Med Biol 2017; 16:89-98.
+46. Kropp J, Carrillo JA, Namous H, Daniels A, Salih SM, Song J, Khatib
+H. Male fertility status is associated with DNA methylation signatures
+in sperm and transcriptomic profiles of bovine preimplantation embryos.
+BMC Genomics 2017; 18:280.
+47. Graf A, Krebs S, Zakhartchenko V, Schwalb B, Blum H, Wolf E. Fine
+mapping of genome activation in bovine embryos by RNA sequencing.
+Proc Natl Acad Sci 2014; 111:4139-4144.
+48. Ballachey BE, Evenson DP, Saacke RG. The sperm chromatin structure
+assay relationship with alternate tests of semen quality and heterospermic
+performance of bulls. J Androl 1988; 9:109-115.
+49. Flowers WL. Triennial reproduction symposium: Sperm characteristics
+that limit success of fertilization. J Anim Sci 2013; 91:3022-3029.
+50. Khatib H, Maltecca C, Monson RL, Schutzkus V, Wang X, Rutledge JJ.
+The fibroblast growth factor 2 gene is associated with embryonic mortality
+in cattle. J Anim Sci 2008; 86:2063-2067.
+51. Khatib H, Monson RL, Huang W, Khatib R, Schutzkus V, Khateeb H,
+Parrish JJ. Short communication: validation of in vitro fertility genes in a
+Holstein bull population. J Dairy Sci 2010; 93:2244-2249.
+52. Li G, Khateeb K, Schaeffer E, Zhang B, Khatib H. Genes of the
+transforming growth factor-beta signalling pathway are associated with
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+10. Spencer TE, Hansen TR. Implantation and establishment of pregnancy in
+ruminants. Adv Anat Embryol Cell Biol 2015; 216:105-135.
+11. Betteridge KJ, Eaglesome MD, Randall GCB, Mitchell D. Collection, description and transfer of embryos from cattle 10-16 days after oestrus.
+Reproduction 1980; 59:205-216.
+12. Berg DK, van Leeuwen J, Beaumont S, Berg M, Pfeffer PL. Embryo loss
+in cattle between Days 7 and 16 of pregnancy. Theriogenology 2010;
+73:250-260.
+13. Spencer TE, Burghardt RC, Johnson GA, Bazer FW. Conceptus signals
+for establishment and maintenance of pregnancy. Anim Reprod Sci 2004;
+82:537-550.
+14. Bazer FW, Wu G, Spencer TE, Johnson GA, Burghardt RC, Bayless K.
+Novel pathways for implantation and establishment and maintenance of
+pregnancy in mammals. Mol Hum Reprod 2010; 16:135-152.
+15. Brooks K, Burns G, Spencer TE. Conceptus elongation in ruminants: roles
+of progesterone, prostaglandin, interferon tau and cortisol. J Anim Sci
+Biotechnol 2014; 5:53.
+16. Hansen TR, Austin KJ, Perry DJ, Pru JK, Teixeira MG, Johnson GA.
+Mechanism of action of interferon-tau in the uterus during early pregnancy. J Reprod Fertil Suppl 1999; 54:329-339.
+17. Spencer TE, Sandra O, Wolf E. Genes involved in conceptus-endometrial
+interactions in ruminants: insights from reductionism and thoughts on
+holistic approaches. Reproduction 2008; 135:165-179.
+18. Brooks K, Spencer TE. Biological roles of Interferon Tau (IFNT) and Type
+I IFN receptors in elongation of the ovine conceptus. Biol Reprod 2015;
+92:47.
+19. Wooding FB. The synepitheliochorial placenta of ruminants: binucleate
+cell fusions and hormone production. Placenta 1992; 13:101-113.
+20. Green JA, Parks TE, Avalle MP, Telugu BP, McLain AL, Peterson AJ,
+McMillan W, Mathialagan N, Hook RR, Xie S, Roberts RM. The establishment of an ELISA for the detection of pregnancy-associated glycoproteins (PAGs) in the serum of pregnant cows and heifers. Theriogenology
+2005; 63:1481-1503.
+21. Greenstein JS, Murray RW, Foley RC. Observations on the morphogenesis
+and histochemistry of the bovine pre-attachment placenta between 16 and
+33 days of gestation. Anat Rec 1958; 132:321-341.
+22. Pohler KG, Geary TW, Johnson CL, Atkins JA, Jinks EM, Busch DC,
+Green JA, MacNeil MD, Smith MF. Circulating bovine pregnancy associated glycoproteins are associated with late embryonic/fetal survival but
+not ovulatory follicle size in suckled beef cows. J Anim Sci 2013; 91:4158-
+4167.
+23. Starbuck MJ, Dailey RA, Inskeep EK. Factors affecting retention of early
+pregnancy in dairy cattle. Anim Reprod Sci 2004; 84:27-39.
+24. Kuhn MT, Hutchison JL, Wiggans GR. Characterization of holstein heifer
+fertility in the united states. J Dairy Sci 2006; 89:4907-4920.
+25. Norman HD, Hutchison JL, VanRaden PM. Evaluations for service-sire
+conception rate for heifer and cow inseminations with conventional and
+sexed semen. J Dairy Sci 2011; 94:6135-6142.
+26. Garcia-Ruiz A, Cole JB, VanRaden PM, Wiggans GR, Ruiz-Lopez
+FJ,
+
+Changes in genetic selection differentials and generation intervals in US
+Holstein dairy cattle as a result of genomic selection. Proc Natl Acad Sci
+USA 2016; 113:E3995-E4004.
+27. Valour D, Michot P, Eozenou C, Lefebvre R, Bonnet A, Capitan A,
+Uzbekova S, Sellem E, Ponsart C, Schibler L. Dairy cattle reproduction
+is a tightly regulated genetic process: Highlights on genes, pathways, and
+biological processes. Anim Front 2015; 5:32-41.
+28. Wiggans GR, Cole JB, Hubbard SM, Sonstegard TS. Genomic selection in
+dairy cattle: The USDA experience. Annu Rev Anim Biosci 2017; 5:309-
+327.
+29. Pohler KG, Pereira MHC, Lopes FR, Lawrence JC, Keisler DH, Smith
+MF, Vasconcelos JLM, Green JA. Circulating concentrations of bovine
+pregnancy-associated glycoproteins and late embryonic mortality in lactating dairy herds. J Dairy Sci 2016; 99:1584-1594.
+30. Ruopp MD, Perkins NJ, Whitcomb BW, Schisterman EF. Youden index
+and optimal cut-point estimated from observations affected by a lower
+limit of detection. Biom J 2008; 50:419-430.
+
+1253
+
+1254
+
+53.
+
+54.
+
+56.
+
+57.
+
+58.
+
+59.
+
+60. Rodriguez TA, Sparrow DB, Scott AN, Withington SL, Preis JI, Michalicek J, Clements M, Tsang TE, Shioda T, Beddington RSP, Dunwoodie SL. Cited1 is required in trophoblasts for placental development and for embryo growth and survival. Mol Cell Biol 2004; 24:228-
+244.
+61. Janatpour MJ, McMaster MT, Genbacev O, Zhou Y, Dong J, Cross
+JC, Israel MA, Fisher SJ. Id-2 regulates critical aspects of human cytotrophoblast differentiation, invasion and migration. Development 2000;
+127:549-558.
+62. Biase FH, Rabel C, Guillomot M, Hue I, Andropolis K, Olmstead
+CA, Oliveira R, Wallace R, Le Bourhis D, Richard C, Campion E,
+Chaulot-Talmon A et al. Massive dysregulation of genes involved in
+cell signaling and placental development in cloned cattle conceptus and
+maternal endometrium. Proc Natl Acad Sci USA 2016; 113:14492-
+14501.
+63. Gifford CA, Racicot K, Clark DS, Austin KJ, Hansen TR, Lucy MC, Davies
+CJ, Ott TL. Regulation of interferon-stimulated genes in peripheral blood
+leukocytes in pregnant and bred, nonpregnant dairy cows. J Dairy Sci
+2007; 90:274-280.
+64. Haq IU, Han Y, Ali T, Wang Y, Gao H, Lin L, Wu Y, Wu S, Zeng S. Expression of interferon-stimulated gene ISG15 and ubiquitination enzymes
+is upregulated in peripheral blood monocyte during early pregnancy in
+dairy cattle. Reprod Biol 2016; 16:255-260.
+65. Han Y, Penagaricano
+F. Unravelling the genomic architecture of bull fer
+tility in Holstein cattle. BMC Genet 2016; 17:143.
+66. Abdollahi-Arpanahi R, Morota G, Penagaricano
+F. Predicting bull fer
+tility using genomic data and biological information. J Dairy Sci 2017;
+12:9656-9666.
+
+Downloaded from https://academic.oup.com/biolreprod/article-abstract/99/6/1244/5040218 by Jackson Laboratory user on 26 December 2018
+
+55.
+
+pre-implantation embryonic development in cattle. J Dairy Res 2012;
+79:310-317.
+Cochran SD, Cole JB, Null DJ, Hansen PJ. Single nucleotide polymorphisms in candidate genes associated with fertilizing ability of sperm
+and subsequent embryonic development in cattle. Biol Reprod 2013; 89:
+69.
+Graf A, Krebs S, Heininen-Brown M, Zakhartchenko V, Blum H, Wolf
+E. Genome activation in bovine embryos: review of the literature and
+new insights from RNA sequencing experiments. Anim Reprod Sci 2014;
+149:46-58.
+Fernandez-Fuertes B, Laguna-Barraza R, Fernandez-Gonzalez R,
+Gutierrez-Adan A, Blanco-Fernandez A, O''Doherty AM, Di Fenza M,
+Kelly AK, Kolle
+S, Lonergan P. Subfertility in bulls carrying a nonsense
+
+mutation in transmembrane protein 95 is due to failure to interact with
+the oocyte vestments. Biol Reprod 2017; 97:50-60.
+Cochran SD, Cole JB, Null DJ, Hansen PJ. Discovery of single nucleotide
+polymorphisms in candidate genes associated with fertility and production
+traits in Holstein cattle. BMC Genet 2013; 14:49.
+O''Hara L, Forde N, Kelly AK, Lonergan P. Effect of bovine blastocyst
+size at embryo transfer on day 7 on conceptus length on day 14: Can
+supplementary progesterone rescue small embryos? Theriogenology 2014;
+81:1123-1128.
+Barnwell CV, Farin PW, Ashwell CM, Farmer WT, Galphin SP, Farin CE.
+Differences in mRNA populations of short and long bovine conceptuses
+on Day 15 of gestation. Mol Reprod Dev 2016; 83:424-441.
+Ribeiro ES, Greco LF, Bisinotto RS, Lima FS, Thatcher WW, Santos JE.
+Biology of preimplantation conceptus at the onset of elongation in dairy
+cows. Biol Reprod 2016; 94:1-18.
+
+M. S. Ortega et al., 2018, Vol. 99, No. 6
+
+;;

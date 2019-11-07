@@ -1676,3 +1676,37 @@ Oct 29, 2019
     2019/10/29-15-50-21	F2PRNPV	0.8740	0.8668	0.8758	0.9061	GB.py
 
     have only tried one other tuning param with worse results.
+
+Nov 4, 2019
+    using GB with RF classifer as initial step and w/ learning rate .5, get:
+    THIS IS PRETTY GOOD.    HOWEVER, this is overfitting.
+
+    See:  2019/11/04-11-38-38  GB.py
+    ### Note: init param: RF w/ n_estimators=50, min_samples_leaf=15
+
+    Train (keep) F2: 0.9313    P: 0.9453    R: 0.9278    NPV: 0.9164
+    Valid (keep) F2: 0.8849    P: 0.8633    R: 0.8905    NPV: 0.915
+
+    Trying the GB param tuning approach described above
+    https://www.analyticsvidhya.com/blog/2016/02/complete-guide-parameter-tuning-gradient-boosting-gbm-python/
+
+    Added optional note to textTuningLib.py to be part of the report output.
+    Added extractPipelineStep.py to pull a trained classifier out of pickled
+	Pipeline file so it can be used as the init step of GB.
+
+    NOTE: realized it doesn't make sense to use a pickled RF classifier.
+    The original idea was to have the new RF.fit() method not have to be called
+    during training of the outer GB classifier BUT the training set may be
+    different, particularly if we are doing cross validation or when it is
+    time to train to predict the training and validation sets.
+
+Nov 6, 2019
+    Refactored getBestParamsReport and getGridSearchReport in textTuningLib.py.
+	in particular, gridSearchReport now includes scores for each pipeline
+	paramater permutation.
+
+    1st step of GB param tuning:  ### Start Time 2019/11/05-20-08-36  GB.py
+	- seems to really want more n_estimators
+	- will try higher learning rate to find a reasonable # of estimators
+
+

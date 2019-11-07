@@ -1,0 +1,36 @@
+GB analysis
+### Start Time 2019/11/06-21-57-28  GB.py 
+### Grid Search Scores:
+Fixing: max_features: 'sqrt', subsample': 0.8, learning_rate': 1.0,
+		n_estimators': 80, min_samples_leaf': 200
+Varying:
+min_samples_split': 500  max_depth': 3} mean_test_score:  0.858527
+min_samples_split': 750  max_depth': 3} mean_test_score:  0.861102  **
+min_samples_split': 1000 max_depth': 3} mean_test_score:  0.858948
+
+min_samples_split': 500  max_depth': 6} mean_test_score:  0.852236
+min_samples_split': 750  max_depth': 6} mean_test_score:  0.853551
+min_samples_split': 1000 max_depth': 6} mean_test_score:  0.852059
+
+min_samples_split': 500  max_depth': 9} mean_test_score:  0.844500
+min_samples_split': 750  max_depth': 9} mean_test_score:  0.850452
+min_samples_split': 1000 max_depth': 9} mean_test_score:  0.852619
+
+### Grid Search Best Score: 0.861102
+
+Observations:
+max_depth = 3 is better than all other permutations
+
+min_samples_split = 750 is better in 2/3 cases,
+    and only slightly worse in the 3rd case
+
+Ponder:
+try max_depth 2,3,4?   ----- DECIDE:  stick with 3, it is pretty small already
+try min_samples_split 700, 750, 800 ?
+
+for min_samples_leaf:
+    "don't split a node if one of its children will have fewer samples"
+
+Try:
+vary min_samples_split [700, 750, 800]
+min_samples_leaf: [100, 200, 300]

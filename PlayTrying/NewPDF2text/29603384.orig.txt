@@ -1,0 +1,1594 @@
+Axoglial synapses are formed onto pioneer oligodendrocyte precursor cells at the onset of spinal cord gliogenesis.
+Virtually all oligodendrocyte precursors cells (OPCs) receive glutamatergic and/or GABAergic synapses that are lost upon their differentiation into oligodendrocytes in the postnatal and adult brain. Although OPCs are generated at mid-embryonic stages, several weeks before the onset of myelination, it remains unknown when and where OPCs receive their first synapses and become susceptible to the influence of neuronal activity. In the embryonic spinal cord, neuro-epithelial precursors in the pMN domain cease generating cholinergic motor neurons (MNs) to produce OPCs when the first synapses are formed in the ventral-lateral marginal zone. We discovered that when the first synapses form onto MNs, axoglial synapses also form onto the processes of neuro-epithelial precursors located in the marginal zone as they differentiate into OPCs. After leaving the neuro-epithelium, these pioneer OPCs preferentially accumulate in the marginal zone where they are contacted by functional glutamatergic and GABAergic synapses. Spontaneous activity of these axoglial synapses was significantly potentiated by cholinergic signaling acting through presynaptic nicotinic acetylcholine receptors. Moreover, we discovered that chronic nicotine treatment significantly increases early OPC proliferation and density in the marginal zone. Our results demonstrate that OPCs are contacted by functional synapses as soon as they emerge from their precursor domain and that embryonic spinal cord colonization by OPCs can be regulated by cholinergic signaling acting onto these axoglial synapses.
+Received: 22 June 2017
+
+
+
+
+Revised: 5 March 2018
+
+
+
+
+Accepted: 5 March 2018
+
+DOI: 10.1002/glia.23331
+
+RESEARCH ARTICLE
+
+Axoglial synapses are formed onto pioneer oligodendrocyte
+precursor cells at the onset of spinal cord gliogenesis
+ Arulkandarajah1 
+
+Guillaume Osterstock1 
+ Barbara Le Bras1 
+ Kalaimakan Herve
+ Le Corronc1,2 
+ Antonny Czarnecki1 
+ Christine Mouffle1 
+ Erika Bullier1 
+
+Herve
+Pascal Legendre1
+
+
+
+
+Jean-Marie Mangin1
+
+1
+, UM119,
+Sorbonne Universite
+Neuroscience Paris Seine, Paris F-75005,
+France Centre National de la Recherche
+Scientifique (CNRS), UMR 8246, Paris
+F-75005, France Institut National de la
+ et de la Recherche Me
+dicale
+Sante
+(INSERM), U1130, Paris, F-75005, France
+2
+
+ d''Angers, Angers, 49000, France
+Universite
+
+Abstract
+Virtually all oligodendrocyte precursors cells (OPCs) receive glutamatergic and/or GABAergic synapses that are lost upon their differentiation into oligodendrocytes in the postnatal and adult brain.
+Although OPCs are generated at mid-embryonic stages, several weeks before the onset of myelination, it remains unknown when and where OPCs receive their first synapses and become
+susceptible to the influence of neuronal activity. In the embryonic spinal cord, neuro-epithelial precursors in the pMN domain cease generating cholinergic motor neurons (MNs) to produce OPCs
+
+Correspondence
+Jean-Marie Mangin, Laboratoire
+Neuroscience Paris Seine, 7-9 Quai Saint
+Bernard, 75005 Paris, France.
+Email: jean-marie.mangin@inserm.fr
+Funding information
+Agence Nationale de la Recherche, Grant/
+Award Number: ANR-11-JSV4-002-01;
+Institut de Recherche sur la Moelle et
+phale; AFM-Telethon; Fondation pour
+l''ence
+dicale
+la Recherche Me
+
+when the first synapses are formed in the ventral-lateral marginal zone. We discovered that when
+the first synapses form onto MNs, axoglial synapses also form onto the processes of neuroepithelial precursors located in the marginal zone as they differentiate into OPCs. After leaving the
+neuro-epithelium, these pioneer OPCs preferentially accumulate in the marginal zone where they
+are contacted by functional glutamatergic and GABAergic synapses. Spontaneous activity of these
+axoglial synapses was significantly potentiated by cholinergic signaling acting through presynaptic
+nicotinic acetylcholine receptors. Moreover, we discovered that chronic nicotine treatment significantly increases early OPC proliferation and density in the marginal zone. Our results demonstrate
+that OPCs are contacted by functional synapses as soon as they emerge from their precursor
+domain and that embryonic spinal cord colonization by OPCs can be regulated by cholinergic
+signaling acting onto these axoglial synapses.
+
+KEYWORDS
+
+development, electrophysiology, neural precursor, oligodendrocyte
+
+1 
+ INTRODUCTION
+
+the mammalian postnatal and adult brain and they have been reported
+in all brain areas investigated so far - hippocampus, cortex, cerebellum,
+
+Oligodendrocyte progenitor cells (OPCs) are a subpopulation of glial
+
+brainstem, corpus callosum and optic nerve (Gallo, Mangin, Kukley, &
+
+cells known to give rise to most if not all myelinating oligodendrocytes,
+
+Dietrich, 2008; Hill & Nishiyama, 2014; Lin & Bergles, 2004). Because
+
+both during development and after a demyelinating injury in the
+
+axoglial synapses are formed de novo during remyelination (Etxeberria
+
+postnatal and adult brain (Bergles & Richardson, 2016). One of the
+
+et al., 2010; Sahel et al., 2015) and are lost upon differentiation into
+
+most intriguing property of brain OPCs is their ability to receive
+
+oligodendrocytes (De Biase, Nishiyama, & Bergles, 2010; Kukley,
+
+glutamatergic and GABAergic synapses from neurons, both in the grey
+
+Nishiyama, & Dietrich, 2010), it has been suggested that they play a
+
+(Bergles, Roberts, Somogyi, & Jahr, 2000; Lin & Bergles, 2004; Mangin,
+
+specific role during the early steps of the myelination/remyelination
+
+Kunze, Chittajallu, & Gallo, 2008) and white matter areas (Etxeberria,
+
+process at postnatal and adult stages (Etxeberria et al., 2010; Gallo
+
+Mangin, Aguirre, & Gallo, 2010; Kukley, Capetillo-Zarate, & Dietrich,
+
+et al., 2008; Paukert & Bergles, 2006; Sahel et al., 2015). However,
+
+2007; Sahel et al., 2015; Ziskin, Nishiyama, Rubio, Fukaya, & Bergles,
+
+OPCs are generated from their precursor domains at mid-embryonic
+
+2007). Axoglial synapses appear to be a universal feature of OPCs in
+
+stages, several weeks before the onset of myelination (Rowitch, 2004)
+
+1678
+
+
+
+
+C 2018 Wiley Periodicals, Inc.
+V
+
+wileyonlinelibrary.com/journal/glia
+
+Glia. 2018;66:1678-1694.
+
+OSTERSTOCK
+
+
+
+
+ET AL.
+
+1679
+
+and it still remains unknown whether these pioneer OPCs could already
+
+phosphodiesterase promoters (CNP-EGFP) in oligodendroglial cells
+
+be under the influence of axoglial transmission at such early stages,
+
+(Yuan et al., 2002) were crossed with 8-12-week-old Swiss mice
+
+when they start colonizing the central nervous system.
+
+(Janvier labs, Le Genest-Saint-Isle, France). Embryonic mouse spinal
+
+The two earliest markers of OPCs are the chondroitin sulfate
+
+cords were dissected as previously described (Czarnecki et al., 2014).
+
+proteoglycan NG2 and the platelet-derived growth factor receptor A
+
+Briefly, pregnant mice were killed using a lethal dose of CO2 followed
+
+(PDGFRa; Nishiyama, Lin, Giese, Heldin, & Stallcup, 1996; Pringle &
+
+by cervical dislocation. Mice embryos of both sexes were removed and
+
+Richardson, 1993). In the mouse spinal cord, these two markers first
+
+quickly observed under a 470-515 nm excitation light using a fluores-
+
+appear around the 12th embryonic day of development (E12) in a
+
+cence stereo-microscope (Leica MZ FLIII, Wetzlar, Germany) to identify
+
+restricted domain of the ventricular zone (VZ) lining the central canal
+
+EGFP-expressing embryos. The SC was isolated from EGFP positive
+
+known as the pMN domain (for precursor of Motor Neurons). The
+
+embryos. Whole SCs were then incubated for 1 hr at 378C in ACSF
+
+pMN domain, characterized by the expression of the olig2 transcription
+
+containing 126 mM NaCl, 25 mM NaHCO3, 10 mM glucose, 4.5 mM
+
+factor, contains neuro-epithelial precursors which switch from motor
+
+KCl, 2 mM CaCl2, 1.2 mM NaH2PO4, and 1 mM MgCl2 (325 mosmol/
+
+neuron (MN) genesis to OPC production around E12. However, the
+
+kg H2O), continuously bubbled with a 95% O2-5% CO2 gas mixture.
+
+molecular and cellular mechanism(s) triggering and regulating this event
+are still not fully understood. In the embryonic spinal cord, synaptogen-
+
+2.2 
+ Patch-clamp recordings
+
+esis also starts around E12 when longitudinal axons from GABAergic
+and glutamatergic spinal interneurons (INs) form their first synapses
+onto MN dendrites located in the marginal zone (MZ; Czarnecki et al.,
+2014; Scain et al., 2010; Vaughn, Henrikson, & Grieshaber, 1974).
+
+The isolated spinal cord was placed in a recording chamber and continuously perfused (2 ml/min) at room temperature (208C-248C) with the oxygenated ACSF described above. Whole-cell voltage-clamp recordings of
+
+In the present study, we found that, at E12, the first OPCs
+
+CNP-EGFP cells were performed under direct visualization using an
+
+expressing NG2 in the pMN domain exhibit radial processes that cross
+
+infrared-sensitive CCD video camera. In addition to their GFP fluores-
+
+the ventral parenchyma to reach the MZ near the motor exit point
+
+cence, OPCs were distinguished based on their location inside the mar-
+
+(MEP), where MN axons exit the spinal cord. During the next two days,
+
+ginal zone, their elongated morphology and the presence of IA and IKDR
+
+as they leave the neuro-epithelium to colonize the ventral spinal cord,
+
+voltage-dependent currents. To confirm their OPC identity, some
+
+the cell bodies of these pioneer OPCs were found to preferentially
+
+recorded cells were filled with neurobiotin (1 mg/ml) and revealed in com-
+
+accumulate around the MEP. By performing patch-clamp recordings in
+
+bination with NG2 immunostaining (N 5 6/6). Whole-cell patch-clamp
+
+whole embryonic spinal cord preparation, we found that these pioneer
+
+electrodes were pulled from thick-wall borosilicate glass using a Brown-
+
+OPCs formed functional synapses with glutamatergic and GABAergic
+
+Flaming puller (Sutter Instrument, Novato, CA, USA). Patch-clamp electro-
+
+axons as soon as their soma invaded the marginal zone. In addition,
+
+des had resistances of 5-7 MX. For voltage-clamp experiments, the elec-
+
+electron microscopy showed that synaptic-like axoglial contacts are
+
+trode was filled with a solution containing the following: 130 mM
+
+already forming onto neuro-epithelial precursor endfeet located around
+
+K-gluconate, 4 mM NaCl, 10 mM EGTA, 10 mM HEPES, 4 mM MgCl2,
+
+the MEP at E12. Although OPCs did not express any functional nico-
+
+4 mM Na2 ATP, 0.3 mM Na3 GTP, pH 7.2 (290 mosmol/kg-H2O). In such
+
+tinic acetylcholine receptor (nAChR), both glutamatergic and GABAer-
+
+conditions, the equilibrium potential for chloride ions (ECl) was 260 mV
+
+gic synaptic inputs were significantly potentiated by exogenous
+
+while the cations reverse potential (Ecat) was 0 mV. Signals were recorded
+
+acetylcholine acting through presynaptic nAChRs. The application of
+
+using a Multiclamp 700B amplifier (Molecular Devices, San Jose, CA,
+
+nAChR antagonist was found to significantly depress only GABAergic
+
+USA). Signals were low-pass filtered (4 kHz), digitized (20 kHz) using a Digi-
+
+evoked currents and spontaneous GABAergic synaptic activity, show-
+
+data 1440A interface, and acquired online using pClamp 10 software
+
+ing that endogenous cholinergic signaling preferentially potentiate early
+
+(Molecular Devices, San Jose, CA, USA). Analyses were performed off-line
+
+GABAergic axoglial inputs onto OPCs. Finally, we found that chronic
+
+using Axograph X.1.5.4 software (AxoGraph Scientific Software, Sydney,
+
+administration of nicotine during the onset of gliogenesis significantly
+
+Australia). In voltage-clamp experiments, cells were recorded either at a
+
+increased OPC density and proliferation in the ventral spinal cord.
+
+holding potential of 260 or 0 mV to isolate cationic and chloride currents,
+respectively. Electrical stimulations of longitudinal axons located in the MZ
+
+2 
+ MATERIALS AND METHODS
+
+were performed using bipolar platinum electrodes (FHC, Bowdoin, ME,
+
+2.1 
+ Isolated embryonic spinal cord preparation
+
+formed at a low frequency (0.016 Hz) in order to evoke a stable response.
+
+USA) placed 500 mm rostrally to the recording site. Stimulations were per-
+
+All experiments were performed in accordance with European Community guiding principles on the care and use of animals (86/609/CEE, CE
+
+2.3 
+ Pharmacological agents
+
+Off J L358, December 18, 1986), the French decree 97/748 of Octo-
+
+During patch-clamp recordings, all drugs were applied via the bath per-
+
+publique Francaise, October 20, 1987, pp.
+ber 19, 1987 (J Off Re
+
+fusion system. Typically, the effect of drugs reached a steady-state
+
+12245-12248), and the recommendations from the Centre National de
+
+within 3-4 minutes after solution switch, and the mean recovery time
+
+la Recherche Scientifique. C57BL/6 mice expressing an enhanced
+
+was 15 min. Activity was recorded for at least 5 min at steady state
+
+green fluorescence protein (EGFP) driven by cyclic nucleotide 3-
+
+under each condition. The following pharmacological agents were used:
+
+1680
+
+
+
+
+Acetylcholine chloride (100 lM, Sigma-Aldrich, Darmstadt, Germany),
+TTX (0.3-1 lM, Alomone Labs, Jerusalem, Israel), gabazine (3 lM, Tocris
+Bioscience, Minneapolis, MN, USA), (1)-Nicotine hydrogen tartrate salt
+(10 lM, Sigma-Aldrich, Darmstadt, Germany), QX-314-Cl (1 mM, SigmaAldrich, Darmstadt, Germany), CNQX Disodium (20 lM, Tocris Bioscience, Minneapolis, MN, USA), DL-APV (200 lM, Tocris Bioscience,
+Minneapolis, MN, USA), Mecamylamine hydrochloride (50 lM, Tocris
+Bioscience, Minneapolis, MN, USA), and D-tubocurarine chloride (5 lM,
+Tocris Bioscience, Minneapolis, MN, USA).
+
+2.4 
+ Fetal nicotine exposure
+
+OSTERSTOCK
+
+ET AL.
+
+2.6 
+ Confocal microscopy
+Immunostainings were imaged using a SP5 confocal microscope (Leica,
+Darmstadt, Germany) using a 203 oil-immersion objective with a numerical aperture of 1.25, as well as with a 633 oil-immersion objective with
+a numerical aperture of 1.32 and a 13 digital zoom magnification. Serial
+optical sections were obtained with a Z-step of 4 lm (203) and 2 lm
+(633). Images (1024 3 1024; 8-bit grayscale) were stored using Leica
+software LAS-AF and analyzed using ImageJ 1.41 (National Institutes of
+Health; http://rsb.info.nih.gov/ij/) and Adobe Photoshop CS6 (Adobe
+software, San Jose, CA, USA). Quantifications were performed manually
+on 20-lm-thick transverse sections using ImageJ software.
+
+8-12 weeks old gestating mice received from E10.5 to E14.5 either a
+chronic subcutaneous (s.c) infusion of a physiological saline (0.9% NaCl,
+Vehicle, N 5 10) or nicotine in buffered saline solution (Nicotinetreated, N 5 14; pH 5 7.4) via mini-osmotic pumps (Alzet, Cupertino,
+CA, USA). Nicotine concentrations were calculated as the base. Nicotine hydrogen tartrate salt (Sigma-Aldrich, Darmstadt, Germany) was
+used to prepare stock solutions. The nicotine tartrate salt was dissolved
+in sterile, physiological saline and administered continuously in a volume of 10 mg/d/kg body weight
+
+2.5 
+ Immunohistochemistry
+
+2.7 
+ Electron microscopy
+Synapse formation onto nestin-positive cells was analyzed by the preembedding immunogold method with silver-enhancement (Bernard,
+Levey, & Bloch, 1999). 2 mm-thick sections were made at the hindlimb
+level of E12.5 embryos and were immersion-fixed in PB with 0.2%
+glutaraldehyde and 2% paraformaldehyde (PFA) at room temperature
+during 1 hr and further post-fixed in PB with 2% PFA at 48C during 1 hr.
+After agarose inclusion, 80 lm-thick vibratome coronal sections were
+immunolabeled with a mouse monoclonal anti-Nestin antibody (Millipore, Darmstadt, Germany) and an anti-mouse biotinylated antibody and
+
+For confocal microscopy, E12.5-E14.5 CNP-EGFP negative and
+
+Nanogold streptavidine (Nanoprobes, Yaphank, NY, USA). The diameter
+
+positive embryos were collected from pregnant females. Embryos were
+
+of gold particles was increased using a silver enhancement (HQ silver,
+
+immediately fixed by immersion in PBS containing 4% PFA (freshly pre-
+
+Nanoprobes, Yaphank, NY, USA). Sections were then post-fixed, dehy-
+
+pared, pH 7.4) for 2 hr at 48C. Embryos were then rinsed with PBS and
+
+drated and embedded in epon resin. Areas of interest were cut and glued
+
+cryoprotected in PBS containing 20% sucrose. Tissues were embedded
+
+onto resin blocks. 70 nm-thick sections were cut with an ultracut UCT
+
+in OCT medium (VWR, Fontenay-sous-bois, France) and quickly frozen
+
+microtome (Leica, Wetzlar, Germany), stained with lead citrate and Ura-
+
+at 2508C in isopentane. 50-lm-thick serial floating coronal sections
+
+nyless (Delta Microscopies, Mauressac, France) and analyzed with a
+
+were obtained using a cryostat (Leica, Wetzlar, Germany) and stored in
+
+transmission electron microscope (EM 912 Omega, Zeiss, Oberkochen,
+
+PBS at 48C. For immunostaining, sections were then washed in PBS
+
+Germany). Images were captured with a digital camera (SS-CCD, Proscan
+
+and incubated for 1 hr in a blocking solution (1% fish gelatin in PBS)
+
+1kx1k, Toronto, Canada) and analyzed with the iTEM software.
+
+with 0.3% Triton X-100 and then for 48 hr at 48C with the primary
+antibodies, which were diluted in the blocking solution containing 0.4%
+Triton X-100. Sections were then washed in PBS and incubated for
+3 hr at room temperature in the secondary antibodies, diluted in 0.4%
+Triton X-100 blocking solution. After washing in PBS, slides were dried
+and mounted in Mowiol medium (Millipore, Darmstadt, Germany).
+The following primary antibodies were used: a guinea pig polyclonal
+anti-NG2 antibody (kindly provided by William B. Stallcup, Burnham
+Institute for Medical Research, La Jolla, California), a rabbit polyclonal
+anti-Olig2 antibody (Millipore, Darmstadt, germany), a mouse monoclonal anti-Ki-67 antibody (BD Pharmigen, Franklin Lakes, NJ, USA), a
+mouse monoclonal anti-nestin antibody (Millipore), a rabbit polyclonal
+anti-VIAAT antibody (Dumoulin et al., 1999; kindly provided by Bruno
+ Paris Diderot, Paris, France) and
+Gasnier, Neurophotonics Lab, Universite
+a rabbit polyclonal anti-VGluT2 antibody (Herzog et al., 2001; kindly pro-
+
+2.8 
+ Data analysis
+Standard off-line detection of synaptic currents was done with Axograph
+X.1.5.4 software (AxoGraph Scientific Software, Sydney, Australia). In
+brief, a template was generated and used to scan the raw trace for similar
+waveforms. All matching events were stored and, when present, false
+positive events were discarded, either manually or automatically on the
+basis of their amplitude or kinetics. Mean synaptic currents rate was then
+calculated every second and plotted in 30 s binning over the whole time
+course of the experiments. For the quantification of the mean effects of
+acetylcholine and nicotine, the mean rates were calculated at the steady
+state for 4-6 min as indicated in the results section.
+
+2.9 
+ Statistics
+
+
+vided by S. El Mestikawy, Laboratoire Neuroscience Paris Since, Universite
+
+All values are expressed in the text as mean 6 SEM. For data sets with
+
+Pierre et Marie Curie, Paris). Alexa Fluor 405-, or 594- and 647-
+
+multiple conditions (N > 2), the data set was first subjected to a Kruskal-
+
+conjugated secondary antibodies (1/500; Invitrogen, Waltham, MA, USA)
+
+Wallis one-way analysis of variance followed by Dunn''s multiple com-
+
+were used to detect mouse monoclonal, guinea pig and rabbit polyclonal.
+
+parison test. For data set comprising only two conditions, a Mann-
+
+OSTERSTOCK
+
+
+
+
+ET AL.
+
+1681
+
+Whitney non-parametric U test was used for unpaired data points or a
+
+the MEP where the highest density of NG2-positive glial endfeet was
+
+Wilcoxon signed ranked test R for paired data points. p < .05 and
+
+previously observed at E12.5 (Figures 1a3 and 2). Indeed, the density
+
+p < .01 were taken respectively as significant and highly significant.
+
+of NG21/Olig21 cells was significantly higher in the part of the MZ
+surrounding the MEP compared with any other areas of the embryonic
+
+3 
+ RESULTS
+
+spinal cord (Figure 1e2). Taken together, these observations suggest a
+particular affinity of pioneer OPCs for the MZ surrounding the MEP.
+
+3.1 
+ Pioneer OPCs accumulate preferentially in the
+
+This area is known to contain cholinergic MN axons and dendrites as
+
+ventro-lateral domain of the marginal zone
+surrounding the motor exit point
+
+well as longitudinal axons from GABAergic and glutamatergic premotor
+INs (Czarnecki et al., 2014; Vaughn et al., 1974). We previously showed
+that premotor INs initiate synaptogenesis in the spinal cord by forming
+
+In the mouse spinal cord, the first wave of OPCs is generated between
+E12 and E14 from olig2-expressing neuroepithelial precursors forming
+
+the first synapses onto MNs between E12.5 and E13.5 in the MZ
+(Czarnecki et al., 2014; Scain et al., 2010).
+
+the pMN domain (Bergles & Richardson, 2016). While it is known that
+these pioneer OPCs first colonize the ventral half of the spinal cord,
+their exact location, morphology and density during this process remain
+poorly characterized. To address this issue, we performed immuno-
+
+3.2 
+ Pioneer OPCs receive functional glutamatergic
+and GABAergic axoglial synapses
+
+staining for NG2 and Olig2 onto coronal sections of spinal cord
+
+To determine whether axoglial synapses could also be formed onto pio-
+
+between E11.5 and E14.5.
+
+neer OPCs in the MZ, we first performed co-immunostainings for NG2
+
+At E11.5, we did not observe any NG2 immunoreactivity in the
+
+with either VGluT2 or VIAAT, which stain putative vesicular release sites
+
+olig21 pMN domain, although pericytes lining capillaries were already
+
+for glutamate and GABA/Glycine vesicular transporters, respectively
+
+intensely labelled for NG2 (data not shown). At E12.5, NG2 started
+
+(Figure 3). Immunostainings were performed using CNP-EGFP mouse
+
+labeling a subpopulation of cells in the olig2-expressing VZ domain
+
+embryos to easily discriminate NG21/CNP-EGFP1 OPCs from NG21/
+
+(Figure 1a1,a2). At this stage, only few NG21/Olig21 somas could be
+
+CNP-EGFP- pericytes. In these mice, MNs exhibited a low level of EGFP
+
+found outside the pMN domain in the ventral parenchyma and none in
+
+expression, a likely consequence of the expression of EGFP in the pMN
+
+the MZ. However, we observed numerous NG2-positive glial processes
+
+domain at earlier developmental stages. As previously described (Czar-
+
+running through the parenchyma and into the MZ to contact the basal
+
+necki et al., 2014), we first confirmed that VGluT2 and VIAAT-
+
+lamina (Figures 1a3 and 2). These NG2-positive glial processes were
+
+immunoreactive aggregates were mostly restricted to the MZ. Both
+
+more abundant around the motor exit point (MEP), where cholinergic
+
+VIAAT and VGLUT2 aggregates could be found apposing to NG21/
+
+MN axons exit the spinal cord (Figures 1a3 and 2). Discrete spots of
+
+CNP-EGFP1 processes and cell bodies (Figure 3), suggesting that vesic-
+
+NG2 immunoreactivity could also be observed lining the central canal,
+
+ular synaptic release of GABA and glutamate may indeed occur from
+
+suggesting that the first OPCs generated by the pMN domain exhibit a
+
+longitudinal axons to OPC processes and cell bodies located in the MZ.
+
+radial morphology--that is with radial processes contacting the basal
+
+To determine whether these putative synaptic contacts were func-
+
+lamina as well as the central canal. Because these morphological
+
+tional, we performed whole-cell patch-clamp recordings of EGFP1 cells
+
+features were reminiscent of neuroepithelial precursors, also known as
+
+located in the MZ using whole spinal cord preparations obtained from
+
+radial glial cells at this developmental stage, we performed co-
+
+E13.5 and E14.5 CNP-EGFP mouse embryos. Virtually all EGFP1 cells
+
+immunostaining for NG2 and Nestin, a marker of neuroepithelial pre-
+
+located in the MZ were found positive for NG2 and Olig2 immunolabeling
+
+cursors (Figure 2). We found a high degree of co-localization between
+
+(Figure 4C). To further confirm that CNP-EGFP1 cells recorded in the MZ
+
+NG2 and Nestin in glial processes located in the MZ around the MEP,
+
+were OPCs, we filled some of them with biocytin through the patch pip-
+
+suggesting a subset of neuroepithelial precursors transiently co-express
+
+ette and performed post-hoc staining for NG2. All biocytin-filled CNP-
+
+Nestin and NG2 as they start differentiating into OPCs at E12.5.
+
+EGFP1 cells were found positive for NG2 immunolabeling (6/6 cells). They
+
+Accordingly, we also observed a high degree of co-localization
+
+exhibited an elongated morphology along the longitudinal axis with their
+
+between NG2 and GLAST, a transmembrane glutamate astrocyte trans-
+
+processes aligned to funicular axons, a morphological feature typical of
+
+porter known to be expressed in the membrane of neuroepithelial pre-
+
+OPCs found in axon tracts (Figure 4). Recorded EGFP1 cells had an aver-
+
+cursors at this developmental stage (Figure 2c; Barry, Pakan, O''Keeffe,
+
+age capacitance of 10.2 6 2.6 pF (N 5 40) and an average input resistance
+
+& McDermott, 2013; Shibata et al., 1997).
+
+of 1.81 6 0.44 GX (N 5 40). Recorded cells displayed significant voltage-
+
+At E13.5, numerous NG21/Olig21 cells were observed in the
+
+gated outward K1 currents but little or no voltage-gated inward Na1 cur-
+
+pMN domain (Figure 1b1,b2,e3) but very few at E14.5 (Figure 1c1,c2,
+
+rents, as expected for OPCs (Figure 4). Recorded cells were unable to fire
+
+e3). These results confirmed that the emergence of pioneer OPCs from
+
+action potentials when recorded in current-clamp mode (data not shown).
+
+their neuro-epithelial precursors in the pMN domain is restricted to a
+short time window starting at E12.5 and tapering at E14.5.
+
+When the membrane potential (Vh) was equal to the chloride
+equilibrium potential (ECl 5 260 mV; see Section 2), recordings of
+
+After they leave the pMN domain, pioneer NG21/Olig21 cell
+
+spontaneous activity revealed the presence of fast inwards currents
+
+bodies started colonizing the ventral parenchyma and the MZ around
+
+having an average amplitude of 27.5 6 0.7 pA, a 20%-80% rise time
+
+E13.5. At E14.5, they were found preferentially accumulating around
+
+of 0.293 6 0.02 ms and a decay time constant of 1.33 6 0.13 ms
+
+1682
+
+
+
+
+OSTERSTOCK
+
+ET AL.
+
+Pioneer OPCs preferentially accumulate in the marginal zone surrounding the motor neuron axon exit point. (a1-c1) Confocal
+images showing immunofluorescence stainings for Olig2 (red) and NG2 (green) in coronal sections of mouse spinal cord at E12.5, E13.5, and
+E14.5. The most intense NG2 staining corresponds to the pericytes lining blood vessels. (a2-c2) Olig2 cells in the pMN domain start
+expressing the proteoglycan NG2 at E12.5. Two days later at E14.5, only few NG21/Olig21 cells are still present in the pMN domain.
+Dotted lines mark the limit between the ventricular zone and the parenchyma. (a3-c3) radial processes labelled by NG2 are first observed
+in the marginal zone surrounding the motor exit point (MEP, marked by the asterisk) at E12.5 while the first NG21/Olig21 soma only reach
+the MEP at E13.5, where they preferentially accumulate. Dotted lines mark the outer and inner limits of the marginal zone. (d) Drawings
+summarizing the location of NG2 positive radial processes (in green) and Olig2 somas (in red) at E12.5, E13.5, and E14.5 in the spinal cord.
+(e1) Schematic figure illustrating the different areas quantified in e2 and e3. (e2) Quantifications of the density of Olig2 positive cells in
+different location of the ventral spinal cord at E12.5, E13.5, and E14.5. Note the preferential accumulation of Olig2 cells in the MEP at
+E14.5. (e3) quantifications of the number of Olig2 cells observed in the pMN domain per section. (N 5 8-12 per embryonic stage). Data are
+represented as mean 6 SEM. Statistical difference for the density (e2) and number (e3) of Olig2-immunopositive cells in the MEP and pMN
+domain, respectively, are indicated (*p < .05, **p < .01). LMZ 5 lateral marginal zone; MEP 5 motor exit point; VMZ 5 ventral marginal zone;
+VP 5 ventral parenchyma; DP 5 dorsal parenchyma; pMN 5 precursor of motoneuron domain [Color figure can be viewed at wileyonlinelibrary.com]
+FIGURE 1
+
+OSTERSTOCK
+
+ET AL.
+
+
+
+
+1683
+
+NG2 immunostaining is detected in nestin-positive radial glia endfeet at E12.5 in the marginal zone. (a) Drawing showing where the
+confocal images were taken in the spinal cord in b. (b1-b9) Confocal images showing immunofluorescence stainings for Nestin (red) and NG2
+(cyan) in coronal sections of E12.5 mouse spinal cord. NG2 staining was found to colocalize both with nestin-positive processes in the pMN
+domain contacting the central canal (b1-b3), in nestin-positive processes found across the parenchyma (b4-b6) and in nestin-positive endfeet
+contacting the marginal zone surrounding the motor exit point (b7-b9). Scale bars represent 20 lm in b1-b6 and 10 lm in b7-b9. (c) Plot quantifying the percentage of NG21/Nestin1 endfeet located in the lateral marginal zone (LZ), around the motor exit point (MEP) and in the lateral and
+ventral marginal zone (N 5 5 embryos). Statistical differences are as indicated (**p < .01). (d1-d3) Confocal images showing immunofluorescence
+stainings for GLAST (red) and NG2 (cyan) in coronal sections of E12.5 mouse spinal cord. Note how NG2 staining colocalize with GLAST in glial
+endfeet surrounding the motor exit point. Scale bar represents 10 lm [Color figure can be viewed at wileyonlinelibrary.com]
+
+FIGURE 2
+
+(N 5 25) consistent with previous reports of glutamatergic spontaneous
+
+kainate glutamate receptors (Figure 5a1,a2). Inward sPSC had an average
+
+postsynaptic currents (sPSC) in OPCs at postnatal developmental stages
+
+frequency of 0.043 6 0.010 Hz and were almost completely blocked by
+
+(Bergles & Richardson, 2016; Figure 5a). sPSC were fully blocked by the
+
+TTX superfusion (1 lM; 299.61% 6 1.22%, p < .01) indicating that they
+
+superfusion of 200 mM DL-APV and 10 mM CNQX (N 5 11) as well as by
+
+are dependent on neuronal action potential (AP) firing (Figure 9a5). More-
+
+CNQX alone (N 5 9), indicating that they were mediated by AMPA/
+
+over, direct electrical stimulation of funicular axons was found to elicit
+
+1684
+
+
+
+
+OSTERSTOCK
+
+ET AL.
+
+F I G U R E 3 Putative release sites for glutamate and GABA are found apposed to OPCs located in the MEP. (a1-a4) High magnification
+confocal images showing the apposition of vesicular glutamate transporter, VGluT21 puncta (red) to pioneer OPCs located in the MEP and
+identified by their expression of CNP-EGFP (in green) and NG2 (in cyan) in coronal sections of CNP-EGFP mouse spinal cord at E14.5. (b1-
+b4) High magnification confocal images showing the apposition of the vesicular inhibitory amino acid transporter, VIAAT1 puncta (in red) to
+pioneer OPCs located in the MEP and identified by their expression of CNP-EGFP (in green) and NG2 (in cyan) in coronal sections of CNPEGFP mouse spinal cord at E14.5. Scale bars 5 10 lm [Color figure can be viewed at wileyonlinelibrary.com]
+
+ephaptic-like currents--resulting from compound AP in funicular axons
+
+gabazine (N 5 6; Figure 6d,e). These results indicate that, in addition to
+
+(Jefferys, 1995)--followed by fast-rising inward currents with an average
+
+glutamatergic synapses, functional GABAergic axoglial synapses are
+
+amplitude of 235.7 6 10.8 pA (N 5 8; Figure 6a,b). Fast-rising inward cur-
+
+also formed between GABAergic axons located in the MZ and pioneer
+
+rents were fully blocked by superfusion of DL-APV and CNQX (N 5 8) as
+
+OPCs as soon as E13.5.
+
+well as by CNQX alone (N 5 9). Taken together, our results demonstrate
+
+Finally, to determine whether such axoglial synapses are formed onto
+
+the existence of functional synapses between longitudinal glutamatergic
+
+the radial processes of neuro-epithelial precursors as they start differenti-
+
+axons located in the MZ and OPCs, at least as early as E13.5.
+
+ating into OPCs, we investigated the presence of axoglial synapses onto
+
+To assess the presence of GABA/glycine postsynaptic currents, we
+
+nestin-positive processes located around the MEP at E12.5. Indeed, we
+
+recorded OPC at a holding potential of 0 mV, the cationic equilibrium
+
+found that most nestin-positive processes located in the MEP appear to
+
+potential in our experimental conditions (Figure 5b). In this configura-
+
+co-express the proteoglycan NG2 at this stage (Figure 2). Strikingly, elec-
+
+tion, OPCs displayed spontaneous outward currents with an average
+
+tron microscopy revealed the presence of synaptic-like axoglial contacts
+
+amplitude of 4.4 6 0.7 pA, a rise time (20%-80%) of 1.81 6 0.15 ms
+
+onto nestin-positive endfeet located in the MEP (Figure 7). These observa-
+
+and a decay time constant of 86.75 6 10.21 ms (N 5 10; Figure 5b).
+
+tions indicate that axoglial synapses could already be forming onto the
+
+Superfusion of the GABAAR selective antagonist Gabazine (10 lM)
+
+endfeet of neuro-epithelial precursors as they commit to an OPC fate.
+
+fully blocked these outward sPSC (N 5 6; Figure 5b1,b2) confirming
+that they were GABAergic events. Outward sPSCs had an average
+frequency of 0.017 6 0.003 Hz and were almost completely blocked
+by TTX superfusion (1 lM; 298.27% 6 5.19%, p < .01; N 5 9; Figure
+9b5). Finally, direct electrical stimulation of funicular axons was found
+
+3.3 
+ GABAergic and glutamatergic axoglial synapses
+are potentiated by the activation of presynaptic
+nicotinic acetylcholine receptors
+
+to elicit slow rising outward currents with an average amplitude
+
+Because pioneer OPCs tend to accumulate around the MEP, we
+
+of 10.1 6 2.8 pA (N 5 9) that were also blocked by superfusion of
+
+investigated the possible influence of cholinergic signaling from MN
+
+OSTERSTOCK
+
+
+
+
+ET AL.
+
+1685
+
+CNP-GFP1 cells located in the marginal zone exhibit typical electrophysiological properties of OPCs. (a) Drawing of the
+"open-book" whole spinal cord preparation obtained from CNP-EGFP mouse embryo SC to record pioneer OPCs in the spinal cord.
+(b) Representative responses in voltage-clamp to voltage steps (a, 2100 to 210 mV, step size 10 mV) of a NG21/EGFP1 pioneer OPC
+located at the MEP in a E13.5 CNP-EGFP mouse embryo. Note the presence of both transient IKA and sustained IKDR outward current in
+response to depolarizing voltage steps. (c) Confocal image showing immunofluorescence stainings for NG2 (red) and olig2 (cyan) in the MEP
+of a CNP-EGFP (Green) mouse embryo at E13.5. Note how CNP-EGFP cells located in the MEP are also immuno-positive for NG2 and
+Olig2. Dotted lines mark the outer and inner limits of the marginal zone. Scale bar 5 20 mm. (d) Confocal images from a whole spinal cord
+preparation showing the cell recorded in b filled with biocytin (in red) and co-expressing CNP-EGFP (in green) and NG2 (in cyan). Note how
+NG21/CNP-EGFP1 cell processes tend to be longitudinally aligned along the antero-posterior axis. Scale bar 5 20 mm [Color figure can be
+viewed at wileyonlinelibrary.com]
+FIGURE 4
+
+onto OPCs. Immunostainings for the vesicular acetylcholine transporter
+
+210.1 6 2.2 pA vs. Ach: 29.1 6 1.9 pA, N 5 10) and GABAergic
+
+vAChT labeled numerous putative release sites around MN soma and
+
+(control: 5.35 6 1.6 pA vs. Ach: 4.9 6 1.5 pA, N 5 7) spontaneous PSCs.
+
+inside the MZ, localized specifically around the MEP (Figure 8). Strik-
+
+The action of acetylcholine on the frequency of glutamatergic and
+
+ingly, many of these vAChT-positive puncta in the MEP were found in
+
+GABAergic spontaneous PSC was blocked by the co-superfusion of
+
+1
+
+1
+
+the direct vicinity of NG2 /CNP-EGFP soma and processes, support-
+
+mecamylamine (50 mM) and d-tubocurarine (5 mM; Figure 9a3,b3). Meca-
+
+ing the hypothesis that pioneer OPCs around the MEP could be influ-
+
+mylamine is a non-competitive nicotinic acetylcholine receptor antago-
+
+enced by acetylcholine released from MNs.
+
+nist (Arias et al., 2010) and D-Tubocurarine is a classical non-selective
+
+To address this possibility, we investigated the effect of acetylcho-
+
+nAChR antagonist (Jonsson et al., 2006). It has been previously shown
+
+line application onto OPCs by patch-clamp recordings. Acetylcholine
+
+that the combination of these two antagonists is necessary and sufficient
+
+application (100 mM) did not induce any significant change in baseline
+
+in order to suppress cholinergic transmission in the embryonic mouse
+
+current in any of the recorded OPCs (N 5 10), suggesting that AchR are
+
+spinal cord (Hanson & Landmesser, 2003). The effect of acetylcholine
+
+not functional or are not expressed by pioneer OPCs in the embryonic
+
+application on the frequency of glutamatergic and GABAergic PSCs
+
+spinal cord. In contrast, we observed that the same application of ace-
+
+could be mimicked by the application of nicotine (10 mM; Figures 9a4,
+
+tylcholine significantly increased the frequency of both glutamatergic
+
+b4). Nicotine had no effect on the average amplitude of glutamatergic
+
+and GABAergic spontaneous PSCs (Figure 9a2,b2). Acetylcholine had
+
+(control: 27.9 6 1.4 pA vs. nicotine: 28.1 6 1.6 pA, N 5 8) and GABAer-
+
+no significant effect on the average amplitude of glutamatergic (control:
+
+gic (control: 4.2 6 1.4 pA vs. nicotine: 4.4 6 1.4 pA, N 5 10) spontaneous
+
+1686
+
+
+
+
+OSTERSTOCK
+
+ET AL.
+
+Pioneer OPCs are already contacted by functional glutamatergic and GABAergic axoglial synapses when their somas reach the
+MZ. (a1) Representative voltage-clamp recordings from a CNP-EGFP1 OPC located in the MEP at E13.5. At a holding potential of 260 mV,
+the cell exhibited fast inward currents (left trace, control) that were blocked by the application of AMPAR/KAR and NMDAR antagonists
+(center trace, DL-APV 200 lM/CNQX 20 lM) in a reversible manner (right trace, washout). (a2) Summary plot quantifying the partially
+reversible blockade of fast inward currents by DL-APV and CNQX (N 5 11; **p < .01, paired student t test). (a3) Example traces showing
+the kinetic of individual inward currents (in black) and their average (in red) recorded from the same OPC as in a1. These inward currents
+exhibited an average mono-exponential decay time constant of 1.33 ms, as expected from synaptic currents mediated by AMPA/KA receptors. (a4) Plot showing the distribution of fast inward current amplitudes. (b1) Representative voltage-clamp recordings from another CNPEGFP1 OPC located in the MEP at E13.5. At a holding potential of 0 mV, the cell exhibited slow outward currents (left trace, control) that
+were blocked by the application of a GABAAR antagonist (center trace, gabazine 10 lM) in a reversible manner (right trace). (b2) Summary
+plot quantifying the partially reversible blockade slow outward currents by gabazine (N 5 6; **p < .01). (b3) Example traces showing the
+kinetic of individual outward currents (in black) and their average (in red) recorded from the same OPC as in b1. These inward currents
+exhibited an average mono-exponential decay time constant of 90.4 ms, as expected from synaptic currents mediated by GABAAR receptors. (b4) Plot showing the distribution of slow outward current amplitudes [Color figure can be viewed at wileyonlinelibrary.com]
+FIGURE 5
+
+OSTERSTOCK
+
+ET AL.
+
+
+
+
+1687
+
+Cholinergic signaling potentiates glutamatergic and GABAergic synaptic currents evoked in OPCs by electrical stimulation of the
+marginal zone. (a) Representative voltage-clamp recordings from a CNP-EGFP1 OPC located in the MEP at E13.5. At a holding potential of
+260 mV, electrical stimulation of the marginal zone evoked inward currents (left trace, control) that were blocked by the application of AMPAR/
+KAR and NMDAR antagonists (center trace, DL-APV 200 lM/CNQX 20 lM) in a reversible manner (right trace, washout). (b) Summary plot
+quantifying the partially reversible blockade of fast inward currents by DL-APV and CNQX (N 5 9; **p < .01). (c) Plots summarizing the effects
+of various manipulations of cholinergic signaling on the amplitude of glutamatergic synaptic currents evoked in pioneer OPCs by electrical stimulation of the marginal zone. Statistical differences (**p < .01, paired student t test) are shown. (d) Representative voltage-clamp recordings from
+a CNP-EGFP1 OPC located in the MEP at E13.5. At a holding potential of 0 mV, electrical stimulation of the marginal zone evoked outward currents (left trace, control) that were blocked by the application of GABAARs antagonists (center trace, Gabazine 10 lM) in a reversible manner
+(right trace, washout). (e) Summary plot quantifying the partially reversible blockade of slow outward inward currents by gabazine (N 5 6;
+**p < .01). (f) Plots summarizing the effects of various manipulations of cholinergic signaling on the amplitude of GABAergic synaptic currents
+evoked in pioneer OPCs by electrical stimulation of the marginal zone. Statistical differences (**p < .01, paired student t test) are shown [Color
+figure can be viewed at wileyonlinelibrary.com]
+
+FIGURE 6
+
+1688
+
+
+
+
+OSTERSTOCK
+
+ET AL.
+
+Neuro-epithelial precursors receive synaptic-like axoglial contacts onto their endfeet in the marginal zone. (a1 and a2) Electron
+micrographs showing a nestin-positive glial process located in the MEP (Silver intensified immunostaining, pseudo-colored in green) contacted by two synaptic-like axoglial contacts (pseudo-colored in red). The red arrows delimit the extent of the putative active zone where
+presynaptic vesicles can be observed. a2 show a magnified view of the putative axo-glial synapse located in the white dashed box in a1
+[Color figure can be viewed at wileyonlinelibrary.com]
+
+FIGURE 7
+
+PSCs. Together, these results demonstrate that the effect of acetylcho-
+
+placenta to reach the embryo (Ross, Graham, Money, & Stanwood,
+
+line on PSC frequency is dependent on the activation of nicotinic AChRs
+
+2015), we investigated whether fetal exposure to nicotine could influ-
+
+(nAChR).
+
+ence pioneer OPC density and proliferation as they emerge from the
+
+We found that the ability of nicotine to potentiate the frequency of
+
+pMN domain and start colonizing the spinal cord.
+
+both GABAergic and glutamatergic PSC was preserved in the presence of
+
+At E10.5, we implanted gestating mice with osmotic pumps filled
+
+TTX (1 mM; Figure 9a5,b5), showing that nicotine and acetylcholine can
+
+either with saline (Vehicle group, N 5 5) or 10 mg/d/kg of nicotine (nic-
+
+promote PSC frequency by acting onto nAChR expressed by the presyn-
+
+otine-treated group, N 5 6). Doses of nicotine were chosen to reach a
+
+aptic terminals of axoglial synapses. The amplitude of miniature glutama-
+
+level in the circulating bloodstream of the pregnant female equivalent
+
+tergic PSCs (-7.6 6 0.7 pA, N 5 9) and miniature GABAergic PSCs (5.9 6
+
+to moderately smoking pregnant women (Matta et al., 2007). To assess
+
+0.7 pA, N 5 8) observed during nicotine application were not significantly
+
+the distribution and proliferation rate of pioneer OPCs, we quantified
+
+different from the amplitude of spontaneous glutamatergic PSCs (27.8 6
+
+the number of cells expressing Olig21 cells and Olig21/Ki671 in differ-
+
+1.3 pA) and spontaneous GABAergic PSCs (6.0 6 0.5 pA) recorded in
+
+ent parts of the MZ, in the ventral parenchyma, and in the dorsal
+
+control conditions in the same cells. To test whether endogenous source
+
+parenchyma of E14.5 embryos treated with either saline or nicotine
+
+of acetylcholine could therefore participate to potentiate axoglial trans-
+
+(Figure 10a). We found that nicotine increased the density of Olig21
+
+mission onto OPC, we investigated the influence of nAChR antagonists
+
+cells in the MZ surrounding the MEP and in the ventral parenchyma by
+
+onto sPSCs (Figures 9a3,a7,b3,b7) and onto PSCs evoked by direct electrical stimulation of funicular axons (Figure 6c,f). We found that the cosuperfusion of mecamylamine (50 mM) and d-tubocurarine (5 mM) had little influence on glutamatergic sPSC frequency (Figure 9a3,a7) and on the
+amplitude of evoked glutamatergic PSCs (Figure 6c). By contrast, cosuperfusion of mecamylamine (50 mM) and d-tubocurarine (5 mM) significantly decreased GABAergic sPSC frequency (Figure 9b3,b7) as well as
+the amplitude of evoked GABAergic PSCs (Figure 6f), thus indicating that
+endogenous cholinergic signaling act preferentially onto GABAergic axoglial synapses.
+
+3.4 
+ Fetal nicotine exposure increases the density and
+proliferation of pioneer OPC in the ventral spinal cord
+
+twofold compared with saline-treated embryos (Figure 10b). By contrast, density of Olig21 cells did not appear to be affected in the lateral
+and ventral part of the marginal zone, nor in the dorsal parenchyma.
+Moreover, we found that chronic nicotine treatment significantly
+increased the percentage of Olig21 cells co-expressing Ki67 around
+the MEP by twofold compared with saline-treated embryos (Figure
+10c). Taken together, our results show that chronic nicotine treatment
+during gliogenesis preferentially increases the density and proliferation
+of OPC located in the MZ surrounding the MEP.
+
+4 
+ DISCUSSION
+In this study, we demonstrate that functional glutamatergic and
+
+Our results show that exogenous nicotine has a significant effect on
+
+GABAergic axoglial synapses are formed onto pioneer OPCs at least as
+
+both glutamatergic and GABAergic axoglial transmission in pioneer
+
+soon as their soma reach the marginal zone--that is the area where
+
+OPCs found in the MZ (Figures 6 and 9). As nicotine readily cross the
+
+synaptogenesis begins in the embryonic spinal cord. We found that
+
+OSTERSTOCK
+
+ET AL.
+
+
+
+
+1689
+
+F I G U R E 8 Putative acetylcholine release sites are found apposed to OPCs located in the MEP. (a1-a4) confocal images at low
+magnification showing the location of putative release sites for acetylcholine labelled by VAChT (in red) and pioneer OPCs labelled by CNPEGFP (in green) and NG2 (in cyan) in a coronal section from a CNP-EGFP E14.5 mouse embryo. Note how VAChT staining is limited to the
+ventro-lateral parenchyma where motoneurons are located in the spinal cord. (b1-b4) confocal images of the same coronal section at a
+higher magnification (boxed region in a1-a4) showing the presence of VAChT1 puncta (in red) in the vicinity of pioneer OPCs labelled by
+CNP-EGFP (in green) and NG2 (in cyan). (c1-c4) Confocal image at the highest magnification (boxed region in B1-B4) showing the presence
+of VAChT1 puncta apposed to OPCs located at the MEP (white arrows) [Color figure can be viewed at wileyonlinelibrary.com]
+
+endogenous cholinergic signaling regulates the activity of GABAergic
+
+the neuroepithelial precursors that generate them. Indeed, we show
+
+axoglial synapses by acting through presynaptic nAChRs. Finally, we
+
+that early born NG2-positive OPCs already exhibit radial processes
+
+demonstrate that over-activation of nAChR by chronic nicotine fetal
+
+contacting the marginal zone and the central canal while their soma is
+
+exposure leads to a significant increase in OPC density and prolifera-
+
+still located in the ventricular zone. Intriguingly, we found that these
+
+tion in the ventral part of the embryonic spinal cord. Taken together,
+
+NG2-positive radial processes transiently co-express the neuro-
+
+our results show that axoglial synapses are formed onto pioneer OPCs
+
+epithelial markers nestin and GLAST. We propose that either (1) neuro-
+
+as soon as they arise from their precursor domain and that their ability
+
+epithelial precursors directly transform into OPCs or (2) neuro-
+
+to proliferate and colonize the ventral embryonic spinal cord can be
+
+epithelial precursors undergo asymmetric division to generate neuro-
+
+altered by changes in cholinergic signaling.
+
+epithelial precursors and OPCs with similar radial morphologies that
+are closely associated. A number of evidence supports the former
+
+4.1 
+ Do neuroepithelial precursors in the pMN
+domain directly transform into pioneer OPCs?
+
+explanation. First, Fogarty et al., showed that the second wave of
+OPCs arising from the dbx1 domain in the dorsal spinal cord occurs by
+direct transformation of radial glial precursors into OPCs (Fogarty,
+
+We show here that the first OPCs that can be identified by NG2 immu-
+
+Richardson, & Kessaris, 2005). Similar to our observation in the pMN
+
+noreactivity in the pMN domain exhibit a radial morphology similar to
+
+domain, they found that OPC generation in the dbx1 domain was
+
+1690
+
+
+
+
+OSTERSTOCK
+
+ET AL.
+
+Cholinergic signaling potentiates axoglial synapses by acting onto presynaptic nicotinic acetylcholine receptors. (a1)
+Representative voltage-clamp recordings from a CNP-EGFP1 OPC located in the MEP at E13.5. At a holding potential of 260 mV, the cell
+exhibited glutamatergic synaptic currents (left trace, control) that were potentiated by the application of acetylcholine (center trace, Ach
+100 lM) in a reversible manner (right trace, washout). (a2-a5) Representative plots from individual cells showing the changes in instantaneous frequency of glutamatergic synaptic currents during application of acetylcholine alone (top trace, Ach 100 mM) or in presence of nAChR
+antagonists (second trace, Mecamylamine 50 mM 1 d-Tubocurarine 5 mM) as well as to nicotine alone (third trace, Nicotine 10 mM) or in
+presence of tetrotoxin (bottom trace, TTX 1 mM) showing that activation of presynaptic nAChR potentiates glutamate synaptic release onto
+pioneer OPCs. (a6 and a7) Plots summarizing the effects of these various manipulations of cholinergic signaling onto glutamatergic synaptic
+current frequency. (b1) Representative voltage-clamp recordings from a CNP-EGFP1 OPC located in the MEP at E13.5. At a holding potential of 0 mV, the cell exhibited GABAergic synaptic currents (left trace, control) that were potentiated by the application of acetylcholine
+(center trace, Ach 100 lM) in a reversible manner (right trace, washout). (b2-b5) Representative plots from individual cells showing the
+changes in instantaneous frequency of GABAergic synaptic currents during application of acetylcholine alone (top trace, Ach 100 mM) or in
+presence of nAChR antagonists (second trace, Mecamylamine 50 mM 1 d-Tubocurarine 5 mM) as well as to nicotine alone (third trace, Nic
+10 mM) or in presence of tetrotoxin (bottom trace, TTX 1 mM) showing that activation of presynaptic nAChR potentiates GABA synaptic
+release onto pioneer OPCs. (b6 and b7) Plots summarizing the effect of manipulating cholinergic signaling onto GABAergic synaptic currents
+frequency (mean, SEM). Number of independent repeats (n) for each experiment is specified in the figure. Statistical differences are as indicated (*p < .05, **p < .01) [Color figure can be viewed at wileyonlinelibrary.com]
+FIGURE 9
+
+associated with the appearance of a transient population of radial glial
+
+accumulating around the MEP, where the radial processes of most of
+
+cells co-expressing both OPC and neuro-epithelial precursor markers.
+
+these Nestin1/Olig21 precursors are initially located. Finally, we show
+
+Second, we observed that the pool of olig2-expressing neuro-epithelial
+
+that putative axoglial synapses can be found onto nestin-positive proc-
+
+precursor in the pMN domain is drastically depleted at E14.5 (see Fig-
+
+esses in the MZ at E12.5 while just one day later, functional axoglial
+
+ure 1e3) right after the first wave of OPC has been generated. Taken
+
+synapses can be recorded in pioneer OPCs whose soma have reached
+
+together, these observations support the hypothesis that pMN precur-
+
+the MZ. The fact that both pioneer OPCs and the neuroepithelial
+
+sors directly transform into OPCs by detaching from the ventricular
+
+precursors they arise from would share such a particular feature brings
+
+zone to follow their radial process into the marginal zone. This would
+
+further support to the hypothesis that OPCs directly transform from
+
+also explain why the soma of pioneer OPCs are preferentially found
+
+neuro-epithelial precursors and inherit their axoglial synapses in the
+
+OSTERSTOCK
+
+ET AL.
+
+
+
+
+1691
+
+Chronic fetal nicotine exposure increases OPC density and proliferation at the motor exit point. (a) Confocal images showing
+immunofluorescence stainings for Olig2 (red) and Ki67 (green) in coronal sections of mouse spinal cord from E14.5 embryos. Embryos were
+treated from E10.5 to E14.5 stages by implanting pregnant females with osmotic pumps containing either saline (a1-a4, saline) or nicotine
+(a5-a8, Nicotine 10 mg/kg). Note the increased density of Olig21 cells (arrowheads) in the ventral spinal cord of nicotine-treated embryos
+(Scale bar 5 100 lm). (b) Plots quantifying the density of Olig21 cells in different regions of the spinal cord in saline- and nicotine-treated
+embryos. VMZ 5 ventral marginal zone; MEP 5 motor exit point; LMZ 5 lateral marginal zone; VP 5 ventral parenchyma; DP 5 dorsal parenchyma (For the exact location of each area quantified, see drawing in Figure 1c1). The density of Olig21 cells was significantly increased in
+the MEP and the VP of nicotine-treated embryos. (c) Plots quantifying the ratio of Ki671/Olig21 cells in different regions of the spinal cord
+in saline- and nicotine-treated embryos. The proliferation rate of Olig21 cells was significantly increased in the MEP of nicotine-treated
+embryos. Statistical differences (ns, not significant, *p < .05, **p < .01) are shown [Color figure can be viewed at wileyonlinelibrary.com]
+
+FIGURE 10
+
+1692
+
+
+
+
+OSTERSTOCK
+
+ET AL.
+
+process. In contrast, some evidence also support the second hypothesis
+
+feedback mechanism linking the onset of gliogenesis to the functional
+
+--that is that the nestin-positive and NG2-positive radial processes
+
+maturity of the developing spinal cord neuronal network.
+
+found in the MZ belong to distinct but closely associated cell popula-
+
+To further investigate whether axoglial synapses are indeed sys-
+
+tions. This hypothesis is favored by Diers-Fenger and colleagues who
+
+tematically formed at the onset of gliogenesis, it would be of great
+
+showed in E15 mouse spinal cord that processes stained with AN2/NG2
+
+interest to explore the other areas of the central nervous system
+
+antibodies were closely associated to radial glial processes stained with
+
+known to generate OPCs during embryonic development (Richardson,
+
+Nestin (Diers-Fenger, Kirchhoff, Kettenmann, Levine, & Trotter, 2001).
+
+Kessaris, & Pringle, 2006). For example, the second wave of OPCs generated by radial glia in the dorsal spinal cord (Bilican, Fiore-Heriche,
+
+4.2 
+ Could the onset of synaptogenesis trigger
+OPC specification?
+Our present work suggests that axoglial synapses are a universal and
+
+Compston, Allen, & Chandran, 2008; Fogarty et al., 2005; Vallstedt,
+Klos, & Ericson, 2005) is correlated with the onset of synaptogenesis in
+the dorsal marginal zone when peripheral sensory inputs enter the dorsal spinal cord (Marmigere & Ernfors, 2007).
+
+defining property of OPCs, regardless of their location (brain vs. spinal
+
+In conclusion, we demonstrated for the first time that OPCs are
+
+cord) or developmental stages (embryonic vs. postnatal). Indeed, axoglial
+
+contacted by functional synapses as soon as they emerge from their
+
+synapses are known to disappear as soon as OPCs differentiate into oli-
+
+precursor domain and that embryonic spinal cord invasion by OPCs
+
+godendrocytes (De Biase et al., 2010; Etxeberria et al., 2010; Kukley et al.,
+
+can be regulated by cholinergic signaling acting onto these axoglial syn-
+
+2010) and we now show that they are also formed as soon as OPCs are
+
+apses, revealing new functional developmental mechanisms during the
+
+generated during embryonic development. More importantly, our work
+
+formation of the spinal cord network.
+
+suggests that axoglial synapses may even participate to trigger, or at least
+regulate, OPC genesis from neuroepithelial precursors. Indeed, electron
+
+ACKNOWLE DGME NT
+
+microscopy show that the emergence of OPCs from neuro-epithelial pre-
+
+We thank Stefania Tolu and Philippe Faure for assistance with nicotine
+
+cursors is concomitant with the formation of synaptic-like axoglial con-
+
+ronique Bernard,
+administration and osmotic pump implantation; Ve
+
+tacts onto neuro-epithelial precursors glial processes located in the
+
+raldine Toutirais and Michae
+l Trichet for assistance with electron
+Ge
+
+marginal zone (see Figure 7; Henrikson & Vaughn, 1974). Moreover, our
+
+microscopy; Susanne Bolte, Jean-Francois Gilles and Richard
+
+results suggest that the potentiation of glutamatergic and/or GABAergic
+
+Schwartzmann for assistance with confocal imaging and Elim Hong for
+
+axoglial transmission by nicotine could not only favor the secondary pro-
+
+helpful comments on the manuscript. This study was supported by
+
+liferation of pioneer OPCs in the marginal zone surrounding the MEP, but
+
+Agence Nationale de la Recherche ANR-11-JSV4-002-01 (J-M.M),
+
+also facilitate the recruitment of neuro-epithelial precursors into OPC.
+
+phale (J-M.M), AFMInstitut de Recherche sur la Moelle et l''ence
+
+Indeed, we observed that fetal nicotine exposure could increase OPC
+
+dicale (P.L).
+Telethon (J-M.M) and Fondation pour la Recherche Me
+
+density in the ventral parenchyma without any increase in their local proliferation rate (see Figure 10). Therefore, these supernumerary parenchymal OPCs must have been generated elsewhere. Because they are
+located along the path likely to be taken by most pioneer OPCs right after
+they leave the pMN domain, their most likely origin would therefore be
+the pMN domain itself. Indeed, they are located along the path traced by
+NG2/nestin radial glial endfeets at E12.5 (see Figures 1a and 2) and
+we showed that pioneer OPCs transiently accumulate in the ventral
+parenchyma at E13.5 before colonizing the marginal zone at E14.5 (see
+Figure 1e2).
+We hypothesize that the formation of axoglial synapses allow glial
+precursors to insure that the neuronal components of the ventral spinal
+
+AUTHOR CONT RI BUT IONS
+G. Osterstock designed, performed and analyzed all electrophysiogical, fetal
+nicotine treatment and most immunohistochemistry experiments. B. Lebras
+designed, performed and analyzed electron microscopy experiments. K.
+Arulkandarajah performed additional immunohistochemistry experiments.
+H. Le Corronc and A. Czarnecki participated to the design and analysis of
+electrophysiological experiments. C. Mouffle and E. Bullier managed the
+animal colony, performed animal genotyping and contributed to immunohistochemistry experiments. J-M Mangin participated to the design and
+analysis of the experiments, supervised the whole project with P. Legendre
+and wrote the manuscript with G. Osterstock and P. Legendre.
+
+motor network have been properly connected and are functional
+before initiating gliogenesis. Indeed, it has long been known that ven-
+
+ORC ID
+
+tral spinal motor networks start exhibiting bursts of spontaneous neuronal activity (SNA) around E12.5 in mouse embryos (Hanson, Milner,
+& Landmesser, 2008) when the first OPC are specified. We previously
+
+Pascal Legendre
+Jean-Marie Mangin
+
+http://orcid.org/0000-0002-5086-4515
+http://orcid.org/0000-0002-7804-0251
+
+showed that SNA triggers the release of acetylcholine from MNs and
+the release of GABA and glutamate from spinal interneurons (Czarnecki
+
+RE FE RE NC ES
+
+et al., 2014). We show here that pioneer OPCs could directly detect
+
+Arias, H. R., Rosenberg, A., Targowska-Duda, K. M., Feuerbach, D., Jozwiak,
+K., Moaddel, R., & Wainer, I. W. (2010). Tricyclic antidepressants and
+mecamylamine bind to different sites in the human a4b2 nicotinic receptor ion channel. The International Journal of Biochemistry & Cell Biology, 42
+(6), 1007-1018. http://doi.org/10.1016/j.biocel.2010.03.002
+
+GABA and glutamate released during SNA through their axoglial synapses and indirectly detect acetylcholine by its action onto the presynaptic nAChRs. Therefore, SNA and axoglial synapses could act as a
+
+OSTERSTOCK
+
+ET AL.
+
+
+
+
+1693
+
+Barry, D. S., Pakan, J. M. P., O''Keeffe, G. W., & McDermott, K. W. (2013).
+The spatial and temporal arrangement of the radial glial scaffold suggests
+a role in axon tract formation in the developing spinal cord. Journal of
+Anatomy, 222(2), 203-213. http://doi.org/10.1111/joa.12006
+
+Henrikson, C. K., & Vaughn, J. E. (1974). Fine structural relationships
+between neurites and radial glial processes in developing mouse
+spinal cord. Journal of Neurocytology, 3(6), 659-675. Retrieved from
+http://www.ncbi.nlm.nih.gov/pubmed/4461770
+
+Bergles, D. E., & Richardson, W. D. (2016). Oligodendrocyte Development and Plasticity. Cold Spring Harbor Perspectives in Biology, 8(2),
+a020453. http://doi.org/10.1101/cshperspect.a020453
+
+Herzog, E., Bellenchi, G. C., Gras, C., Bernard, V., Ravassard, P., Bedet, C.,
+. . . El Mestikawy, S. (2001). The existence of a second vesicular glutamate transporter specifies subpopulations of glutamatergic neurons.
+The Journal of Neuroscience : The Official Journal of the Society for
+Neuroscience, 21(22), RC181. Retrieved from http://www.ncbi.nlm.
+nih.gov/pubmed/11698619
+
+Bergles, D. E., Roberts, J. D., Somogyi, P., & Jahr, C. E. (2000). Glutamatergic synapses on oligodendrocyte precursor cells in the hippocampus. Nature, 405(6783), 187-191. http://doi.org/10.1038/35012083
+Bernard, V., Levey, A. I., & Bloch, B. (1999). Regulation of the subcellular
+distribution of m4 muscarinic acetylcholine receptors in striatal neurons in vivo by the cholinergic environment: Evidence for regulation
+of cell surface receptors by endogenous and exogenous stimulation.
+The Journal of Neuroscience : The Official Journal of the Society for
+Neuroscience, 19(23), 10237-10249. Retrieved from http://www.
+ncbi.nlm.nih.gov/pubmed/10575021
+Bilican, B., Fiore-Heriche, C., Compston, A., Allen, N. D., & Chandran, S.
+(2008). Induction of Olig2 precursors by FGF involves BMP signalling
+blockade at the Smad level. PloS One, 3(8), e2863. http://doi.org/10.
+1371/journal.pone.0002863
+Czarnecki, A., Le Corronc, H., Rigato, C., Le Bras, B., Couraud, F., Scain,
+A.-L., . . . Legendre, P. (2014). Acetylcholine controls GABA-, glutamate-, and glycine- dependent giant depolarizing potentials that govern spontaneous motoneuron activity at the onset of synaptogenesis
+in the mouse embryonic spinal cord. Journal of Neuroscience, 34(18),
+6389. http://doi.org/10.1523/JNEUROSCI.2664-13.2014
+De Biase, L. M., Nishiyama, A., & Bergles, D. E. (2010). Excitability and
+synaptic communication within the oligodendrocyte lineage. Journal
+of Neuroscience, 30(10), 3600-3611. http://doi.org/10.1523/JNEUROSCI.6000-09.2010
+
+Hill, R. A., & Nishiyama, A. (2014). NG2 cells (polydendrocytes): Listeners
+to the neural network with diverse properties. Glia, 62(8), 1195-
+1210. http://doi.org/10.1002/glia.22664
+Jefferys, J. G. (1995). Nonsynaptic modulation of neuronal activity in the
+brain: Electric currents and extracellular ions. Physiological Reviews,
+75(4), 689-723. http://doi.org/10.1152/physrev.1995.75.4.689
+Jonsson, M., Gurley, D., Dabrowski, M., Larsson, O., Johnson, E. C., &
+Eriksson, L. I. (2006). Distinct pharmacologic properties of neuromuscular blocking agents on human neuronal nicotinic acetylcholine
+receptors: A possible explanation for the train-of-four fade. Anesthesiology, 105(3), 521-533. Retrieved from http://www.ncbi.nlm.nih.gov/
+pubmed/16931985
+Kukley, M., Capetillo-Zarate, E., & Dietrich, D. (2007). Vesicular glutamate release from axons in white matter. Nature Neuroscience, 10(3),
+311-320. http://doi.org/10.1038/nn1850
+Kukley, M., Nishiyama, A., & Dietrich, D. (2010). The fate of synaptic
+input to NG2 glial cells: Neurons specifically downregulate
+transmitter release onto differentiating oligodendroglial cells. The
+Journal of Neuroscience : The Official Journal of the Society for
+Neuroscience, 30(24), 8320-8331. http://doi.org/10.1523/JNEUROSCI.0854-10.2010
+
+Diers-Fenger, M., Kirchhoff, F., Kettenmann, H., Levine, J. M., & Trotter,
+J. (2001). AN2/NG2 protein-expressing glial progenitor cells in the
+murine CNS: Isolation, differentiation, and association with radial glia.
+Glia, 34(3), 213-228. Retrieved from http://www.ncbi.nlm.nih.gov/
+pubmed/11329183
+
+Lin, S.-C., & Bergles, D. E. (2004). Synaptic signaling between neurons
+and glia. Glia, 47(3), 290-298. http://doi.org/10.1002/glia.20060
+
+vi, S., Isambert, M. F., Henry, J.
+Dumoulin, A., Rostaing, P., Bedet, C., Le
+P., . . . Gasnier, B. (1999). Presence of the vesicular inhibitory amino
+acid transporter in GABAergic and glycinergic synaptic terminal boutons. Journal of Cell Science, 811-823. Retrieved from http://www.
+ncbi.nlm.nih.gov/pubmed/10036231
+
+Mangin, J.-M., Kunze, A., Chittajallu, R., & Gallo, V. (2008). Satellite NG2
+progenitor cells share common glutamatergic inputs with associated
+interneurons in the mouse dentate gyrus. The Journal of Neuroscience : The Official Journal of the Society for Neuroscience, 28(30),
+7610-7623. http://doi.org/10.1523/JNEUROSCI.1355-08.2008
+
+Etxeberria, A., Mangin, J.-M., Aguirre, A., & Gallo, V. (2010). Adult-born
+SVZ progenitors receive transient synapses during remyelination in
+corpus callosum. Nature Neuroscience, 13(3), 287. http://doi.org/10.
+1038/nn.2500
+
+Marmigere, F., & Ernfors, P. (2007). Specification and connectivity of
+neuronal subtypes in the sensory lineage. Nature Reviews. Neuroscience, 8(2), 114-127. http://doi.org/10.1038/nrn2057
+
+Fogarty, M., Richardson, W. D., & Kessaris, N. (2005). A subset of oligodendrocytes generated from radial glia in the dorsal spinal cord.
+Development (Cambridge, England), 132(8), 1951-1959. http://doi.org/
+10.1242/dev.01777
+Gallo, V., Mangin, J.-M., Kukley, M., & Dietrich, D. (2008). Synapses on NG2expressing progenitors in the brain: Multiple functions? The Journal of
+Physiology, 586(16), 3767. http://doi.org/10.1113/jphysiol.2008.158436
+Hanson, M. G., & Landmesser, L. T. (2003). Characterization of the
+circuits that generate spontaneous episodes of activity in the early
+embryonic mouse spinal cord. The Journal of Neuroscience : The Official Journal of the Society for Neuroscience, 23(2), 587-600. Retrieved
+from http://www.ncbi.nlm.nih.gov/pubmed/12533619
+Hanson, M. G., Milner, L. D., & Landmesser, L. T. (2008). Spontaneous
+rhythmic activity in early chick spinal cord influences distinct motor
+axon pathfinding decisions. Brain Research Reviews, 57(1), 77-85.
+http://doi.org/10.1016/j.brainresrev.2007.06.021
+
+Lin, S., & Bergles, D. E. (2004). Synaptic signaling between GABAergic
+interneurons and oligodendrocyte precursor cells in the hippocampus.
+Nature Neuroscience, 7(1), 24-32. http://doi.org/10.1038/nn1162
+
+Matta, S. G., Balfour, D. J., Benowitz, N. L., Boyd, R. T., Buccafusco, J. J.,
+Caggiula, A. R., . . . Zirger, J. M. (2007). Guidelines on nicotine dose
+selection for in vivo research. Psychopharmacology, 190(3), 269-319.
+http://doi.org/10.1007/s00213-006-0441-0
+Nishiyama, A., Lin, X. H., Giese, N., Heldin, C. H., & Stallcup, W. B.
+(1996). Co-localization of NG2 proteoglycan and PDGF alphareceptor on O2A progenitor cells in the developing rat brain. Journal
+of Neuroscience Research, 43(3), 299-314. http://doi.org/10.1002/
+(SICI)1097-4547(19960201)43:3<299::AID-JNR5>3.0.CO;2-E
+Paukert, M., & Bergles, D. E. (2006). Synaptic communication between
+neurons and NG21 cells. Current Opinion in Neurobiology, 16(5), 515-
+521. http://doi.org/10.1016/j.conb.2006.08.009
+Pringle, N. P., & Richardson, W. D. (1993). A singularity of PDGF alphareceptor expression in the dorsoventral axis of the neural tube may
+define the origin of the oligodendrocyte lineage. Development (Cambridge, England), 117(2), 525-533. Retrieved from http://www.ncbi.
+nlm.nih.gov/pubmed/8330523
+
+1694
+
+
+
+
+OSTERSTOCK
+
+ET AL.
+
+Richardson, W. D., Kessaris, N., & Pringle, N. (2006). Oligodendrocyte
+wars. Nature Reviews. Neuroscience, 7(1), 11-18. http://doi.org/10.
+1038/nrn1826
+
+Vallstedt, A., Klos, J. M., & Ericson, J. (2005). Multiple dorsoventral origins of oligodendrocyte generation in the spinal cord and hindbrain.
+Neuron, 45(1), 55-67. http://doi.org/10.1016/j.neuron.2004.12.026
+
+Ross, E. J., Graham, D. L., Money, K. M., & Stanwood, G. D. (2015).
+Developmental consequences of fetal exposure to drugs: What we
+know and what we still must learn. Neuropsychopharmacology, 40(1),
+61-87. http://doi.org/10.1038/npp.2014.147
+
+Vaughn, J. E., Henrikson, C. K., & Grieshaber, J. A. (1974). A quantitative
+study of synapses on motor neuron dendritic growth cones in developing mouse spinal cord. The Journal of Cell Biology, 60(3), 664-672.
+Retrieved from http://www.ncbi.nlm.nih.gov/pubmed/4824291
+
+Rowitch, D. H. (2004). Glial specification in the vertebrate neural tube.
+Nature Reviews. Neuroscience, 5(5), 409-419. http://doi.org/10.1038/
+nrn1389
+
+Yuan, X., Chittajallu, R., Belachew, S., Anderson, S., McBain, C. J., &
+Gallo, V. (2002). Expression of the green fluorescent protein in the
+oligodendrocyte lineage: A transgenic mouse for developmental and
+physiological studies. Journal of Neuroscience Research, 70(4), 529-
+545. http://doi.org/10.1002/jnr.10368
+
+Sahel, A., Ortiz, F. C., Kerninon, C., Maldonado, P. P., Angulo, M. C., &
+Nait-Oumesmar, B. (2015). Alteration of synaptic connectivity of
+oligodendrocyte precursor cells following demyelination. Frontiers in
+Cellular Neuroscience, 9, 77. http://doi.org/10.3389/fncel.2015.00077
+Scain, A.-L., Le Corronc, H., Allain, A.-E., Muller, E., Rigo, J.-M., Meyrand,
+P., . . . Legendre, P. (2010). Glycine release from radial cells modulates
+the spontaneous activity and its propagation during early spinal cord
+development. The Journal of Neuroscience : The Official Journal of the
+Society for Neuroscience, 30(1), 390-403. http://doi.org/10.1523/
+JNEUROSCI.2115-09.2010
+Shibata, T., Yamada, K., Watanabe, M., Ikenaka, K., Wada, K., Tanaka, K.,
+& Inoue, Y. (1997). Glutamate transporter GLAST is expressed in the
+radial glia-astrocyte lineage of developing mouse spinal cord. The
+Journal of Neuroscience : The Official Journal of the Society for Neuroscience, 17(23), 9212-9219. Retrieved from http://www.ncbi.nlm.nih.
+gov/pubmed/9364068
+
+Ziskin, J. L., Nishiyama, A., Rubio, M., Fukaya, M., & Bergles, D. E.
+(2007). Vesicular release of glutamate from unmyelinated axons in
+white matter. Nature Neuroscience, 10(3), 321-330. http://doi.org/10.
+1038/nn1854
+
+How to cite this article: Osterstock G, Le Bras B, Arulkandarajah KH, et al. Axoglial synapses are formed onto pioneer oligodendrocyte precursor cells at the onset of spinal cord
+gliogenesis. Glia. 2018;66:1678-1694. https://doi.org/10.1002/
+glia.23331
+
+;;

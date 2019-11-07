@@ -1,0 +1,167 @@
+Fitting 1 folds for each of 1 candidates, totalling 1 fits
+### Start Time 2019/10/08-11-02-56  SGDlog.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/valSet.txt
+Test data path:       /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=583   randForSplit=696   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.86      0.84      0.85     28178
+Train discard       0.82      0.84      0.83     23813
+
+  avg / total       0.84      0.84      0.84     51991
+
+Train F2: 0.84402 (keep)
+
+['yes', 'no']
+[[23650  4528]
+ [ 3741 20072]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.80      0.86      0.83      5596
+Valid discard       0.89      0.84      0.86      7463
+
+  avg / total       0.85      0.85      0.85     13059
+
+Valid F2: 0.84456 (keep)
+
+['yes', 'no']
+[[4791  805]
+ [1189 6274]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       0.80      0.85      0.82      4188
+Test  discard       0.88      0.84      0.86      5506
+
+  avg / total       0.84      0.84      0.84      9694
+
+Test  F2: 0.83538 (keep)
+
+['yes', 'no']
+[[3540  648]
+ [ 896 4610]]
+
+### Best Pipeline Parameters:
+classifier__alpha: 0.5
+classifier__class_weight: 'balanced'
+classifier__eta0: 0.01
+classifier__learning_rate: 'optimal'
+classifier__loss: 'log'
+classifier__penalty: 'l2'
+vectorizer__max_df: 0.75
+vectorizer__min_df: 0.02
+vectorizer__ngram_range: (1, 2)
+
+### GridSearch Pipeline:
+classifier:
+SGDClassifier(alpha=0.5, average=False, class_weight='balanced', epsilon=0.1,
+       eta0=0.01, fit_intercept=True, l1_ratio=0.15,
+       learning_rate='optimal', loss='log', n_iter=5, n_jobs=1,
+       penalty='l2', power_t=0.5, random_state=583, shuffle=True,
+       verbose=0, warm_start=False)
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+### Parameter Options Tried:
+classifier__alpha:[0.5]
+classifier__class_weight:['balanced']
+classifier__eta0:[0.01]
+classifier__learning_rate:['optimal']
+classifier__loss:['log']
+classifier__penalty:['l2']
+vectorizer__max_df:[0.75]
+vectorizer__min_df:[0.02]
+vectorizer__ngram_range:[(1, 2)]
+
+### Feature weights: highest 20
++0.1104	mice figur
++0.1077	wild_typ mice
++0.0931	wild_typ
++0.0753	knock_out
++0.0688	genotyp
++0.0683	mice compar
++0.0649	knock_out mice
++0.0621	mut_mut
++0.0617	compar wild_typ
++0.0603	cre
++0.0593	litterm
++0.0592	defici
++0.0516	mut_mut mice
++0.0496	transgen
++0.0466	wild_typ wild_typ
++0.0458	mice signific
++0.0457	mice wild_typ
++0.0446	transgen mice
++0.0442	delet
++0.0436	mice cell_lin
+
+### Feature weights: lowest 20
+-0.0201	present
+-0.0203	follow
+-0.0204	group figur
+-0.0211	method
+-0.0216	valu
+-0.0220	support inform
+-0.0220	potenti
+-0.0225	rang
+-0.0226	group
+-0.0233	evalu
+-0.0241	control group
+-0.0253	human
+-0.0258	concentr
+-0.0262	respect
+-0.0263	journal__plos_one
+-0.0274	base
+-0.0278	patient
+-0.0292	treatment
+-0.0297	clinic
+-0.0366	tabl
+
+### Vectorizer:   Number of Features: 6715
+First 10 features: [u'aa', u'aaa', u'aav', u'ab', u'abbrevi', u'abcam', u'aberr', u'abil', u'abl', u'ablat']
+
+Middle 10 features: [u'invad', u'invas', u'invers', u'invers correl', u'invert', u'investig', u'investig effect', u'investig express', u'investig mechan', u'investig possibl']
+
+Last 10 features: [u'yield', u'young', u'zebrafish', u'zeiss', u'zero', u'zhang', u'zhang et', u'zinc', u'zone', u'zoom']
+
+### False positives for Test set: 896
+31412065
+30274781
+28855256
+27914789
+28719654
+
+### False negatives for Test set: 648
+25104925
+29899144
+29359518
+28088781
+28182007
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Validation Set      :        13059         5596         7463          43%
+Training Set        :        51991        28178        23813          54%
+Test Set            :         9694         4188         5506          43%
+TestSplit: 0.20
+### End Time 2019/10/08-11-38-30. Total   2133.56 seconds
+
+Recall for papers selected by each curation group. 9694 papers analyzed
+ap             selected papers:  3631 predicted keep:  3197 recall: 0.880
+gxd            selected papers:   328 predicted keep:   303 recall: 0.924
+go             selected papers:  3094 predicted keep:  2685 recall: 0.868
+tumor          selected papers:   222 predicted keep:   186 recall: 0.838
+qtl            selected papers:    18 predicted keep:     4 recall: 0.222
+Totals         keep     papers:  4188 predicted keep:  3540 recall: 0.845
+Predictions from SGDlog_test_pred.txt - Tue Oct  8 11:44:27 2019
