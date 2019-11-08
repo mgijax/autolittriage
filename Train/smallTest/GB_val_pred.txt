@@ -1,0 +1,4 @@
+ID|Pred Class|Confidence|Abs Value|True Class|FP/FN|creationDate|year|isReview|refType|suppStatus|apStatus|gxdStatus|goStatus|tumorStatus|qtlStatus|journal|abstractLen|textLen
+29378950|discard|-2.147|2.147|discard|TN|02/23/2018|2018|0|Peer Reviewed Article|ignore supp term|Not Routed|Not Routed|Not Routed|Not Routed|Not Routed|Proc_Natl_Acad_Sci_U_S_A|885|18238
+28533442|discard|-2.449|2.449|discard|TN|12/12/2017|2017|0|Peer Reviewed Article|ignore supp term|Not Routed|Not Routed|Not Routed|Not Routed|Not Routed|J_Immunol|1444|0
+28883694|keep|2.924|2.924|keep|TP|06/06/2019|2017|0|Peer Reviewed Article|ignore supp term|Indexed|Not Routed|Not Routed|Not Routed|Not Routed|World_J_Gastroenterol|1584|3381

@@ -20,16 +20,23 @@ from sklearn.ensemble import RandomForestClassifier
 class Working_Init_Classifier:
     def __init__(self, estimator):
         self.estimator = estimator
+	self.yLen = 0
     def predict(self, X):
         return self.estimator.predict_proba(X)[:, 1][:, np.newaxis]
     def fit(self, X, y,sample_weight=None, **fit_params):
-        self.estimator.fit(X, y)
+	if len(y) == self.yLen: 	# assume already trained
+	    print("skipping fit")
+	else:
+	    print("Not skipping fit %d %d" % (self.yLen, len(y)) )
+	    self.estimator.fit(X, y)
+	    self.yLen = len(y)
 
 RFclassifier = Working_Init_Classifier(RandomForestClassifier(verbose=1,
 		class_weight='balanced',
 		random_state=randomSeeds['randForClassifier'],
 		n_estimators=5,
 		min_samples_split=75,
+#		n_jobs=4,
 		)
 		)
 #-----------------------
@@ -55,15 +62,15 @@ pipeline = Pipeline( [
 		) ),
 ] )
 parameters={
-	'vectorizer__ngram_range':[(1,1)],
-	'vectorizer__min_df':[0.01, 0.02],
-	'vectorizer__max_df':[.75],
+#	'vectorizer__ngram_range':[(1,1)],
+#	'vectorizer__min_df':[0.02],
+#	'vectorizer__max_df':[.75],
 
 #	'classifier__max_features': [10],
-	'classifier__max_depth': [3, 5, 8],
+	'classifier__max_depth': [3,4],
 #	'classifier__min_samples_split': [75,],
 #	'classifier__min_samples_leaf': [25,],
-	'classifier__n_estimators': [20, 25],
+	'classifier__n_estimators': [10, 20],
 	}
 p = tl.TextPipelineTuningHelper( pipeline, parameters,
 		    randomSeeds=randomSeeds,).fit()
