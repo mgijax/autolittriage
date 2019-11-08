@@ -2931,3 +2931,296 @@ mean_test_score:  0.852619
 
 ### End Time 2019/11/07-01-22-48. Total  12319.68 seconds
 
+Fitting 1 folds for each of 9 candidates, totalling 9 fits
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0804           0.0942            2.80m
+         2           1.0427           0.0380            2.05m
+         3           0.9984           0.0457            1.76m
+         4           0.9624           0.0364            1.63m
+         5           0.9355           0.0184            1.59m
+         6           0.9135           0.0196            1.55m
+         7           0.8881           0.0186            1.49m
+         8           0.8850           0.0072            1.43m
+         9           0.8568           0.0349            1.39m
+        10           0.8282           0.0229            1.35m
+        20           0.7054           0.0032            1.10m
+        30           0.6657           0.0009           53.91s
+        40           0.6369           0.0045           42.81s
+        50           0.6135           0.0012           31.76s
+        60           0.6018          -0.0001           21.11s
+        70           0.5805           0.0000           10.54s
+        80           0.5692          -0.0030            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0804           0.0942            2.68m
+         2           1.0427           0.0380            1.99m
+         3           0.9984           0.0457            1.72m
+         4           0.9624           0.0364            1.62m
+         5           0.9355           0.0184            1.59m
+         6           0.9138           0.0196            1.54m
+         7           0.8885           0.0187            1.48m
+         8           0.8854           0.0073            1.42m
+         9           0.8570           0.0349            1.39m
+        10           0.8283           0.0231            1.35m
+        20           0.7055           0.0031            1.09m
+        30           0.6640           0.0053           53.51s
+        40           0.6292           0.0068           42.43s
+        50           0.6101          -0.0012           31.68s
+        60           0.6001           0.0008           21.01s
+        70           0.5793           0.0009           10.46s
+        80           0.5687          -0.0011            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0804           0.0942            2.78m
+         2           1.0427           0.0380            2.01m
+         3           0.9984           0.0457            1.74m
+         4           0.9624           0.0364            1.63m
+         5           0.9355           0.0184            1.60m
+         6           0.9138           0.0196            1.56m
+         7           0.8885           0.0187            1.51m
+         8           0.8854           0.0073            1.45m
+         9           0.8570           0.0349            1.40m
+        10           0.8283           0.0231            1.37m
+        20           0.7055           0.0032            1.11m
+        30           0.6660           0.0009           54.09s
+        40           0.6378           0.0046           42.81s
+        50           0.6151           0.0014           31.78s
+        60           0.6017          -0.0017           21.01s
+        70           0.5820           0.0018           10.45s
+        80           0.5724          -0.0005            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0804           0.0942            2.48m
+         2           1.0427           0.0380            1.85m
+         3           0.9986           0.0457            1.63m
+         4           0.9625           0.0363            1.58m
+         5           0.9357           0.0185            1.53m
+         6           0.9140           0.0188            1.49m
+         7           0.8888           0.0187            1.43m
+         8           0.8855           0.0070            1.39m
+         9           0.8573           0.0351            1.36m
+        10           0.8289           0.0231            1.32m
+        20           0.7068           0.0032            1.06m
+        30           0.6681           0.0018           52.14s
+        40           0.6364           0.0056           42.74s
+        50           0.6153          -0.0004           32.04s
+        60           0.6010           0.0003           21.23s
+        70           0.5820          -0.0014           10.62s
+        80           0.5719          -0.0023            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0804           0.0942            2.66m
+         2           1.0427           0.0380            1.98m
+         3           0.9986           0.0457            1.77m
+         4           0.9625           0.0363            1.65m
+         5           0.9357           0.0186            1.61m
+         6           0.9141           0.0194            1.56m
+         7           0.8888           0.0187            1.51m
+         8           0.8857           0.0070            1.46m
+         9           0.8573           0.0351            1.42m
+        10           0.8288           0.0230            1.39m
+        20           0.7068           0.0032            1.13m
+        30           0.6672           0.0021           55.00s
+        40           0.6389           0.0057           43.30s
+        50           0.6163           0.0001           32.16s
+        60           0.6033          -0.0015           21.32s
+        70           0.5837           0.0006           10.60s
+        80           0.5723          -0.0009            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0804           0.0942            2.71m
+         2           1.0427           0.0380            1.98m
+         3           0.9986           0.0457            1.74m
+         4           0.9625           0.0363            1.63m
+         5           0.9357           0.0186            1.58m
+         6           0.9141           0.0194            1.54m
+         7           0.8888           0.0187            1.49m
+         8           0.8857           0.0070            1.45m
+         9           0.8573           0.0351            1.41m
+        10           0.8288           0.0230            1.36m
+        20           0.7067           0.0032            1.11m
+        30           0.6672           0.0021           54.50s
+        40           0.6387           0.0059           43.39s
+        50           0.6172           0.0003           32.62s
+        60           0.6062          -0.0015           21.81s
+        70           0.5868           0.0011           10.91s
+        80           0.5751          -0.0020            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0805           0.0947            2.64m
+         2           1.0426           0.0382            1.95m
+         3           0.9988           0.0456            1.73m
+         4           0.9627           0.0363            1.60m
+         5           0.9361           0.0183            1.56m
+         6           0.9143           0.0191            1.53m
+         7           0.8902           0.0170            1.47m
+         8           0.8871           0.0069            1.42m
+         9           0.8587           0.0348            1.38m
+        10           0.8289           0.0248            1.34m
+        20           0.7068           0.0034            1.10m
+        30           0.6665           0.0034           53.62s
+        40           0.6346           0.0059           42.43s
+        50           0.6153          -0.0006           31.63s
+        60           0.6025          -0.0000           20.93s
+        70           0.5832           0.0011           10.48s
+        80           0.5746          -0.0009            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0805           0.0947            2.67m
+         2           1.0426           0.0382            1.98m
+         3           0.9988           0.0456            1.74m
+         4           0.9627           0.0363            1.64m
+         5           0.9361           0.0183            1.59m
+         6           0.9143           0.0194            1.54m
+         7           0.8903           0.0170            1.47m
+         8           0.8872           0.0069            1.42m
+         9           0.8587           0.0348            1.38m
+        10           0.8289           0.0248            1.35m
+        20           0.7068           0.0033            1.11m
+        30           0.6674           0.0035           55.27s
+        40           0.6354           0.0063           43.81s
+        50           0.6141           0.0004           32.52s
+        60           0.6021          -0.0010           21.52s
+        70           0.5818           0.0024           10.73s
+        80           0.5694          -0.0000            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0805           0.0947            2.68m
+         2           1.0426           0.0382            1.98m
+         3           0.9988           0.0456            1.73m
+         4           0.9627           0.0363            1.60m
+         5           0.9361           0.0183            1.57m
+         6           0.9143           0.0194            1.52m
+         7           0.8903           0.0170            1.46m
+         8           0.8872           0.0069            1.41m
+         9           0.8587           0.0348            1.36m
+        10           0.8289           0.0248            1.33m
+        20           0.7068           0.0033            1.09m
+        30           0.6674           0.0036           53.81s
+        40           0.6358           0.0064           42.83s
+        50           0.6148          -0.0004           31.95s
+        60           0.6031           0.0005           21.22s
+        70           0.5831          -0.0007           10.59s
+        80           0.5728          -0.0007            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0133           0.1875            3.51m
+         2           0.9581           0.0575            2.54m
+         3           0.9109           0.0483            2.29m
+         4           0.8763           0.0331            2.14m
+         5           0.8404           0.0297            2.02m
+         6           0.8198           0.0286            1.95m
+         7           0.7772           0.0352            1.89m
+         8           0.7764           0.0087            1.84m
+         9           0.7630           0.0057            1.84m
+        10           0.7587           0.0122            1.78m
+        20           0.6953           0.0038            1.42m
+        30           0.6617           0.0045            1.17m
+        40           0.6339           0.0013           55.23s
+        50           0.6199           0.0015           40.91s
+        60           0.6006          -0.0009           27.22s
+        70           0.5851          -0.0007           13.60s
+        80           0.5748          -0.0007            0.00s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.0804           0.0942            2.61m
+         2           1.0427           0.0380            1.96m
+         3           0.9986           0.0457            1.71m
+         4           0.9625           0.0363            1.61m
+         5           0.9357           0.0185            1.58m
+         6           0.9140           0.0188            1.54m
+         7           0.8888           0.0187            1.47m
+         8           0.8855           0.0070            1.43m
+         9           0.8573           0.0351            1.39m
+        10           0.8289           0.0231            1.35m
+        20           0.7068           0.0032            1.11m
+        30           0.6681           0.0018           54.13s
+        40           0.6364           0.0056           42.64s
+        50           0.6153          -0.0004           31.72s
+        60           0.6010           0.0003           20.94s
+        70           0.5820          -0.0014           10.47s
+        80           0.5719          -0.0023            0.00s
+### Start Time 2019/11/07-10-12-30  GB.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=291   randForSplit=679   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.91      0.88      0.89     28178
+Train discard       0.86      0.89      0.88     23813
+
+    micro avg       0.89      0.89      0.89     51991
+    macro avg       0.88      0.89      0.89     51991
+ weighted avg       0.89      0.89      0.89     51991
+
+Train (keep) F2: 0.8843    P: 0.9075    R: 0.8787    NPV: 0.8617
+
+['yes', 'no']
+[[24760  3418]
+ [ 2523 21290]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.84      0.87      0.85      5596
+Valid discard       0.90      0.88      0.89      7463
+
+    micro avg       0.87      0.87      0.87     13059
+    macro avg       0.87      0.87      0.87     13059
+ weighted avg       0.87      0.87      0.87     13059
+
+Valid (keep) F2: 0.8605    P: 0.8412    R: 0.8654    NPV: 0.8969
+
+['yes', 'no']
+[[4843  753]
+ [ 914 6549]]
+
+### Note: Using initial learning_rate: 1.0, estimators: 80.
+Using max_depth 3, Looking min_samples_split & min_samples_leaf.
+init param: RF n_estimators=50, min_samples_leaf=15
+
+### Best Pipeline Parameters:
+classifier__min_samples_leaf: 200
+classifier__min_samples_split: 700
+
+classifier:
+GradientBoostingClassifier(criterion='friedman_mse',
+              init=<__main__.Working_Init_Classifier instance at 0x1af95bad40>,
+              learning_rate=1.0, loss='deviance', max_depth=3,
+              max_features='sqrt', max_leaf_nodes=None,
+              min_impurity_decrease=0.0, min_impurity_split=None,
+              min_samples_leaf=200, min_samples_split=700,
+              min_weight_fraction_leaf=0.0, n_estimators=80,
+              n_iter_no_change=None, presort='auto', random_state=291,
+              subsample=0.8, tol=0.0001, validation_fraction=0.1,
+              verbose=1, warm_start=False)
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+
+### Grid Search Parameter Options Tried:
+classifier__min_samples_leaf:[100, 200, 300]
+classifier__min_samples_split:[700, 750, 800]
+
+### Grid Search Scores:
+{'classifier__min_samples_leaf': 100, 'classifier__min_samples_split': 700}
+mean_test_score:  0.857371
+{'classifier__min_samples_leaf': 100, 'classifier__min_samples_split': 750}
+mean_test_score:  0.853225
+{'classifier__min_samples_leaf': 100, 'classifier__min_samples_split': 800}
+mean_test_score:  0.858037
+{'classifier__min_samples_leaf': 200, 'classifier__min_samples_split': 700}
+mean_test_score:  0.860488
+{'classifier__min_samples_leaf': 200, 'classifier__min_samples_split': 750}
+mean_test_score:  0.859178
+{'classifier__min_samples_leaf': 200, 'classifier__min_samples_split': 800}
+mean_test_score:  0.858821
+{'classifier__min_samples_leaf': 300, 'classifier__min_samples_split': 700}
+mean_test_score:  0.858056
+{'classifier__min_samples_leaf': 300, 'classifier__min_samples_split': 750}
+mean_test_score:  0.854657
+{'classifier__min_samples_leaf': 300, 'classifier__min_samples_split': 800}
+mean_test_score:  0.853142
+
+### Grid Search Best Score: 0.860488
+
+### End Time 2019/11/07-13-48-29. Total  12959.44 seconds
+

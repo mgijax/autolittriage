@@ -1709,4 +1709,20 @@ Nov 6, 2019
 	- seems to really want more n_estimators
 	- will try higher learning rate to find a reasonable # of estimators
 
+Nov 7, 2019
+    Working through the GB param tuning approach. VERY SLOW, long tuning runs.
+    Over 3 hours. 
+    Setting things up to run tuning runs on our linux servers:
+	Installed Anaconda for 2.7 in my home directory,
+	Had to set things up so I can use bash instead of tcsh since I was
+	    getting shell errors when trying to activate Anaconda
+	    (something I've wanted to do for a long time anyway)
+	Put autolittrage/Training/ directories into github so I can easily
+	    move tuning files/results between servers and laptop
+	Copied data sets to linux.
+    Have tried a few tuning runs on linux. May be a little faster.
+    Linux Anaconda version does support more parallel jobs, but so far,
+	my attempts actually take more time when running things parallel
+	than sequentially.  Not sure what is up there.
+
 

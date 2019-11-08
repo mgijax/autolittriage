@@ -49,20 +49,25 @@ pipeline = Pipeline( [
 ('classifier', GradientBoostingClassifier(verbose=1, 
 		random_state=randomSeeds['randForClassifier'],
 		init=RFclassifier,
+		learning_rate=1.0,
+		n_estimators=80,
+		max_depth=3,
+		max_features='sqrt',
+		subsample=0.8,
 		) ),
 ] )
 parameters={
-	'classifier__learning_rate': [1.0],	# fix this for now
-	'classifier__n_estimators': [80,],	# fix this for now
-	'classifier__max_depth': [3, 6, 9 ],
-	'classifier__min_samples_split': [500, 750, 1000,],
-	'classifier__min_samples_leaf': [200,],
-	'classifier__max_features': ['sqrt'],
-	'classifier__subsample': [0.8],
 #	'classifier__init':   [RFclassifier],
+#	'classifier__learning_rate': [1.0],	# fix this for now
+#	'classifier__n_estimators': [80,],	# fix this for now
+#	'classifier__max_depth': [3, 6, 9 ],
+	'classifier__min_samples_split': [700, 750, 800,],
+	'classifier__min_samples_leaf': [100, 200, 300,],
+#	'classifier__max_features': ['sqrt'],
+#	'classifier__subsample': [0.8],
 	}
 note='\n'.join([ "Using initial learning_rate: 1.0, estimators: 80.",
-	    "Looking for max_depth and min_samples_split.",
+	    "Using max_depth 3, Looking min_samples_split & min_samples_leaf.",
 	    "init param: RF n_estimators=50, min_samples_leaf=15",
 	 ]) + '\n'
 p = tl.TextPipelineTuningHelper( pipeline, parameters, randomSeeds=randomSeeds,
