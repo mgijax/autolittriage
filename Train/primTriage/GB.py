@@ -30,6 +30,7 @@ RFclassifier = Working_Init_Classifier(RandomForestClassifier(verbose=0,
                 random_state=randomSeeds['randForClassifier'],
                 n_estimators=50,
                 min_samples_leaf=15,
+#		n_jobs=2,
                 ))
 #-----------------------
 
@@ -52,22 +53,23 @@ pipeline = Pipeline( [
 		learning_rate=1.0,
 		n_estimators=80,
 		max_depth=3,
-		max_features='sqrt',
-		subsample=0.8,
+		min_samples_split=600,
+		min_samples_leaf=150,
+		max_features=0.7,
+		subsample=0.85,
 		) ),
 ] )
 parameters={
 #	'classifier__init':   [RFclassifier],
-#	'classifier__learning_rate': [1.0],	# fix this for now
-#	'classifier__n_estimators': [80,],	# fix this for now
+	'classifier__learning_rate': [0.025],
+	'classifier__n_estimators': [3200,],
 #	'classifier__max_depth': [3, 6, 9 ],
-	'classifier__min_samples_split': [700, 750, 800,],
-	'classifier__min_samples_leaf': [100, 200, 300,],
-#	'classifier__max_features': ['sqrt'],
-#	'classifier__subsample': [0.8],
+#	'classifier__min_samples_split': [525, 550, 575, 600, 625, ],
+#	'classifier__min_samples_leaf': [100, 125, 150, 175],
+#	'classifier__max_features': [0.6, 0.65, 0.7, 0.75, 0.8, 0.9, None, ],
+#	'classifier__subsample': [0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0,],
 	}
-note='\n'.join([ "Using initial learning_rate: 1.0, estimators: 80.",
-	    "Using max_depth 3, Looking min_samples_split & min_samples_leaf.",
+note='\n'.join([ ".Optimizing learning_rate & n_estimators.",
 	    "init param: RF n_estimators=50, min_samples_leaf=15",
 	 ]) + '\n'
 p = tl.TextPipelineTuningHelper( pipeline, parameters, randomSeeds=randomSeeds,
