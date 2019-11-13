@@ -4,33 +4,169 @@ GB analysis
 Fixing: max_features: 'sqrt', subsample': 0.8, learning_rate': 1.0,
 		n_estimators': 80, min_samples_leaf': 200
 Varying:
-min_samples_split': 500  max_depth': 3} mean_test_score:  0.858527
-min_samples_split': 750  max_depth': 3} mean_test_score:  0.861102  **
-min_samples_split': 1000 max_depth': 3} mean_test_score:  0.858948
+min_samples_split: 500  max_depth: 3} mean_test_score:  0.858527
+min_samples_split: 750  max_depth: 3} mean_test_score:  0.861102  **
+min_samples_split: 1000 max_depth: 3} mean_test_score:  0.858948
 
-min_samples_split': 500  max_depth': 6} mean_test_score:  0.852236
-min_samples_split': 750  max_depth': 6} mean_test_score:  0.853551
-min_samples_split': 1000 max_depth': 6} mean_test_score:  0.852059
+min_samples_split: 500  max_depth: 6} mean_test_score:  0.852236
+min_samples_split: 750  max_depth: 6} mean_test_score:  0.853551
+min_samples_split: 1000 max_depth: 6} mean_test_score:  0.852059
 
-min_samples_split': 500  max_depth': 9} mean_test_score:  0.844500
-min_samples_split': 750  max_depth': 9} mean_test_score:  0.850452
-min_samples_split': 1000 max_depth': 9} mean_test_score:  0.852619
+min_samples_split: 500  max_depth: 9} mean_test_score:  0.844500
+min_samples_split: 750  max_depth: 9} mean_test_score:  0.850452
+min_samples_split: 1000 max_depth: 9} mean_test_score:  0.852619
 
-### Grid Search Best Score: 0.861102
-
-Observations:
+Observations: ### Grid Search Best Score: 0.861102
 max_depth = 3 is better than all other permutations
+----- DECIDE:  stick with 3, it is pretty small already
 
 min_samples_split = 750 is better in 2/3 cases,
     and only slightly worse in the 3rd case
-
-Ponder:
-try max_depth 2,3,4?   ----- DECIDE:  stick with 3, it is pretty small already
-try min_samples_split 700, 750, 800 ?
 
 for min_samples_leaf:
     "don't split a node if one of its children will have fewer samples"
 
 Try:
-vary min_samples_split [700, 750, 800]
+min_samples_split [700, 750, 800]
 min_samples_leaf: [100, 200, 300]
+
+Results: ### Grid Search Best Score: 0.860488
+min_samples_split 700 is best
+min_samples_leaf 200 beats 100 and 300 for all min_split values.
+
+Try:
+min_samples_split [600, 650, 700, 725]
+min_samples_leaf  [150, 200, 250]
+
+Results: ### Grid Search Best Score: 0.866350
+min_samples_split 600
+history	    500, 750, 1000 --> 750:
+	    700, 750, 800 --> 700:
+	    600, 650, 700, 725 --> 600
+min_samples_leaf  150
+history	    100, 200, 300 --> 200
+	    150, 200, 250 --> 150
+
+Try:
+min_samples_split [525, 550, 575, 600, 625]
+min_samples_leaf  [100, 125, 150, 175]
+
+Results: ### Grid Search Best Score: 0.861012
+min_samples_split 600
+history	    500, 750, 1000 --> 750:
+	    700, 750, 800 --> 700:
+	    600, 650, 700, 725 --> 600
+	    [525, 550, 575, 600, 625] --> 625
+min_samples_leaf  150
+history	    100, 200, 300 --> 200
+	    150, 200, 250 --> 150
+	    [100, 125, 150, 175] --> 150
+
+Decision: [600, 625] and 150 are best, in the last two runs above:
+    600, 150 --> 0.866350
+    625, 150 --> 0.861012
+    600, 150 is higher in 1st run
+	AND in the 2nd run, 600, 150 was second highest.
+    So we will go with 600, 150
+
+Tuning max_features:
+Try:  (n_features = 6769)
+max_features  ['sqrt',0.05, 0.1, 0.2, 0.3, 0.4, ], # sqrt = 82
+
+Results: ### Grid Search Best Score: 0.870088
+    ['sqrt',0.05, 0.1, 0.2, 0.3, 0.4, ] --> 0.4
+
+Try:
+max_features  [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, None (all) ],
+
+Results: ### Grid Search Best Score: 0.872738
+max_features  [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, None, ] --> 0.7
+
+Try this again:
+max_features  [0.6, 0.65, 0.7, 0.75, 0.8, 0.9, None, ] --> 0.7
+
+Results:  ### Grid Search Best Score: 0.872490
+max_features  [0.6, 0.65, 0.7, 0.75, 0.8, 0.9, None, ] --> 0.7
+
+Decision:  it likes max_features = 0.7
+
+
+Tuning subsample:
+Try:
+subsample [0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0,]
+
+Results:  ### Grid Search Best Score: 0.875628
+subsample [0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0,] --> 0.85
+
+
+##  Now Optimizing learning_rate and n_estimators.
+    History: 1.0 and 80.
+Try 0.5 and 160			## Article suggests decrease learning rate
+				##  and increase estimators proportionally
+Results  -----> F2: 0.8837
+    Some overfitting
+
+Try:  (keeping n_estimators = 160)	## I'm diverting from the article
+    learning_rate [0.3, 0.1,]
+
+Results:   ### Grid Search Best Score: 0.881075
+    learning_rate [0.3, 0.1,] --> 0.3
+	(0.1 has much lower score: 0.869790)
+    n_estimators  = 160
+    max_depth = 3
+    max_features = 0.7
+    max_leaf_nodes = None	# unlimited leaf nodes
+    min_leaf_samples = 150
+    min_samples_split = 600
+    subsample = 0.85
+    -->  val F2 = 0.8811		train F2 = 0.9050
+    Less overfit than above, but still seems overfit.
+
+COMPARE TO BEFORE WE STARTED THIS TUNING APPROACH:
+    learning_rate = 0.5
+    n_estimators  = 200
+    max_depth = 3
+    max_features = None		# use all features
+    max_leaf_nodes = None	# unlimited leaf nodes
+    min_leaf_samples = 1.0
+    min_samples_split = 2
+    subsample = 1.0
+    -->  val F2 = 0.8849		train F2 = 0.9313
+    clearly pretty badly overfit
+
+Try:			## back to the article's approach
+    learning_rate 0.1
+    n_estimators  = 800
+    max_depth = 3
+    max_features = 0.7
+    max_leaf_nodes = None	# unlimited leaf nodes
+    min_leaf_samples = 150
+    min_samples_split = 600
+    subsample = 0.85
+    -->  val F2 = 0.8879		train F2 = 0.9209
+    better, lets try another step
+
+Try:
+    learning_rate 0.05
+    n_estimators  = 1600
+    max_depth = 3
+    max_features = 0.7
+    max_leaf_nodes = None	# unlimited leaf nodes
+    min_leaf_samples = 150
+    min_samples_split = 600
+    subsample = 0.85
+    -->  val F2 = 0.8887		train F2 = 0.9210
+    So a little better still.
+
+Try one more! :
+    learning_rate 0.0.25
+    n_estimators  = 3200
+    max_depth = 3
+    max_features = 0.7
+    max_leaf_nodes = None	# unlimited leaf nodes
+    min_leaf_samples = 150
+    min_samples_split = 600
+    subsample = 0.85
+    -->  val F2 = 0.8892		train F2 = 0.9214	
+    Tiny bit better than before - not worth almost twice the time
+

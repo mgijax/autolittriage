@@ -13,7 +13,6 @@ randomSeeds = tl.getRandomSeeds( { 	# None means generate a random seed
 		} )
 pipeline = Pipeline( [
 ('vectorizer', CountVectorizer(
-#('vectorizer', TfidfVectorizer(
 		strip_accents=None,	# if done in preprocessing
 		decode_error='strict',	# if handled in preproc
 		lowercase=False,	# if done in preprocessing
@@ -25,20 +24,26 @@ pipeline = Pipeline( [
 		max_df=.75,
 		),),
 #('featureEvaluator', skHelper.FeatureDocCounter()),
-#('scaler'    ,StandardScaler(copy=True,with_mean=False,with_std=True)),
-#('scaler'    , MaxAbsScaler(copy=True)),
-('classifier', SGDClassifier(verbose=0,
+('classifier', SGDClassifier(verbose=1,
 			random_state=randomSeeds['randForClassifier'],
+			loss='hinge', 	# = linear SVM
+#			max_iter=1000,	# default in 0.20 is 5!
+#			tol=0.001, 
+			class_weight='balanced',
+			n_jobs=-1,
 		) ),
 ] )
 parameters={
-	'classifier__loss':[ 'log', ],
-	'classifier__alpha':[.5, ],
-	'classifier__class_weight': ['balanced'],
-	'classifier__learning_rate':['optimal'],
-	'classifier__eta0':[ .01],
-	'classifier__penalty':['l2'],
+#	'classifier__alpha':[.5, ],
+#	'classifier__class_weight': ['balanced'],
+	'classifier__max_iter':[1000, 2000,],
+	'classifier__tol':[0.001, 0.0001,],
+#	'classifier__learning_rate':['optimal'],
+#	'classifier__eta0':[ .01],
+#	'classifier__penalty':['l2'],
 	}
-p = tl.TextPipelineTuningHelper( pipeline, parameters,
-		    randomSeeds=randomSeeds,         ).fit()
+note='\n'.join([ "Linear SVM. max_iter=1000 instead of default 5.",
+	]) + '\n'
+p = tl.TextPipelineTuningHelper( pipeline, parameters, randomSeeds=randomSeeds,
+		note=note,).fit()
 print p.getReports()

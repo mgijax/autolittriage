@@ -165,3 +165,145 @@ tumor          selected papers:   222 predicted keep:   186 recall: 0.838
 qtl            selected papers:    18 predicted keep:     4 recall: 0.222
 Totals         keep     papers:  4188 predicted keep:  3540 recall: 0.845
 Predictions from SGDlog_test_pred.txt - Tue Oct  8 11:44:27 2019
+### Start Time 2019/11/08-10-21-41  SGDlog.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=740   randForSplit=99   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.87      0.83      0.85     28178
+Train discard       0.81      0.85      0.83     23813
+
+    micro avg       0.84      0.84      0.84     51991
+    macro avg       0.84      0.84      0.84     51991
+ weighted avg       0.84      0.84      0.84     51991
+
+Train (keep) F2: 0.8404    P: 0.8666    R: 0.8341    NPV: 0.8120
+
+['yes', 'no']
+[[23503  4675]
+ [ 3618 20195]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.80      0.85      0.83      5596
+Valid discard       0.88      0.84      0.86      7463
+
+    micro avg       0.85      0.85      0.85     13059
+    macro avg       0.84      0.85      0.84     13059
+ weighted avg       0.85      0.85      0.85     13059
+
+Valid (keep) F2: 0.8393    P: 0.8030    R: 0.8488    NPV: 0.8816
+
+['yes', 'no']
+[[4750  846]
+ [1165 6298]]
+
+### Best Pipeline Parameters:
+classifier__alpha: 0.5
+classifier__class_weight: 'balanced'
+classifier__eta0: 0.01
+classifier__learning_rate: 'optimal'
+classifier__loss: 'log'
+classifier__penalty: 'l2'
+
+classifier:
+SGDClassifier(alpha=0.5, average=False, class_weight='balanced',
+       early_stopping=False, epsilon=0.1, eta0=0.01, fit_intercept=True,
+       l1_ratio=0.15, learning_rate='optimal', loss='log', max_iter=None,
+       n_iter=None, n_iter_no_change=5, n_jobs=None, penalty='l2',
+       power_t=0.5, random_state=740, shuffle=True, tol=None,
+       validation_fraction=0.1, verbose=0, warm_start=False)
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+
+### Feature weights: highest 20
++0.1098	mice figur
++0.1071	wild_typ mice
++0.0921	wild_typ
++0.0742	knock_out
++0.0683	genotyp
++0.0681	mice compar
++0.0643	knock_out mice
++0.0613	mut_mut
++0.0612	compar wild_typ
++0.0601	cre
++0.0591	litterm
++0.0582	defici
++0.0505	mut_mut mice
++0.0500	transgen
++0.0457	wild_typ wild_typ
++0.0454	mice signific
++0.0452	transgen mice
++0.0452	mice wild_typ
++0.0437	mice cell_lin
++0.0435	delet
+
+### Feature weights: lowest 20
+-0.0200	group figur
+-0.0204	follow
+-0.0205	present
+-0.0215	valu
+-0.0225	method
+-0.0226	support inform
+-0.0227	rang
+-0.0229	potenti
+-0.0238	group
+-0.0245	evalu
+-0.0250	control group
+-0.0250	concentr
+-0.0251	human
+-0.0271	journal__plos_one
+-0.0274	respect
+-0.0277	patient
+-0.0279	base
+-0.0287	clinic
+-0.0291	treatment
+-0.0367	tabl
+
+### Vectorizer:   Number of Features: 6769
+First 10 features: [u'aa', u'aaa', u'aav', u'ab', u'abbrevi', u'abcam', u'aberr', u'abil', u'abl', u'ablat']
+
+Middle 10 features: [u'investig mechan', u'investig possibl', u'investig potenti', u'investig role', u'invitrogen', u'involv', u'involv cell', u'involv regul', u'iodid', u'ion']
+
+Last 10 features: [u'young', u'younger', u'zebrafish', u'zeiss', u'zero', u'zhang', u'zhang et', u'zinc', u'zone', u'zoom']
+
+### False positives for Validation set: 1165
+24550541
+29695611
+29406270
+29228333
+29288169
+
+### False negatives for Validation set: 846
+22842725
+29953499
+26673701
+28775166
+28837808
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :        51991        28178        23813          54%
+Validation Set      :        13059         5596         7463          43%
+ValidationSplit: 0.20
+### End Time 2019/11/08-10-45-15. Total   1413.53 seconds
+
+Recall for papers selected by each curation group. 13059 papers analyzed
+ap             selected papers:  4888 predicted keep:  4337 recall: 0.887
+gxd            selected papers:   475 predicted keep:   441 recall: 0.928
+go             selected papers:  4180 predicted keep:  3622 recall: 0.867
+tumor          selected papers:   316 predicted keep:   263 recall: 0.832
+qtl            selected papers:    18 predicted keep:     6 recall: 0.333
+Totals         keep     papers:  5596 predicted keep:  4750 recall: 0.849
+Predictions from SGDlog_val_pred.txt - Fri Nov  8 11:34:02 2019
