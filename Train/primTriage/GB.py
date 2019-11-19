@@ -48,7 +48,7 @@ pipeline = Pipeline( [
 		min_df=0.02,
 		max_df=.75,
 		),),
-('featureEvaluator', skHelper.FeatureDocCounter()),
+#('featureEvaluator', skHelper.FeatureDocCounter()),
 ('classifier', GradientBoostingClassifier(verbose=1, 
 		random_state=randomSeeds['randForClassifier'],
 		#init=RFclassifier,
@@ -71,7 +71,7 @@ parameters={
 #	'classifier__max_features': [0.6, 0.65, 0.7, 0.75, 0.8, 0.9, None, ],
 #	'classifier__subsample': [0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0,],
 	}
-note='\n'.join([ "Try w/o using RF init.",
+note='\n'.join([ "blessed GB.",
 	 ]) + '\n'
 p = tl.TextPipelineTuningHelper( pipeline, parameters, randomSeeds=randomSeeds,
 		note=note,).fit()

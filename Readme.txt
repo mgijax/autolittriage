@@ -1828,3 +1828,37 @@ Nov 17, 2019
 
     Modified figureText.py to recognize "extended data figure" and
     "online figure" as the start of figure legends. These are common in Nature.
+
+Nov 19, 2019
+    * Resplit the sample data and reran training/predictions:
+    2019/11/18-16-54-38  F2PRNPV 0.8786  0.8721  0.8803  0.9060  GB.py split2
+    Not quite as good as the original split, but close enough
+
+    Note that the results for the test set were a little better than val set:
+    Valid (keep) F2: 0.8786    P: 0.8721    R: 0.8803    NPV: 0.9060
+    Test  (keep) F2: 0.8833    P: 0.8774    R: 0.8847    NPV: 0.9128
+
+    3rd split:
+    Valid (keep) F2: 0.8762    P: 0.8613    R: 0.8800    NPV: 0.9105
+
+    Relatively consistent
+
+    * In looking at the feature rankings, I noticed that only some 800 of 6700
+    features have non-zero weights. So I tried limiting the features to 3000,
+    but the results dropped off as many of the weighted features are not in 
+    the top 3000 features (by frequency).
+    Valid (keep) F2: 0.8777    P: 0.8669    R: 0.8804    NPV: 0.9057
+    Just thought I'd try.
+
+    * pulled the 48898 backpopulated references from the db and ran the GB
+	classifier on them. The vast majority are discard: 48455 vs 444 (keep)
+	(probably off on line counts because header line may be counted).
+	TP 399    FN 45
+	FP 6470   TN 41985
+	So
+	NPV is > .99 (reassuring)
+	Recall of keepers is .89
+	Recall of discard is .87
+
+	I guess this seems all right.
+
