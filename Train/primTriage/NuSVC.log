@@ -1,0 +1,92 @@
+[LibSVM]...................*....*
+optimization finished, #iter = 22864
+C = 0.127857
+obj = 607.411684, rho = 1.329906
+nSV = 27270, nBSV = 24740
+Total nSV = 27270
+### Start Time 2019/11/13-11-07-52  NuSVC.py	index file: index.out
+Training data path:   /home/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /home/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=751   randForSplit=656   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.92      0.87      0.89     28178
+Train discard       0.86      0.91      0.88     23813
+
+    micro avg       0.89      0.89      0.89     51991
+    macro avg       0.89      0.89      0.89     51991
+ weighted avg       0.89      0.89      0.89     51991
+
+Train (keep) F2: 0.8806    P: 0.9176    R: 0.8719    NPV: 0.8568
+
+['yes', 'no']
+[[24567  3611]
+ [ 2207 21606]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.86      0.86      0.86      5596
+Valid discard       0.90      0.89      0.89      7463
+
+    micro avg       0.88      0.88      0.88     13059
+    macro avg       0.88      0.88      0.88     13059
+ weighted avg       0.88      0.88      0.88     13059
+
+Valid (keep) F2: 0.8615    P: 0.8553    R: 0.8631    NPV: 0.8967
+
+['yes', 'no']
+[[4830  766]
+ [ 817 6646]]
+
+### Note: NuSVC. Mostly using defaults.
+
+### Best Pipeline Parameters:
+
+classifier:
+NuSVC(cache_size=200, class_weight=None, coef0=0.0,
+   decision_function_shape='ovr', degree=3, gamma='scale', kernel='rbf',
+   max_iter=-1, nu=0.5, probability=False, random_state=751,
+   shrinking=True, tol=0.001, verbose=True)
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+
+### Feature weights: not available
+
+### Vectorizer:   Number of Features: 6769
+First 10 features: [u'aa', u'aaa', u'aav', u'ab', u'abbrevi', u'abcam', u'aberr', u'abil', u'abl', u'ablat']
+
+Middle 10 features: [u'investig mechan', u'investig possibl', u'investig potenti', u'investig role', u'invitrogen', u'involv', u'involv cell', u'involv regul', u'iodid', u'ion']
+
+Last 10 features: [u'young', u'younger', u'zebrafish', u'zeiss', u'zero', u'zhang', u'zhang et', u'zinc', u'zone', u'zoom']
+
+### False positives for Validation set: 817
+24550541
+29695611
+29406270
+29228333
+29955044
+
+### False negatives for Validation set: 766
+26909801
+29953499
+28062700
+26673701
+28775166
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :        51991        28178        23813          54%
+Validation Set      :        13059         5596         7463          43%
+ValidationSplit: 0.20
+### End Time 2019/11/13-18-08-59. Total  25267.06 seconds
+
