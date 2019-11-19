@@ -1720,9 +1720,111 @@ Nov 7, 2019
 	Put autolittrage/Training/ directories into github so I can easily
 	    move tuning files/results between servers and laptop
 	Copied data sets to linux.
-    Have tried a few tuning runs on linux. May be a little faster.
+    Have tried a few tuning runs on linux. May be a little faster. (not clear)
     Linux Anaconda version does support more parallel jobs, but so far,
 	my attempts actually take more time when running things parallel
 	than sequentially.  Not sure what is up there.
+	When I tried 4 jobs, ran out of memory and the jobs were killed.
 
+Nov 13, 2019
+    Completed the GB param tuning approach. Good results, see GB_analysis.
+    Using:
+	init param: RF n_estimators=50, min_samples_leaf=15
+	max_depth = 3
+	max_features = 0.7
+	max_leaf_nodes = None       # unlimited leaf nodes
+	min_leaf_samples = 150
+	min_samples_split = 600
+	subsample = 0.85
 
+    Four best
+    (1) 2019/11/11-18-03-03     F2PRNPV 0.8879  0.8718  0.8921  0.9176  GB.py
+        -->  val F2 = 0.8879                train F2 = 0.9209  2405.15 seconds
+    learning_rate 0.1 n_estimators  = 800
+
+    (2) 2019/11/11-20-10-02     F2PRNPV 0.8887  0.8740  0.8924  0.9180  GB.py
+        -->  val F2 = 0.8887                train F2 = 0.9210  3882.87 seconds
+    learning_rate: 0.05 n_estimators: 1600
+    (not going to get much better than this!)
+
+    (3) 2019/11/12-13-34-15     F2PRNPV 0.8892  0.8739  0.8931  0.9185  GB.py
+        -->  val F2 = 0.8892                train F2 = 0.9214  6967.69 seconds
+    learning_rate: 0.025 n_estimators: 3200
+    (best but really slow)
+
+**  TURNS OUT NOT STARTING WITH RF IS BETTER:
+    (4) 2019/11/13-10-21-30     F2PRNPV 0.8895  0.8737  0.8935  0.9188  GB.py
+	-->  val F2 = 0.8895                train F2 = 0.9165
+    SO BETTER and a little less overfitting.
+
+    Have also tried RF (alone), SGDlog, SGDlsvm, SVM (NuSVC) is REALLY SLOW
+	none are getting close to these GB scores.
+
+Nov 14, 2019
+    ran best GB on test set::::
+    ### Start Time 2019/11/13-15-32-17  GB.py
+    Train (keep) F2: 0.9178    P: 0.9374    R: 0.9131    NPV: 0.9002
+    Valid (keep) F2: 0.8888    P: 0.8731    R: 0.8928    NPV: 0.9182
+    Test  (keep) F2: 0.8809    P: 0.8746    R: 0.8825    NPV: 0.9100
+
+    Recall for papers selected by each curation group. 9694 papers analyzed
+    ap             selected papers:  3631 predicted keep:  3319 recall: 0.914
+    gxd            selected papers:   328 predicted keep:   304 recall: 0.927
+    go             selected papers:  3094 predicted keep:  2765 recall: 0.894
+    tumor          selected papers:   222 predicted keep:   206 recall: 0.928
+    qtl            selected papers:    18 predicted keep:    15 recall: 0.833
+    Totals         keep     papers:  4188 predicted keep:  3696 recall: 0.883
+
+    So this looks great.
+
+    Ran NuSVC (SVM) - mostly default params and got:
+    Valid (keep) F2: 0.8615    P: 0.8553    R: 0.8631    NPV: 0.8967
+    Not bad (but not as good as tuned GB).
+    But it took over 7 hours on server, w/o training test set predictor.
+    I don't see how to tune it better particularly given how long runs take.
+
+    Started pulling GB validation set predictions in G. spreadsheet and
+	analyzing a bit.
+Nov 17, 2019
+    Looking at GB validation set predictions.
+    Found several Journals w/ low NPV or recall and a fair number of FN.
+    Examining some of these FN to see if there are structural problems with
+    the extracted text:
+	Biochem_Biophys_Res_Commun
+	    28837808: many paragraph boundaries are missing in extracted text,
+		so some figure text bleeds across to other paragraphs, some
+		actual figure legends are truncated because the fig text
+		processor doesn't know it is doing a legend.
+	    28676401: Roughly the same, but seemed to find figure legend starts
+		better.
+	    29621546: Same thing
+	Nat_Struct_Mol_Biol
+	    20972448: same as above (but not too bad)
+	    21478863: same as above (but not too bad)
+	Nature
+	    25470062: paragraphs containing "fig" are ok, but all figure
+		legends are lost or severely truncated. They start with
+		"Extended Data Figure." and sometimes water mark "Author
+		manuscript" in the page margins are included.
+	    16452984: paragraph boundaries a little bled through, figure
+		legends are intact
+	    25119048: a little bleed through. Legends often are split into
+		2 cols at bottom of page, the fig processor leaves out
+		2nd col. "Extended Data Figure n" are not caught as the start
+		of legends.
+	Structure
+	    16472755: a little bleed through boundaries, but legends intact
+		and generally not bad
+	    23850451: a little bleed through, some legends treated as in the 
+		middle of paragraphs
+
+    Bottom line: there is some munging of text, perhaps the new pdftotext will
+    improve things. Would like to try using the new extractor on some FN's but
+    automating the downloading of PDFs, extraction, reconstructing the sample
+    records, etc. is too complicated to bother.
+
+    Looked at several articles that are FN and have small text length, these
+    tend to be correspondence or editorials.
+
+    Modified figureText.py to recognize "extended data figure" and
+    "online figure" as the start of figure legends. These are common in Nature.

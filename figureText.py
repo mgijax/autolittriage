@@ -31,7 +31,6 @@ class Text2FigConverter (object):
 	(3) legends plus n words around the reference to a fig/tbl (so not
 	    the whole paragraph, just words close to "figure")
     """
-
     def __init__(self,
 		conversionType='legend', # which flavor discussed above:
 					# 'legend', 'paragraph', 'close words'
@@ -40,7 +39,6 @@ class Text2FigConverter (object):
 		):
 	self.conversionType = conversionType
 	self.numWords = numWords
-
 
     def text2FigText(self, text,
 	):
@@ -56,7 +54,6 @@ class Text2FigConverter (object):
 	else:
 	    raise AttributeError("invalid text2fig conversion type '%s'\n" % \
 						    self.conversionType)
-
 #---------------------------------
 
 PARAGRAPH_BOUNDARY = '\n\n'	# defines a paragraph boundary
@@ -69,7 +66,9 @@ figureRe = re.compile(r'\b(?:fig(?:ure)?|table)s?\b', re.IGNORECASE)
 # match a word that can begin a figure or table legend.
 #   i.e., "fig" or "figure" or "supp...figure" or "table"
 #   Note no plurals
-legendRe = re.compile(r'\b(?:(?:supp\w*[ ])?fig(?:ure)?|table)\b',re.IGNORECASE)
+legendRe = re.compile(\
+	r'\b(?:(?:(?:supp\w*|online|extended\sdata)\s)?fig(?:ure)?|table)\b',
+	re.IGNORECASE)
 
 #---------------------------------
 
@@ -235,6 +234,20 @@ Figure 2: this is caption 2. Also spellbinding
 and this is a bit more of the caption.
 
 Supplemental Figure 3: this is the caption of a supplemental figure.
+and this is a bit more of the caption.
+
+Supp Figure 3:
+this is the second caption of a supp figure.
+and this is a bit more of the caption.
+
+Extended Data Figure 3: this is the caption of a extended data figure.
+and this is a bit more of the caption.
+
+Extended Data Figure:
+this is the caption of a extended data figure.
+and this is a bit more of the caption.
+
+Online Figure 3: this is the caption of a online figure.
 and this is a bit more of the caption.
 
 here is a supp figure mention

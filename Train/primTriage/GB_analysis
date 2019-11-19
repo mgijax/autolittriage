@@ -170,3 +170,16 @@ Try one more! :
     -->  val F2 = 0.8892		train F2 = 0.9214	
     Tiny bit better than before - not worth almost twice the time
 
+*** Now Trying the above w/o the RF init step ***************
+    learning_rate 0.05
+    n_estimators  = 1600
+    max_depth = 3
+    max_features = 0.7
+    max_leaf_nodes = None	# unlimited leaf nodes
+    min_leaf_samples = 150
+    min_samples_split = 600
+    subsample = 0.85
+    -->  val F2 = 0.8895		train F2 = 0.9165
+    SO BETTER and a little less overfitting.
+    SKIP RF STEP.
+
