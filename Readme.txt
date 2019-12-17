@@ -1861,4 +1861,21 @@ Nov 19, 2019
 	Recall of discard is .87
 
 	I guess this seems all right.
+Dec 5, 2019
+    I was getting ready to retrain the GB pipeline on all the sample data from
+    sep18 so I can try predicting on more recent triaged data.
+    I wanted to re-extract figure text from the raw sample files since I made
+    some tweaks to the fig text algorithm.
+    BUT I found that sep18/discard_after is truncated. Somehow when I was
+    playing with the data files (maybe testing the new fig text extraction?),
+    I managed to replace discard_after with some test file I was working with.
+    Sigh.
+    So I temporarily added a where clause for create_date <= "09/18/2019" to
+    sdGetRawPrimTriage.py for discard_after and refreshed this file.
+    Since there has been some curation/triage since then that might have
+    affected some papers, this list of discard_after is probably slightly diff
+    from the one actually gotten on sep18.
+    I checked that there are no duplicates in the new discard_after and the
+    keep_after.
+    Retrained and re-predicted on the test set.
 
