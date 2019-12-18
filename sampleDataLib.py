@@ -142,14 +142,51 @@ class SampleSet (object):
 	return self
     #-------------------------
 
-    def getSamples(self):	return self.samples
+    def preprocess(self, preprocessors,  # list of preprocessor (method) names
+	):
+	"""
+	Run the (sample) preprocessors on each sample in the sampleSet.
+	Return list of samples that are marked as "isReject" by preprocessors
+	"""
+	if not preprocessors: return []		# no preprocessors to run
 
-    def getSampleIDs(self):
-	return [s.getID() for s in self.samples]
-    def getDocuments(self):
-	return [s.getDocument() for s in self.samples]
+	rejects = []
 
-    def getNumSamples(self):	return len(self.samples)
+	# save prev sample ID for printing if we get an exception.
+	# Gives us a fighting chance of finding the offending record
+	prevSampleName = 'very first sample'
+
+	for rcdnum, sample in enumerate(self.sampleIterator()):
+	    try:
+		for pp in preprocessors:
+		    sample = getattr(sample, pp)()  # run preproc method 
+
+		if sample.isReject(): rejects.append(sample)
+
+		prevSampleName = sample.getSampleName()
+	    except:
+		sys.stderr.write("\nException in record %s prevID %s\n\n" % \
+						    (rcdnum, prevSampleName))
+		raise
+	return rejects
+    #-------------------------
+
+    def getSamples(self, omitRejects=False):
+	if omitRejects:
+	    return [s for s in self.sampleIterator(omitRejects=omitRejects) ]
+	else:
+	    return self.samples
+
+    def getSampleIDs(self, omitRejects=False):
+	return [s.getID() for s in self.sampleIterator(omitRejects=omitRejects)]
+
+    def getDocuments(self, omitRejects=False):
+	return [s.getDocument() for s in \
+				self.sampleIterator(omitRejects=omitRejects)]
+
+    def getNumSamples(self, omitRejects=False):
+	return len(self.getSamples(omitRejects=omitRejects))
+
     def getRecordEnd(self):	return RECORDEND
 
     def getSampleObjType(self): return self.sampleObjType
@@ -168,6 +205,47 @@ class SampleSet (object):
 	self.meta.setMetaItem(key, value)
 
 # end class SampleSet -----------------------------------
+
+class ClassifiedSampleSet (SampleSet):
+    """
+    IS:     a SampleSet of ClassifiedSamples
+    HAS:    sample record list, list of journals, counts of pos/neg samples
+    """
+    def __init__(self, sampleObjType=None):
+	if not sampleObjType:	# get from config
+	    self.sampleObjType = \
+			    getattr(sys.modules[__name__], SAMPLE_OBJ_TYPE_NAME)
+	else: self.sampleObjType = sampleObjType
+
+	SampleSet.__init__(self, sampleObjType=self.sampleObjType)
+	self.numPositives = 0
+	self.numNegatives = 0
+	self.journals     = set()   # set of all journal names in the samples
+    #-------------------------
+
+    def addSample(self, sample,		# ClassifiedSample
+	):
+	SampleSet.addSample(self, sample)
+	if sample.isPositive(): self.numPositives += 1
+	else:                   self.numNegatives += 1
+	self.journals.add(sample.getJournal())
+	return self
+    #-------------------------
+
+    def getKnownClassNames(self, omitRejects=False):
+	return [s.getKnownClassName() for s in \
+				self.sampleIterator(omitRejects=omitRejects)]
+    def getKnownYvalues(self, omitRejects=False):
+	return [s.getKnownYvalue() for s in \
+				self.sampleIterator(omitRejects=omitRejects)]
+
+    def getNumPositives(self):	return self.numPositives
+    def getNumNegatives(self):	return self.numNegatives
+    def getJournals(self):	return self.journals	# set of names
+
+    def getExtraInfoFieldNames(self):
+	return self.sampleObjType.getExtraInfoFieldNames()
+# end class ClassifiedSampleSet -----------------------------------
 
 class SampleSetMetaData (object):
     """
@@ -236,40 +314,6 @@ class SampleSetMetaData (object):
 
 # end class SampleSetMetaData ---------------------
 
-class ClassifiedSampleSet (SampleSet):
-    """
-    IS:     a SampleSet of ClassifiedSamples
-    HAS:    sample record list, list of journals, counts of pos/neg samples
-    """
-    def __init__(self, sampleObjType=None):
-	if not sampleObjType:	# get from config
-	    self.sampleObjType = \
-			    getattr(sys.modules[__name__], SAMPLE_OBJ_TYPE_NAME)
-	else: self.sampleObjType = sampleObjType
-
-	SampleSet.__init__(self, sampleObjType=self.sampleObjType)
-	self.numPositives = 0
-	self.numNegatives = 0
-	self.journals     = set()   # set of all journal names in the samples
-    #-------------------------
-
-    def addSample(self, sample,		# ClassifiedSample
-	):
-	SampleSet.addSample(self, sample)
-	if sample.isPositive(): self.numPositives += 1
-	else:                   self.numNegatives += 1
-	self.journals.add(sample.getJournal())
-	return self
-    #-------------------------
-
-    def getNumPositives(self):	return self.numPositives
-    def getNumNegatives(self):	return self.numNegatives
-    def getJournals(self):	return self.journals	# set of names
-
-    def getExtraInfoFieldNames(self):
-	return self.sampleObjType.getExtraInfoFieldNames()
-# end class ClassifiedSampleSet -----------------------------------
-
 #-----------------------------------
 # Regex's sample preprocessors
 urls_re      = re.compile(r'\b(?:https?://|www[.]|doi)\S*',re.IGNORECASE)
@@ -315,7 +359,11 @@ class BaseSample (object):
     fieldSep = FIELDSEP
 
     def __init__(self,):
-	pass
+	# preprocessSamples.py & other scripts have notion of rejected samples.
+	# preprocessor methods may mark a sample as rejected.
+	#  For autolittriage, we don't have any checks to reject samples (yet)
+	self.isRejected = False
+	self.rejectReason = None
     #----------------------
 
     def parseSampleRecordText(self, text):
@@ -389,10 +437,9 @@ class BaseSample (object):
     def getY_negative(cls):	return cls.y_negative
 
     #----------------------
-    # preprocessSamples.py script checks for rejected samples.
-    #  For autolittriage, we don't have any checks to reject samples (yet)
-    def isReject(self):		return False
-    def getRejectReason(self):	return None
+    def isReject(self):	
+	return self.isRejected
+    def getRejectReason(self):	return self.rejectReason
 
     #----------------------
     # "preprocessor" functions.
@@ -507,7 +554,6 @@ class BaseSample (object):
 	""" for debugging, replace the extracted text with text from a file
 	    Filename is <ID>.new.txt
 	"""
-	
 	fileName = self.getID() + ".new.txt"
 	if os.path.isfile(fileName):
 	    newText = open(fileName, 'r').read()
@@ -515,7 +561,16 @@ class BaseSample (object):
 	return self
     # ---------------------------
 
-    def addJournalFeature(self):		# preprocessor
+    def rejectIfJ(self):		# preprocessor
+	""" for debugging reject processing. Reject if journal starts w/ 'J'"""
+	
+	if self.getJournal()[0] == "J":
+	    self.isRejected=True
+	    self.rejectReason = "silly"
+	return self
+    # ---------------------------
+
+    def addJournalFeature(self):	# preprocessor
 	''' Add the journal name as a text token to the document
 	'''
 	jtext = 'journal__' + '_'.join( self.getJournal().split(' ') ).lower()
@@ -739,7 +794,7 @@ class CurGroupUnClassifiedSample(BaseSample):
 # end class CurGroupUnClassifiedSample ------------------------
 
 if __name__ == "__main__":	# ad hoc test code
-    if False:
+    if True:
 	print "----------------------"
 	print "ClassifiedSampleSet PrimTriageClassifiedSample tests\n"
 	ss = ClassifiedSampleSet(sampleObjType=PrimTriageClassifiedSample)
@@ -749,7 +804,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print ss.getSampleClassNames()
 	print ss.getY_positive()
 	print ss.getY_negative()
-    if False:	# basic CurGroupClassified Sample tests
+    if True:	# basic CurGroupClassified Sample tests
 	r3 = CurGroupClassifiedSample().parseSampleRecordText(\
     '''unselected|pmID1|01/01/1900|1900|keep|0|non-peer1|supp type1|apstat1|gxdstat1|goStat1|tumorstat1|qtlStat1|Journal of Insomnia|My Title|
     My Abstract|My text: it's a knock out https://foo text www.foo.org word word  -/- the final words'''
@@ -778,7 +833,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print "numNegatives: %d" % ss.getNumNegatives()
 	print "Journals:"
 	print ss.getJournals()
-    if False:	# basic PrimTriageClassified Sample tests
+    if True:	# basic PrimTriageClassified Sample tests
 	r2 = PrimTriageClassifiedSample().parseSampleRecordText(\
 	''';discard|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
 	r1 = PrimTriageClassifiedSample().parseSampleRecordText(\
@@ -806,7 +861,7 @@ if __name__ == "__main__":	# ad hoc test code
 	for e in r1.getExtraInfo(): print e
 	print
 
-    if False: # ClassifiedSampleSet (for PrimTriageClassifiedSample) tests
+    if True: # ClassifiedSampleSet (for PrimTriageClassifiedSample) tests
 	r2 = PrimTriageClassifiedSample().parseSampleRecordText(\
 	''';discard|pmID1|10/3/2017|1901|1|peer2|supp2|apstat2|gxdStat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2''')
 	r1 = PrimTriageClassifiedSample().parseSampleRecordText(\
@@ -840,7 +895,7 @@ if __name__ == "__main__":	# ad hoc test code
 	ss.write(sys.stdout)
 	print "\nEnd Output file"
 	
-    if False:	# PrimTriageUnClassified Sample tests
+    if True:	# PrimTriageUnClassified Sample tests
 	r2 = PrimTriageUnClassifiedSample().parseSampleRecordText(\
 		'''pmID1|1|peer2|journal2|title2|abstract2|text2''')
 	r1 = PrimTriageUnClassifiedSample().parseSampleRecordText(\
@@ -863,7 +918,7 @@ if __name__ == "__main__":	# ad hoc test code
 	print ss.getHeaderLine()
 	print ss.getSamples()
 
-    if False:		# preprocessor tests
+    if True:		# preprocessor tests
 	print "---------------"
 	print "Preprocessor tests\n"
 	r1.addJournalFeature()
