@@ -1,0 +1,104 @@
+### Feature weights: highest 50
++0.2874	mice figur
++0.1304	wild_typ mice
++0.0839	cre
++0.0651	wild_typ
++0.0369	litterm
++0.0317	genotyp
++0.0272	mut_mut
++0.0250	knock_out
++0.0225	transgen mice
++0.0164	transgen
++0.0156	knock_out mice
++0.0104	mut_mut mice
++0.0089	mice compar
++0.0085	relat figur
++0.0077	embryonic_day
++0.0075	mice strain
++0.0059	mice express
++0.0040	mice model
++0.0040	defici
++0.0038	xenograft
++0.0033	embryon
++0.0029	inocul
++0.0028	clinic
++0.0028	mutant mice
++0.0027	defici mice
++0.0024	crispr
++0.0023	zebrafish
++0.0023	patient
++0.0022	delet
++0.0021	postnat
++0.0019	pdf
++0.0018	immunostain
++0.0018	mice line
++0.0017	week age
++0.0017	onlin
++0.0017	old
++0.0015	support inform
++0.0015	embryonic_day embryonic_day
++0.0015	vaccin
++0.0014	improv
++0.0014	rat figur
++0.0014	section
++0.0014	host
++0.0013	replic
++0.0013	mice use
++0.0013	mice develop
++0.0013	supplementari tabl
++0.0013	infect mice
++0.0012	control mice
++0.0011	compar wild_typ
+
+### Feature weights: lowest 50
++0.0000	week treatment
++0.0000	weigh
++0.0000	weight bodi
++0.0000	weight figur
++0.0000	weight gain
++0.0000	weight loss
++0.0000	weight mice
++0.0000	welch
++0.0000	wherea express
++0.0000	wherea onli
++0.0000	wherebi
++0.0000	whi
++0.0000	white
++0.0000	white adipos
++0.0000	white arrow
++0.0000	white arrowhead
++0.0000	white bar
++0.0000	whitney
++0.0000	wide
++0.0000	wide rang
++0.0000	wide use
++0.0000	widespread
++0.0000	width
++0.0000	wild_typ allel
++0.0000	wild_typ c57bl
++0.0000	wild_typ cell_lin
++0.0000	wild_typ counterpart
++0.0000	wild_typ figur
++0.0000	wild_typ group
++0.0000	wild_typ level
++0.0000	wild_typ mutant
++0.0000	wild_typ versus
++0.0000	window
++0.0000	withdraw
++0.0000	wnt signal
++0.0000	wonder
++0.0000	wors
++0.0000	wound heal
++0.0000	wrote manuscript
++0.0000	xenograft model
++0.0000	xenograft tumor_typ
++0.0000	xlsx
++0.0000	yellow
++0.0000	yfp
++0.0000	zeiss
++0.0000	zero
++0.0000	zhang et
++0.0000	zinc
++0.0000	zone
++0.0000	zoom
+
