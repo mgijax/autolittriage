@@ -58,7 +58,7 @@ pipeline = Pipeline( [
 #('scaler'    , MaxAbsScaler(copy=True)),
 ('classifier', GradientBoostingClassifier(verbose=1, 
 		random_state=randomSeeds['randForClassifier'],
-		init=RFclassifier,
+		#init=RFclassifier,
 		) ),
 ] )
 parameters={
