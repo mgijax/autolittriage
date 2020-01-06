@@ -1878,4 +1878,164 @@ Dec 5, 2019
     I checked that there are no duplicates in the new discard_after and the
     keep_after.
     Retrained and re-predicted on the test set.
+Dec 19, 2019
+    finished some stuff...
+    Pulled discard and keep papers after sep18 from the db. These are a new test
+    set.
+	discards: 2276
+	keeps:   1922
+	TP 1597
+	TN 2123
+	FP 154
+	FN 324
+	So: R .83, P .91, NPV: .867
+	Why is Recall so low?
+	.
 
+Jan 3, 2020
+    In MLtextTools, moved most training/evaluation reports from textTuningLib
+    to tuningReportsLib so they can be called from predict.py.
+    Want to use these to ponder why Recall above is poor.
+
+    Have rerun predictions, no changes from Dec 19.
+
+	### Metrics: Preds
+		       precision    recall  f1-score   support
+
+	   Preds keep       0.91      0.83      0.87      1921
+	Preds discard       0.87      0.93      0.90      2277
+
+	    micro avg       0.89      0.89      0.89      4198
+	    macro avg       0.89      0.88      0.88      4198
+	 weighted avg       0.89      0.89      0.89      4198
+
+	Preds (keep) F2: 0.8463    P: 0.9121    R: 0.8313    NPV: 0.8676
+
+	['keep', 'discard']
+	[[1597  324]
+	 [ 154 2123]]
+
+    ### Recall by group
+    Recall for papers selected by each curation group. 4198 papers analyzed
+    ap             selected papers:  1566 predicted keep:  1395 recall: 0.891
+    gxd            selected papers:   111 predicted keep:   100 recall: 0.901
+    go             selected papers:   367 predicted keep:   232 recall: 0.636
+    tumor          selected papers:   108 predicted keep:    75 recall: 0.694
+    Totals         keep     papers:  1921 predicted keep:  1597 recall: 0.831
+    Predictions from predictions.txt - Mon Jan  6 13:23:24 2020
+
+    ### Recall by group for just papers published in 2018 and 2019
+    ###  improvement because NPV for previous years is lower
+    ###  almost all papers added for 2017 or earlier are keeps.
+    Recall for papers selected by each curation group. 4198 papers analyzed
+    ap             selected papers:   992 predicted keep:   910 recall: 0.917
+    gxd            selected papers:    97 predicted keep:    87 recall: 0.897
+    go             selected papers:   300 predicted keep:   200 recall: 0.671
+    tumor          selected papers:    88 predicted keep:    65 recall: 0.739
+
+    (for 2019 papers only:    P: 0.86	R: 0.83    NPV: 0.92)
+
+    Prediction spreadsheet is here:
+    https://docs.google.com/spreadsheets/d/1Xe0w9qYt2DVgBhLnz3qINaMdMbBgC2Ngw614ssSRT40/edit#gid=1038801569
+
+    Not clear if there are any patterns to the FN's.
+    But some journals have very short abstract/text lengths - a few to
+	investigate
+
+Jan 6, 2020
+    looking at a few examples from the above predictions:
+    Probably manually added (by Cindy/JEO):
+    8025756 - FN - is 1994 paper added to db in 11/2019. PDF is just an image,
+	so no fig text
+    4730821 - FN - is 1973 paper added to db in 11/2019. PDF is just an image,
+	so no fig text
+    1709419 - FN - is 1991 paper added to db in 11/2019. PDF is just an image,
+	so no fig text
+    9041544 - FN - is 1997 paper added to db in 11/2019. PDF is just an image,
+	so no fig text
+    8199347 - FN - is 1994 paper added to db in 11/2019. PDF is just an image,
+	so no fig text
+    3204174 - FN - is 1984 paper added to db in 11/2019. PDF looks like just
+	an image, but 58 chars of fig text. Legends were not detected due to 
+	extraction.
+    4655832 - FN - is 1972 paper added to db in 11/2019. PDF looks like just
+	an image, but 126 chars of fig text. Legends were not detected due to 
+	extraction.
+    Similar: 7645839
+
+    Probably manually added by Debbie:
+    2004368 - FN - 1991 - tumor, short abstract and fig text
+
+    IF we had a special way to load papers we "definitely want" and avoid the
+    prediction/primary traige, these would not be FN's
+
+    Other:
+    27910161 - FN - no fig text - all "Figure" labels/references include
+	the actual number, e.g., "Figure2a"
+    31432711 - TN - no fig text(correctly), it is actually an editorial but
+	Pubmed PT says "Journal Article" which a presume we default to peer
+	reviewed
+
+    Looking at FN and NPV by year
+    https://docs.google.com/spreadsheets/d/1Xe0w9qYt2DVgBhLnz3qINaMdMbBgC2Ngw614ssSRT40/edit#gid=590639105
+    NPV is bad for 2018 and below. Almost all these papers are keep.
+    (for 2018: 23 are discard, 252 are keep)
+    Maybe simple thing is older papers don't go through the prediction process,
+    just default these to "keep"
+    (roughly same idea as above)
+
+    NPV for 2019 is 92 - pretty damn good.
+	If we just look at 2019: 2067 TN, 180 FN.
+	So curators would skip looking at 2247 papers, and only miss 180.
+	Maybe this is the reasoning to look at NPV over recall.
+	Recall does not take TN into account at all.
+	If you have NPV and you see how many predicted Negatives you get, you
+	can state your savings (TN skipped) and your cost (FN not curated)
+
+------------------------------------------------------
+So in Summary - for GB_blessed:
+
+Performance for validation & test sets:
+2019/11/13-10-21-30     F2PRNPV 0.8895  0.8737  0.8935  0.9188  GB.py noinit1
+2019/11/13-15-32-17     F2PRNPV 0.8888  0.8731  0.8928  0.9182  GB.py noinit+TS
+2019/11/18-16-54-38     F2PRNPV 0.8786  0.8721  0.8803  0.9060  GB.py split2
+    Test  (keep) F2: 0.8833    P: 0.8774    R: 0.8847    NPV: 0.9128
+2019/11/19-11-44-29     F2PRNPV 0.8762  0.8613  0.8800  0.9105  GB.py split3
+2019/12/05-14-59-38     F2PRNPV 0.8793  0.8706  0.8815  0.9135  GB.py
+    Test  (keep) F2: 0.8757    P: 0.8825    R: 0.8740    NPV: 0.9047
+
+Recall for papers selected by each curation group. 13087 papers analyzed
+ap             selected papers:  4794 predicted keep:  4377 recall: 0.913
+gxd            selected papers:   459 predicted keep:   434 recall: 0.946
+go             selected papers:  4019 predicted keep:  3599 recall: 0.896
+tumor          selected papers:   328 predicted keep:   295 recall: 0.899
+Totals         keep     papers:  5493 predicted keep:  4842 recall: 0.881
+Predictions from GB_val_pred.txt - Thu Dec  5 17:57:44 2019
+---------------------
+Retrained GB_blessed on whole sample set from Sep 81 (train+val+test):
+When predicting new data, triaged between Sep 18 and Dec 19:
+
+Preds (keep) F2: 0.8463    P: 0.9121    R: 0.8313    NPV: 0.8676
+    ### Recall by group
+    Recall for papers selected by each curation group. 4198 papers analyzed
+    ap             selected papers:  1566 predicted keep:  1395 recall: 0.891
+    gxd            selected papers:   111 predicted keep:   100 recall: 0.901
+    go             selected papers:   367 predicted keep:   232 recall: 0.636
+    tumor          selected papers:   108 predicted keep:    75 recall: 0.694
+    Totals         keep     papers:  1921 predicted keep:  1597 recall: 0.831
+    Predictions from predictions.txt - Mon Jan  6 13:23:24 2020
+
+Not quite as good.
+But if we omit older year papers from predictions in one of two ways discussed
+above, things improve to (from spreadsheet above)
+    P: 0.86	R: 0.83    NPV: 0.92
+and
+    ### Recall by group for just papers published in 2018 and 2019
+    ###  improvement because NPV for previous years is lower
+    ###  almost all papers added for 2017 or earlier are keeps.
+    Recall for papers selected by each curation group. 4198 papers analyzed
+    ap             selected papers:   992 predicted keep:   910 recall: 0.917
+    gxd            selected papers:    97 predicted keep:    87 recall: 0.897
+    go             selected papers:   300 predicted keep:   200 recall: 0.671
+    tumor          selected papers:    88 predicted keep:    65 recall: 0.739
+------------------------------------------------------
