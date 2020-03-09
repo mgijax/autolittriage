@@ -1408,7 +1408,8 @@ Sep 17, 2019
     Started including journal name as one of the features. Realized by adding
     journal name as a token to the extracted text, it effectively does one-hot
     encoding (since each article is in exactly one journal). Figure it can't
-    hurt. Turns out, very few journals (6) pass the min_df, max_df feature limits,
+    hurt.
+    Turns out, very few journals (6) pass the min_df, max_df feature limits,
     so probably is meaningless.
 
 Sep 18, 2019
@@ -2004,13 +2005,21 @@ Performance for validation & test sets:
 2019/12/05-14-59-38     F2PRNPV 0.8793  0.8706  0.8815  0.9135  GB.py
     Test  (keep) F2: 0.8757    P: 0.8825    R: 0.8740    NPV: 0.9047
 
-Recall for papers selected by each curation group. 13087 papers analyzed
-ap             selected papers:  4794 predicted keep:  4377 recall: 0.913
-gxd            selected papers:   459 predicted keep:   434 recall: 0.946
-go             selected papers:  4019 predicted keep:  3599 recall: 0.896
-tumor          selected papers:   328 predicted keep:   295 recall: 0.899
-Totals         keep     papers:  5493 predicted keep:  4842 recall: 0.881
-Predictions from GB_val_pred.txt - Thu Dec  5 17:57:44 2019
+    Recall for papers selected by each curation group. 9838 papers analyzed
+    ap             selected papers:  3701 predicted keep:  3369 recall: 0.910
+    gxd            selected papers:   343 predicted keep:   323 recall: 0.942
+    go             selected papers:  3170 predicted keep:  2821 recall: 0.890
+    tumor          selected papers:   235 predicted keep:   202 recall: 0.860
+    Totals         keep     papers:  4253 predicted keep:  3717 recall: 0.874
+    Predictions from GB_test_pred.txt - Thu Dec  5 17:57:44 2019
+
+    Recall for papers selected by each curation group. 13087 papers analyzed
+    ap             selected papers:  4794 predicted keep:  4377 recall: 0.913
+    gxd            selected papers:   459 predicted keep:   434 recall: 0.946
+    go             selected papers:  4019 predicted keep:  3599 recall: 0.896
+    tumor          selected papers:   328 predicted keep:   295 recall: 0.899
+    Totals         keep     papers:  5493 predicted keep:  4842 recall: 0.881
+    Predictions from GB_val_pred.txt - Thu Dec  5 17:57:44 2019
 ---------------------
 Retrained GB_blessed on whole sample set from Sep 81 (train+val+test):
 When predicting new data, triaged between Sep 18 and Dec 19:
@@ -2039,3 +2048,74 @@ and
     go             selected papers:   300 predicted keep:   200 recall: 0.671
     tumor          selected papers:    88 predicted keep:    65 recall: 0.739
 ------------------------------------------------------
+
+Jan 13, 2020
+    Reanalyzed the confidences for the negative predictions for the GB val set
+    spreadsheet and predictions for triaged papers between Sep 18 and Dec 19.
+    Noticed that the vast majority of FN are low confidence negative preds!
+    I restructured Conf FN/FP PT pivot table tab and grafted Conf x FN/TN.
+    Roughly, for both sets of predictions, if curators were to focus on the
+    15% of negative predictions w/ lowest confidence,
+    we'd recover 50-70% of FN (turning them into TP).
+    Changes our R and NPV up into the 90's.
+    So this is a really good aspect of the GB predictions.
+
+Jan 27, 2020
+    created google sheet to analyze the test set predictions (as opposed to
+    the validation set predictions). 
+    https://docs.google.com/spreadsheets/d/1QYvP1SBKUdbCmF_sg7-h5LNoyyJukjeKGvTv-KP_v8U/edit#gid=1446446491
+    Happily it is consistent with the validation set results and with the
+    results for papers triaged since the Sep 18 data set.
+    The clustering of the FN in the low confidence neg preds is consistent.
+
+Feb 13, 2020
+    Did everyone meeting on Feb 11, presenting results for the GB classifier.
+    Harold brought up the fact that the littriage_goa loader has added papers
+    selected for GO that may not fit our manual triage criteria. So maybe we
+    want to remove them from the training/sample set?
+    Did some queries:
+	1177 papers in the db created by littriage_goa
+	 346 of these have actually been selected/indexed/curated by AP/MTB/GXD
+
+	so there are not TOO many and some would have been selected by other 
+	curators anyway. So I'm not inclined to worry about removing them.
+	However, it would be pretty easy to add papers selected ONLY for GO
+	that are created by the littriage_goa user to the tmp_omit table
+	in sdGetRawPrimTriage.py (831 papers).
+
+	Some of the "challenging" journals may be primarily for littriage_goa
+	loaded papers however. Probably worth omitting and rerunning everything.
+
+    Connie also points out that recall score for GO papers is not necessarily
+    based on accurate data. The GO group is not actively doing 2ndry triage, so
+    there are papers in the db that would be GO relevant but aren't marked as
+    such.  But I don't think this affects my group recall calculation per se 
+    since I'm only calculating recall on the papers that ARE marked as selected.
+
+Mar 4, 2020
+    getting set up to convert to Python3 on my Mac.
+    Installed the latest Python 3 Anaconda version.
+	It installed under ~/opt/anaconda3 instead of ~/anaconda3
+	It also munged the current ~/anaconda2 install somehow so that
+	    ~/anaconda2/bin/python didn't run correctly - I had this before.
+	Turns out this is a known bug in conda, see
+	https://stackoverflow.com/questions/19825250/after-anaconda-installation-conda-command-fails-with-importerror-no-module-na
+	
+	I reinstalled anaconda2 after renaming the anaconda3 directory and
+	removing all permissions so that the anaconda2 install would not munge
+	the anaconda3 install.
+	This got installed under ~/opt/anaconda2.
+    Created ~/Activate_conda script to be sourced so you can select 2 or 3 and
+	modified .bash_profile to use this.
+	Effectively this moved all PATH and PYTHONPATH settings to
+	Activate_conda so it can be done w/ respect to 2 or 3.
+	(at least for now during 2 to 3 transition)
+    Dev environment:
+	Want to be able to switch back and forth 2/3 during development.
+	Will create new python3 branch for autolittriage and MLtextTools.
+	Will use new dev working directories autolittriage3 and MLtextTools3
+	    for the python 3 work and keep the existing working dirs for 2
+	Will use ~/lib/python3 for any MGI libs (empty to start with) and
+	    ~/lib/python for the 2 versions
+	Will save the sdGetRaw..py scripts for the end as those will need
+	    db.py. I'll try to get everything else working in 3 1st.

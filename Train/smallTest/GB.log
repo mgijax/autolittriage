@@ -16424,3 +16424,236 @@ tumor          selected papers:     0 predicted keep:     0 recall: 0.000
 qtl            selected papers:     0 predicted keep:     0 recall: 0.000
 Totals         keep     papers:     0 predicted keep:     0 recall: 0.000
 Predictions from GB_test_pred.txt - Fri Jan  3 15:59:07 2020
+Fitting 1 folds for each of 4 candidates, totalling 4 fits
+      Iter       Train Loss   Remaining Time 
+         1           0.9753            0.10s
+         2           0.8350            0.09s
+         3           0.7241            0.07s
+         4           0.6331            0.06s
+         5           0.5570            0.05s
+         6           0.4921            0.04s
+         7           0.4364            0.03s
+         8           0.3881            0.02s
+         9           0.3459            0.01s
+        10           0.3089            0.00s
+      Iter       Train Loss   Remaining Time 
+         1           0.9753            0.21s
+         2           0.8350            0.19s
+         3           0.7241            0.17s
+         4           0.6331            0.16s
+         5           0.5570            0.15s
+         6           0.4921            0.14s
+         7           0.4364            0.13s
+         8           0.3881            0.12s
+         9           0.3459            0.11s
+        10           0.3089            0.10s
+        20           0.1059            0.00s
+      Iter       Train Loss   Remaining Time 
+         1           0.9753            0.10s
+         2           0.8350            0.08s
+         3           0.7241            0.07s
+         4           0.6331            0.06s
+         5           0.5570            0.05s
+         6           0.4921            0.04s
+         7           0.4364            0.03s
+         8           0.3881            0.02s
+         9           0.3459            0.01s
+        10           0.3089            0.00s
+      Iter       Train Loss   Remaining Time 
+         1           0.9753            0.21s
+         2           0.8350            0.19s
+         3           0.7241            0.17s
+         4           0.6331            0.16s
+         5           0.5570            0.15s
+         6           0.4921            0.14s
+         7           0.4364            0.14s
+         8           0.3881            0.13s
+         9           0.3459            0.12s
+        10           0.3089            0.11s
+        20           0.1059            0.00s
+      Iter       Train Loss   Remaining Time 
+         1           1.0490            0.10s
+         2           0.9030            0.09s
+         3           0.7855            0.08s
+         4           0.6882            0.07s
+         5           0.6061            0.06s
+         6           0.5360            0.05s
+         7           0.4756            0.03s
+         8           0.4231            0.02s
+         9           0.3772            0.01s
+        10           0.3369            0.00s
+      Iter       Train Loss   Remaining Time 
+         1           0.9753            0.10s
+         2           0.8350            0.08s
+         3           0.7241            0.07s
+         4           0.6331            0.06s
+         5           0.5570            0.05s
+         6           0.4921            0.04s
+         7           0.4364            0.03s
+         8           0.3881            0.02s
+         9           0.3459            0.01s
+        10           0.3089            0.00s
+### Start Time 2020/03/04-13-54-50  GB.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/smallTest/data/small/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/smallTest/data/small/LegendsWords/Proc1/valSet.txt
+Test data path:       /Users/jak/work/autolittriage/Train/smallTest/data/small/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=832   randForSplit=455   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       1.00      1.00      1.00        19
+Train discard       1.00      1.00      1.00         7
+
+    micro avg       1.00      1.00      1.00        26
+    macro avg       1.00      1.00      1.00        26
+ weighted avg       1.00      1.00      1.00        26
+
+Train (keep) F2: 1.0000    P: 1.0000    R: 1.0000    NPV: 1.0000
+
+['keep', 'discard']
+[[19  0]
+ [ 0  7]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       1.00      1.00      1.00         1
+Valid discard       1.00      1.00      1.00         2
+
+    micro avg       1.00      1.00      1.00         3
+    macro avg       1.00      1.00      1.00         3
+ weighted avg       1.00      1.00      1.00         3
+
+Valid (keep) F2: 1.0000    P: 1.0000    R: 1.0000    NPV: 1.0000
+
+['keep', 'discard']
+[[1 0]
+ [0 2]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       0.00      0.00      0.00         0
+Test  discard       0.00      0.00      0.00         1
+
+    micro avg       0.00      0.00      0.00         1
+    macro avg       0.00      0.00      0.00         1
+ weighted avg       0.00      0.00      0.00         1
+
+Test  (keep) F2: 0.0000    P: 0.0000    R: 0.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[0 0]
+ [1 0]]
+
+### Best Pipeline Parameters:
+classifier__max_depth: 3
+classifier__n_estimators: 10
+
+classifier:
+GradientBoostingClassifier(criterion='friedman_mse', init=None,
+              learning_rate=0.1, loss='deviance', max_depth=3,
+              max_features=None, max_leaf_nodes=None,
+              min_impurity_decrease=0.0, min_impurity_split=None,
+              min_samples_leaf=1, min_samples_split=2,
+              min_weight_fraction_leaf=0.0, n_estimators=10,
+              n_iter_no_change=None, presort='auto', random_state=832,
+              subsample=1.0, tol=0.0001, validation_fraction=0.1,
+              verbose=1, warm_start=False)
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+
+### Grid Search Parameter Options Tried:
+classifier__max_depth:[3, 4]
+classifier__n_estimators:[10, 20]
+
+### Grid Search Scores:
+{'classifier__n_estimators': 10, 'classifier__max_depth': 3}
+mean_test_score:  1.000000
+{'classifier__n_estimators': 20, 'classifier__max_depth': 3}
+mean_test_score:  1.000000
+{'classifier__n_estimators': 10, 'classifier__max_depth': 4}
+mean_test_score:  1.000000
+{'classifier__n_estimators': 20, 'classifier__max_depth': 4}
+mean_test_score:  1.000000
+
+### Grid Search Best Score: 1.000000
+
+### Feature weights: highest 20
++0.6959	gene
++0.0663	histogram
++0.0531	mice did
++0.0428	suffici
++0.0347	remark
++0.0281	environment
++0.0229	increas level
++0.0186	term
++0.0152	group level
++0.0124	govern
++0.0101	decreas number
++0.0000	a10
++0.0000	a10 relat
++0.0000	a10 respect
++0.0000	a11037
++0.0000	a11037 describ
++0.0000	a1978
++0.0000	a1978 sigma
++0.0000	a1express
++0.0000	a1express basement
+
+### Feature weights: lowest 20
++0.0000	zip domain
++0.0000	zip flag
++0.0000	zn
++0.0000	zn finger
++0.0000	znf822
++0.0000	znf822 synerg
++0.0000	znpp
++0.0000	znpp addit
++0.0000	znpp cell
++0.0000	znpp decreas
++0.0000	znpp impair
++0.0000	znpp prevent
++0.0000	zone
++0.0000	zone cell_lin
++0.0000	zpf57
++0.0000	zpf57 li
++0.0000	zygos
++0.0000	zygos crispr
++0.0000	zymo
++0.0000	zymo research
+
+### Vectorizer:   Number of Features: 40115
+First 10 features: [u'a10', u'a10 relat', u'a10 respect', u'a11037', u'a11037 describ', u'a1978', u'a1978 sigma', u'a1express', u'a1express basement', u'a427']
+
+Middle 10 features: [u'knock_out microglia', u'knock_out mix', u'knock_out model', u'knock_out moi', u'knock_out mutant', u'knock_out mwt', u'knock_out nppa', u'knock_out onli', u'knock_out phenotyp', u'knock_out popul']
+
+Last 10 features: [u'znpp impair', u'znpp prevent', u'zone', u'zone cell_lin', u'zpf57', u'zpf57 li', u'zygos', u'zygos crispr', u'zymo', u'zymo research']
+
+### False positives for Validation set: 0
+
+### False negatives for Validation set: 0
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :           26           19            7          73%
+Validation Set      :            3            1            2          33%
+Test Set            :            1            0            1           0%
+ValidationSplit: 0.20
+### End Time 2020/03/04-13-54-56. Total      5.98 seconds
+
+Recall for papers selected by each curation group. 1 papers analyzed
+ap             selected papers:     0 predicted keep:     0 recall: 0.000
+gxd            selected papers:     0 predicted keep:     0 recall: 0.000
+go             selected papers:     0 predicted keep:     0 recall: 0.000
+tumor          selected papers:     0 predicted keep:     0 recall: 0.000
+qtl            selected papers:     0 predicted keep:     0 recall: 0.000
+Totals         keep     papers:     0 predicted keep:     0 recall: 0.000
+Predictions from GB_test_pred.txt - Wed Mar  4 13:55:00 2020
