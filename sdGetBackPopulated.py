@@ -1,15 +1,15 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 
 #-----------------------------------
 '''
   Purpose:
-	   run sql to get set of papers added to backpopulate 'discard' papers.
-	   (minor) Data transformations include:
-	    replacing non-ascii chars with ' '
-	    replacing FIELDSEP and RECORDSEP chars in the doc text w/ ' '
+           run sql to get set of papers added to backpopulate 'discard' papers.
+           (minor) Data transformations include:
+            replacing non-ascii chars with ' '
+            replacing FIELDSEP and RECORDSEP chars in the doc text w/ ' '
 
   Outputs:      Delimited file to stdout
-		See sampleDataLib.ClassifiedSample for output format
+                See sampleDataLib.ClassifiedSample for output format
 '''
 #-----------------------------------
 import sys
@@ -33,11 +33,11 @@ FIELDSEP     = sampleObjType.getFieldSep()
 
 def getArgs():
     parser = argparse.ArgumentParser( \
-	description='Get backpopulated articles, write to stdout')
+        description='Get backpopulated articles, write to stdout')
 
     parser.add_argument('--test', dest='test', action='store_true',
         required=False,
-	help="just run ad hoc test code")
+        help="just run ad hoc test code")
 
     parser.add_argument('-s', '--server', dest='server', action='store',
         required=False, default='dev',
@@ -49,24 +49,24 @@ def getArgs():
 
     parser.add_argument('--query', dest='queryKey', action='store',
         required=False, default='backpopulated',
-	choices=['backpopulated'],
+        choices=['backpopulated'],
         help='which subset of the training samples to get. Default: "backpopulated"')
 
     parser.add_argument('--counts', dest='counts', action='store_true',
         required=False,
-	help="don't get samples, just get counts")
+        help="don't get samples, just get counts")
 
     parser.add_argument('-l', '--limit', dest='nResults',
-	required=False, type=int, default=0, 		# 0 means ALL
+        required=False, type=int, default=0, 		# 0 means ALL
         help="limit SQL to n results. Default is no limit")
 
     parser.add_argument('--textlength', dest='maxTextLength',
-	type=int, required=False, default=None,
-	help="only include the 1st n chars of text fields (for debugging)")
+        type=int, required=False, default=None,
+        help="only include the 1st n chars of text fields (for debugging)")
 
     parser.add_argument('--norestrict', dest='restrictArticles',
-	action='store_false', required=False,
-	help="include all articles, default: skip review and non-peer reviewed")
+        action='store_false', required=False,
+        help="include all articles, default: skip review and non-peer reviewed")
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
         required=False, help="skip helpful messages to stderr")
@@ -74,17 +74,17 @@ def getArgs():
     args =  parser.parse_args()
 
     if args.server == 'adhoc':
-	args.host = 'mgi-adhoc.jax.org'
-	args.db = 'mgd'
+        args.host = 'mgi-adhoc.jax.org'
+        args.db = 'mgd'
     elif args.server == 'prod':
-	args.host = 'bhmgidb01.jax.org'
-	args.db = 'prod'
+        args.host = 'bhmgidb01.jax.org'
+        args.db = 'prod'
     elif args.server == 'dev':
-	args.host = 'bhmgidevdb01.jax.org'
-	args.db = 'prod'
+        args.host = 'bhmgidevdb01.jax.org'
+        args.db = 'prod'
     else:
-	args.host = args.server + '.jax.org'
-	args.db = args.database
+        args.host = args.server + '.jax.org'
+        args.db = args.database
 
     return args
 #-----------------------------------
@@ -97,7 +97,7 @@ args = getArgs()
 SQLSEPARATOR = '||'
 LIT_TRIAGE_DATE = "10/31/2017"		# when we switched to new lit triage
 START_DATE = "10/01/2016" 		# earliest date for refs to get
-					#  before lit Triage
+                                        #  before lit Triage
 TUMOR_START_DATE = "07/01/2013"		# date to get add'l tumor papers from
 
 #----------------
@@ -113,22 +113,22 @@ BUILD_TMP_TABLES = [ \
     as
     select r._refs_key, a.accid pubmed
     from bib_refs r join bib_workflow_status bs
-	on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
-	join bib_status_view bsv on (r._refs_key = bsv._refs_key)
-	join acc_accession a
-	on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
-	    and a._mgitype_key=1 )
+        on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
+        join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+        join acc_accession a
+        on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
+            and a._mgitype_key=1 )
     where 
-	(
-	    (bs._status_key = 31576673 and bs._group_key = 31576666 and 
-		bs._createdby_key = 1571) -- index for GO by pm2geneload
+        (
+            (bs._status_key = 31576673 and bs._group_key = 31576666 and 
+                bs._createdby_key = 1571) -- index for GO by pm2geneload
 
-	    and bsv.ap_status in ('Not Routed', 'Rejected')
-	    and bsv.gxd_status in ('Not Routed', 'Rejected')
-	    and bsv.tumor_status in ('Not Routed', 'Rejected')
-	    and bsv.qtl_status in ('Not Routed', 'Rejected')
-	    and r.creation_date >= '%s'
-	)
+            and bsv.ap_status in ('Not Routed', 'Rejected')
+            and bsv.gxd_status in ('Not Routed', 'Rejected')
+            and bsv.tumor_status in ('Not Routed', 'Rejected')
+            and bsv.qtl_status in ('Not Routed', 'Rejected')
+            and r.creation_date >= '%s'
+        )
 ''' % (START_DATE),
 '''
     create index tmp_idx1 on tmp_omit(_refs_key)
@@ -280,92 +280,92 @@ class ExtractedTextSet (object):
     """
     IS	a collection of extracted text records (from multiple references)
     Has	each record is dict with fields
-	{'_refs_key' : int, 'text_type': (e.g, 'body', 'references'), 
-	 'text_part': text} 
-	The records may have other fields too that are not used here.
-	The field names '_refs_key', 'text_type', 'text_part' are specifiable.
+        {'_refs_key' : int, 'text_type': (e.g, 'body', 'references'), 
+         'text_part': text} 
+        The records may have other fields too that are not used here.
+        The field names '_refs_key', 'text_type', 'text_part' are specifiable.
     DOES (1)collects and concatenates all the fields for a given _refs_key into
-	a single text field in the correct order - thus recapitulating the 
-	full extracted text.
-	(2) join a set of basic reference records to their extracted text
+        a single text field in the correct order - thus recapitulating the 
+        full extracted text.
+        (2) join a set of basic reference records to their extracted text
     """
     # from Vocab_key = 142 (Lit Triage Extracted Text Section vocab)
     validTextTypes = [ 'body', 'reference',
-			'author manuscript fig legends',
-			'star methods',
-			'supplemental', ]
+                        'author manuscript fig legends',
+                        'star methods',
+                        'supplemental', ]
     #-----------------------------------
 
     def __init__(self,
-	extTextRcds,		# list of rcds as above
-	keyLabel='_refs_key',	# name of the reference key field
-	typeLabel='text_type',	# name of the text type field
-	textLabel='text_part',	# name of the text field
-	):
-	self.keyLabel  = keyLabel
-	self.typeLabel = typeLabel
-	self.textLabel = textLabel
-	self.extTextRcds = extTextRcds
-	self.key2TextParts = self.gatherExtText()
+        extTextRcds,		# list of rcds as above
+        keyLabel='_refs_key',	# name of the reference key field
+        typeLabel='text_type',	# name of the text type field
+        textLabel='text_part',	# name of the text field
+        ):
+        self.keyLabel  = keyLabel
+        self.typeLabel = typeLabel
+        self.textLabel = textLabel
+        self.extTextRcds = extTextRcds
+        self.key2TextParts = self.gatherExtText()
     #-----------------------------------
 
     def gatherExtText(self, ):
-	"""
-	Gather the extracted text sections for each _refs_key
-	Return dict { _refs_key: { extratedTextType : text } }
-	E.g., { 12345 : {   'body'        : 'body section text',
-			    'references'  : 'ref section text',
-			    'star methods': '...text...',
-			    } }
-	"""
-	resultDict = {}
-	for r in self.extTextRcds:
-	    refKey   = r[self.keyLabel]
-	    textType = r[self.typeLabel]
-	    textPart = r[self.textLabel]
+        """
+        Gather the extracted text sections for each _refs_key
+        Return dict { _refs_key: { extratedTextType : text } }
+        E.g., { 12345 : {   'body'        : 'body section text',
+                            'references'  : 'ref section text',
+                            'star methods': '...text...',
+                            } }
+        """
+        resultDict = {}
+        for r in self.extTextRcds:
+            refKey   = r[self.keyLabel]
+            textType = r[self.typeLabel]
+            textPart = r[self.textLabel]
 
-	    if textType not in self.validTextTypes:
-		raise ValueError("Invalid extracted text type: '%s'\n" % \
-								    textType)
-	    if not resultDict.has_key(refKey):
-		resultDict[refKey] = {}
+            if textType not in self.validTextTypes:
+                raise ValueError("Invalid extracted text type: '%s'\n" % \
+                                                                    textType)
+            if refKey not in resultDict:
+                resultDict[refKey] = {}
 
-	    resultDict[refKey][textType] = textPart
-	return resultDict
+            resultDict[refKey][textType] = textPart
+        return resultDict
     #-----------------------------------
 
     def joinRefs2ExtText(self,
-			refRcds,
-			refKeyLabel='_refs_key',
-			extTextLabel='ext_text',
-			allowNoText=True,
-	):
-	"""
-	Assume refRcds is a list of records { refKeyLabel : xxx, ...}
-	For each record in the list, add a field: extTextLabel: text 
-	"""
-	for r in refRcds:
-	    refKey = r[refKeyLabel]
+                        refRcds,
+                        refKeyLabel='_refs_key',
+                        extTextLabel='ext_text',
+                        allowNoText=True,
+        ):
+        """
+        Assume refRcds is a list of records { refKeyLabel : xxx, ...}
+        For each record in the list, add a field: extTextLabel: text 
+        """
+        for r in refRcds:
+            refKey = r[refKeyLabel]
 
-	    if not allowNoText and not self.key2TextParts.has_key(refKey):
-		raise ValueError("No extracted text found for '%s'\n" % \
-								    str(refKey))
+            if not allowNoText and refKey not in self.key2TextParts:
+                raise ValueError("No extracted text found for '%s'\n" % \
+                                                                    str(refKey))
 
-	    r[extTextLabel] = self.getExtText(refKey)
+            r[extTextLabel] = self.getExtText(refKey)
 
-	return refRcds
+        return refRcds
     #-----------------------------------
 
     def getExtText(self, refKey ):
 
-	extTextDict = self.key2TextParts.get(refKey,{})
+        extTextDict = self.key2TextParts.get(refKey,{})
 
-	text =  extTextDict.get('body','') + \
-		extTextDict.get('reference', '') + \
-		extTextDict.get('author manuscript fig legends', '') + \
-		extTextDict.get('star methods', '') + \
-		extTextDict.get('supplemental', '')
-	return text
+        text =  extTextDict.get('body','') + \
+                extTextDict.get('reference', '') + \
+                extTextDict.get('author manuscript fig legends', '') + \
+                extTextDict.get('star methods', '') + \
+                extTextDict.get('supplemental', '')
+        return text
     #-----------------------------------
 # end class ExtractedTextSet -----------------------------------
 
@@ -395,20 +395,20 @@ def buildGetSamplesSQL(args, ):
     """
     # list of keys in WHERE_CLAUSES to run
     if args.queryKey == 'all':
-	queryKeys = WHERE_CLAUSES.keys()
+        queryKeys = list(WHERE_CLAUSES.keys())
     else:
-	queryKeys = [ args.queryKey ]
+        queryKeys = [ args.queryKey ]
 
     # Assemble shared query parts
     baseSQL = BASE_FIELDS + BASE_FROM
     textSQL = EXTTEXT_FIELDS + EXTTEXT_FROM
 
     if args.restrictArticles:
-	restrict = RESTRICT_REF_TYPE
-	verbose("Omitting review and non-peer reviewed articles\n")
+        restrict = RESTRICT_REF_TYPE
+        verbose("Omitting review and non-peer reviewed articles\n")
     else:
-	restrict = ''
-	verbose("Including review and non-peer reviewed articles\n")
+        restrict = ''
+        verbose("Including review and non-peer reviewed articles\n")
 
     if args.nResults > 0: limitSQL = "\nlimit %d\n" % args.nResults
     else: limitSQL = ''
@@ -417,9 +417,9 @@ def buildGetSamplesSQL(args, ):
     queryPairs = []
 
     for qk in queryKeys:
-	fullBaseSQL = baseSQL + WHERE_CLAUSES[qk] + restrict + limitSQL
-	fullTextSQL = textSQL + WHERE_CLAUSES[qk] + restrict + limitSQL
-	queryPairs.append( (fullBaseSQL, fullTextSQL) )
+        fullBaseSQL = baseSQL + WHERE_CLAUSES[qk] + restrict + limitSQL
+        fullTextSQL = textSQL + WHERE_CLAUSES[qk] + restrict + limitSQL
+        queryPairs.append( (fullBaseSQL, fullTextSQL) )
 
     return queryPairs
 #-----------------------------------
@@ -432,11 +432,11 @@ def doSamples(args):
     db.sql( BUILD_TMP_TABLES, 'auto')
 
     for i, (baseQ, textQ) in enumerate(buildGetSamplesSQL(args)):
-	refRecords = getQueryResults(i, baseQ, textQ)
+        refRecords = getQueryResults(i, baseQ, textQ)
 
-	for r in refRecords:
-	    sample = sqlRecord2ClassifiedSample( r)
-	    outputSampleSet.addSample( sample)
+        for r in refRecords:
+            sample = sqlRecord2ClassifiedSample( r)
+            outputSampleSet.addSample( sample)
 
     startTime = time.time()
     verbose("writing %d samples:\n" % outputSampleSet.getNumSamples())
@@ -454,7 +454,7 @@ def getQueryResults(i, baseQ, textQ):
     """
     #### get basic reference fields
     startTime = time.time()
-    refResults = db.sql( string.split(baseQ, SQLSEPARATOR), 'auto')
+    refResults = db.sql( baseQ.split(SQLSEPARATOR), 'auto')
     refRcds = refResults[-1]
 
     verbose( "Query %d:  %d references retrieved\n" % (i, len(refRcds)))
@@ -462,11 +462,11 @@ def getQueryResults(i, baseQ, textQ):
 
     #### get extended text parts
     startTime = time.time()
-    extTextResults = db.sql(string.split(textQ, SQLSEPARATOR), 'auto')
+    extTextResults = db.sql(textQ.split(SQLSEPARATOR), 'auto')
     extTextRcds = extTextResults[-1]
 
     verbose( "Query %d:  %d extracted text rcds retrieved\n" % \
-						(i, len(extTextRcds)))
+                                                (i, len(extTextRcds)))
     verbose( "SQL time: %8.3f seconds\n\n" % (time.time()-startTime))
 
     #### join basic fields and extracted text
@@ -497,9 +497,9 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     newSample = sampleObjType()
 
     if r['isdiscard'] == 1:
-	knownClassIndex = newSample.getY_negative()
+        knownClassIndex = newSample.getY_negative()
     else:
-	knownClassIndex = newSample.getY_positive()
+        knownClassIndex = newSample.getY_positive()
 
     newR['knownClassName']= newSample.getClassNames()[ knownClassIndex ]
    
@@ -524,15 +524,17 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
 #-----------------------------------
 
 def cleanUpTextField(rcd,
-		    textFieldName,
+                    textFieldName,
     ):
     # in case we omit this text field during debugging, check if defined
-    if rcd.has_key(textFieldName): text = str(rcd[textFieldName])
+    if rcd.has_key(textFieldName):      # 2to3 note: rcd is not a python dict,
+                                        #  it has a has_key() method
+        text = str(rcd[textFieldName])
     else: text = ''
 
     if args.maxTextLength:	# handy for debugging
-	text = text[:args.maxTextLength]
-	text = text.replace('\n', ' ')
+        text = text[:args.maxTextLength]
+        text = text.replace('\n', ' ')
 
     text = removeNonAscii( cleanDelimiters( text))
     return text
@@ -553,27 +555,27 @@ def doCounts(args):
 
     baseSQL = COUNTS_FIELDS + COUNTS_FROM
     if args.restrictArticles:
-	restrict = RESTRICT_REF_TYPE
-	sys.stdout.write("Omitting review and non-peer reviewed articles\n")
+        restrict = RESTRICT_REF_TYPE
+        sys.stdout.write("Omitting review and non-peer reviewed articles\n")
     else:
-	restrict = ''
-	sys.stdout.write("Including review and non-peer reviewed articles\n")
+        restrict = ''
+        sys.stdout.write("Including review and non-peer reviewed articles\n")
 
     writeStat("Discard after %s" % LIT_TRIAGE_DATE,
-			baseSQL + WHERE_CLAUSES['discard_after'] + restrict)
+                        baseSQL + WHERE_CLAUSES['discard_after'] + restrict)
 
     writeStat("Keep after %s" % LIT_TRIAGE_DATE,
-			baseSQL + WHERE_CLAUSES['keep_after'] + restrict)
+                        baseSQL + WHERE_CLAUSES['keep_after'] + restrict)
 
     writeStat("Keep before %s through %s" % (START_DATE, LIT_TRIAGE_DATE),
-			baseSQL + WHERE_CLAUSES['keep_before'] + restrict)
+                        baseSQL + WHERE_CLAUSES['keep_before'] + restrict)
 
     writeStat("Tumor papers %s through %s" % (TUMOR_START_DATE, START_DATE),
-			baseSQL + WHERE_CLAUSES['keep_tumor'] + restrict)
+                        baseSQL + WHERE_CLAUSES['keep_tumor'] + restrict)
 #-----------------------------------
 
 def writeStat(label, q):
-    results = db.sql( string.split(q, SQLSEPARATOR), 'auto')
+    results = db.sql( q.split(SQLSEPARATOR), 'auto')
     num = results[-1][0]['num']
     sys.stdout.write( "%7d\t%s\n" % (num, label))
 #-----------------------------------
@@ -592,44 +594,44 @@ def removeNonAscii(text):
 
 def verbose(text):
     if args.verbose:
-	sys.stderr.write(text)
-	sys.stderr.flush()
+        sys.stderr.write(text)
+        sys.stderr.flush()
 #-----------------------------------
 
 if __name__ == "__main__":
     if not (len(sys.argv) > 1 and sys.argv[1] == '--test'):
-	main()
+        main()
     else: 			# ad hoc test code
-	if True:	# debug SQL
-	    for i, (b,t) in enumerate(buildGetSamplesSQL(args, )):
-		print "%d:" % i
-		print b
-		print t
-	if True:	# test ExtractedTextSet
-	    authFig = 'author manuscript fig legends'
-	    rcds = [ \
-		{'rk':'1234', 'ty': 'body', 'text_part': 'here is a body text'},
-		{'rk':'1234', 'ty': 'reference','text_part':' & ref text'},
-		{'rk':'1234', 'ty': 'supplemental', 'text_part':' & supp text'},
-		{'rk':'1234', 'ty': 'star methods', 'text_part':' & star text'},
-		{'rk':'1234', 'ty': authFig, 'text_part': ' & author figs'},
-		{'rk':'2345', 'ty': 'body', 'text_part': 'a second body text'},
-		{'rk':'4567', 'ty': 'supplemental', 'text_part': 'text'},
-		]
-	    refs = [ \
-		    {'_refs_key' : '1234', 'otherfield':'xyz',}, 
-		    {'_refs_key' : '2345', 'otherfield':'stu',}, 
-		    {'_refs_key' : '7890', 'otherfield':'stu',}, # no rcd above
-		]
-	    ets = ExtractedTextSet( rcds, keyLabel='rk', typeLabel='ty',)
-	    print ets.gatherExtText()
-	    print "%s: '%s'" % ('1234', ets.getExtText('1234'))
-	    print "%s: '%s'" % ('2345', ets.getExtText('2345'))
-	    print "%s: '%s'" % ('7890', ets.getExtText('7890'))
-	    refs = ets.joinRefs2ExtText(refs, allowNoText=True)
-	    print refs
-	    try:
-		refs = ets.joinRefs2ExtText(refs, allowNoText=False)
-	    except ValueError:
-		(t,val,traceback) = sys.exc_info()
-		print 'Correctly got %s exception:\n%s' % (str(t),val)
+        if True:	# debug SQL
+            for i, (b,t) in enumerate(buildGetSamplesSQL(args, )):
+                print("%d:" % i)
+                print(b)
+                print(t)
+        if True:	# test ExtractedTextSet
+            authFig = 'author manuscript fig legends'
+            rcds = [ \
+                {'rk':'1234', 'ty': 'body', 'text_part': 'here is a body text'},
+                {'rk':'1234', 'ty': 'reference','text_part':' & ref text'},
+                {'rk':'1234', 'ty': 'supplemental', 'text_part':' & supp text'},
+                {'rk':'1234', 'ty': 'star methods', 'text_part':' & star text'},
+                {'rk':'1234', 'ty': authFig, 'text_part': ' & author figs'},
+                {'rk':'2345', 'ty': 'body', 'text_part': 'a second body text'},
+                {'rk':'4567', 'ty': 'supplemental', 'text_part': 'text'},
+                ]
+            refs = [ \
+                    {'_refs_key' : '1234', 'otherfield':'xyz',}, 
+                    {'_refs_key' : '2345', 'otherfield':'stu',}, 
+                    {'_refs_key' : '7890', 'otherfield':'stu',}, # no rcd above
+                ]
+            ets = ExtractedTextSet( rcds, keyLabel='rk', typeLabel='ty',)
+            print(ets.gatherExtText())
+            print("%s: '%s'" % ('1234', ets.getExtText('1234')))
+            print("%s: '%s'" % ('2345', ets.getExtText('2345')))
+            print("%s: '%s'" % ('7890', ets.getExtText('7890')))
+            refs = ets.joinRefs2ExtText(refs, allowNoText=True)
+            print(refs)
+            try:
+                refs = ets.joinRefs2ExtText(refs, allowNoText=False)
+            except ValueError:
+                (t,val,traceback) = sys.exc_info()
+                print('Correctly got %s exception:\n%s' % (str(t),val))

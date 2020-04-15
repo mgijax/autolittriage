@@ -23,7 +23,8 @@ ENDTEXT
 #######################################
 # basic setup
 
-projectHome=~/work/autolittriage
+#projectHome=~/work/autolittriage
+projectHome=~/work/autolittriage3
 
 splitCmd=$projectHome/sdSplitSamples.py
 mgiJournals=$projectHome/journalsMonitored.txt	# mgi journals file

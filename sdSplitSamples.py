@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7 
+#!/usr/bin/env python3 
 #
 # sdSplitSamples.py
 # Takes 1 or more files of samples & randomly splits the samples into 2 outputs
@@ -29,7 +29,7 @@ import argparse
 import random
 # extend path up multiple parent dirs, hoping we can import sampleDataLib
 sys.path = ['/'.join(dots) for dots in [['..']*i for i in range(1,8)]] + \
-		sys.path
+                sys.path
 import sampleDataLib
 
 DEFAULT_OUTPUT_RETAINED = 'retainedRefs.txt'
@@ -41,7 +41,7 @@ DEFAULT_SAMPLE_TYPE = 'PrimTriageClassifiedSample'
 def parseCmdLine():
     parser = argparse.ArgumentParser( \
     description='Randomly split sample files into "retained" set & ' +
-		'"leftovers". Summary stats to stdout.')
+                '"leftovers". Summary stats to stdout.')
 
     parser.add_argument('inputFiles', nargs=argparse.REMAINDER,
     	help='files of samples')
@@ -51,33 +51,33 @@ def parseCmdLine():
         help='fraction of articles to be in the retained set. Float 0..1 .')
 
     parser.add_argument('--retainedfile', dest='retainedFile', action='store',
-	required=False, default=DEFAULT_OUTPUT_RETAINED,
+        required=False, default=DEFAULT_OUTPUT_RETAINED,
     	help='retained output file. Default: ' + DEFAULT_OUTPUT_RETAINED)
 
     parser.add_argument('--leftoverfile', dest='leftoverFile', action='store',
-	required=False, default=DEFAULT_OUTPUT_LEFTOVER,
+        required=False, default=DEFAULT_OUTPUT_LEFTOVER,
     	help='leftover output file. Default: ' + DEFAULT_OUTPUT_LEFTOVER)
 
     parser.add_argument('--mgijournalsfile', dest='mgiJournalsFile',
-	action='store', required=False, default=DEFAULT_MGI_JOURNALS_FILE,
+        action='store', required=False, default=DEFAULT_MGI_JOURNALS_FILE,
     	help='file containing the list of MGI journal names. Default: '
-						+ DEFAULT_MGI_JOURNALS_FILE)
+                                                + DEFAULT_MGI_JOURNALS_FILE)
 
     parser.add_argument('--onlymgi', dest='onlyMgi', action='store_true',
-	required=False,
-	help="only retain refs from MGI journals. Default: all journals")
+        required=False,
+        help="only retain refs from MGI journals. Default: all journals")
 
     parser.add_argument('--sampletype', dest='sampleObjTypeName',
-	default=DEFAULT_SAMPLE_TYPE,
-	help="Sample class name to use if not specified in sample file. " + 
-					"Default: %s" % DEFAULT_SAMPLE_TYPE)
+        default=DEFAULT_SAMPLE_TYPE,
+        help="Sample class name to use if not specified in sample file. " + 
+                                        "Default: %s" % DEFAULT_SAMPLE_TYPE)
 
     parser.add_argument('--seed', dest='seed', action='store',
-	required=False, type=int, default=int(time.time()),
+        required=False, type=int, default=int(time.time()),
     	help='int seed for random(). Default: a new seed will be generated')
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
-	required=False, help="skip helpful messages to stderr")
+        required=False, help="skip helpful messages to stderr")
 
     args = parser.parse_args()
 
@@ -93,7 +93,7 @@ def getMgiJournals(mgiJournalsFile):
     journals = set()
     fp = open(mgiJournalsFile, 'r')
     for j in fp:
-	journals.add(cleanJournalName(j))
+        journals.add(cleanJournalName(j))
     fp.close()
     return journals
 #----------------------
@@ -118,38 +118,38 @@ def main():
     sampleObjType = getattr(sampleDataLib, args.sampleObjTypeName)
 
     for fn in args.inputFiles:
-	verbose("Reading %s\n" % fn)
-	inputSampleSet = sampleDataLib.ClassifiedSampleSet( \
-					sampleObjType=sampleObjType).read(fn)
+        verbose("Reading %s\n" % fn)
+        inputSampleSet = sampleDataLib.ClassifiedSampleSet( \
+                                        sampleObjType=sampleObjType).read(fn)
 
-	if not retainedSampleSet:	# processing 1st input file
-	    sampleObjType     = inputSampleSet.getSampleObjType()
-	    retainedSampleSet = sampleDataLib.ClassifiedSampleSet( \
-						sampleObjType=sampleObjType)
-	    leftoverSampleSet = sampleDataLib.ClassifiedSampleSet( \
-						sampleObjType=sampleObjType)
-	    verbose("Sample type: %s\n" % sampleObjType.__name__)
-	else:
-	    if sampleObjType != inputSampleSet.getSampleObjType():
-		sys.stderr.write( \
-		    "Input files have inconsistent sample types: %s & %s\n" % \
-		    (sampleObjType.__name__,
-		    inputSampleSet.getSampleObjType().__name__) )
-		exit(5)
+        if not retainedSampleSet:	# processing 1st input file
+            sampleObjType     = inputSampleSet.getSampleObjType()
+            retainedSampleSet = sampleDataLib.ClassifiedSampleSet( \
+                                                sampleObjType=sampleObjType)
+            leftoverSampleSet = sampleDataLib.ClassifiedSampleSet( \
+                                                sampleObjType=sampleObjType)
+            verbose("Sample type: %s\n" % sampleObjType.__name__)
+        else:
+            if sampleObjType != inputSampleSet.getSampleObjType():
+                sys.stderr.write( \
+                    "Input files have inconsistent sample types: %s & %s\n" % \
+                    (sampleObjType.__name__,
+                    inputSampleSet.getSampleObjType().__name__) )
+                exit(5)
 
-	allJournals |= inputSampleSet.getJournals()
+        allJournals |= inputSampleSet.getJournals()
 
-	for sample in inputSampleSet.sampleIterator():
-	    if args.onlyMgi and not cleanJournalName(sample.getJournal()) \
-							in mgiJournalsNames:
-		retain = False
-	    else:
-		retain = random.random() < float(args.fraction)
+        for sample in inputSampleSet.sampleIterator():
+            if args.onlyMgi and not cleanJournalName(sample.getJournal()) \
+                                                        in mgiJournalsNames:
+                retain = False
+            else:
+                retain = random.random() < float(args.fraction)
 
-	    if retain:
-		retainedSampleSet.addSample(sample)
-	    else:
-		leftoverSampleSet.addSample(sample)
+            if retain:
+                retainedSampleSet.addSample(sample)
+            else:
+                leftoverSampleSet.addSample(sample)
     ### Write output files
     retainedSampleSet.write(args.retainedFile)
     leftoverSampleSet.write(args.leftoverFile)
@@ -157,40 +157,40 @@ def main():
     ### Write summary report
     summary = "\nSummary:  "
     summary += "Retaining random set of articles. Fraction: %5.3f\n" \
-							    % args.fraction
+                                                            % args.fraction
     summary += time.ctime() + '\n'
     summary += "Seed:  %d\n" % args.seed
     if args.onlyMgi:
-	summary += "Only samples from MGI monitored journals are eligible\n"
+        summary += "Only samples from MGI monitored journals are eligible\n"
     else:
-	summary += "Samples from any journal are eligible\n"
+        summary += "Samples from any journal are eligible\n"
     summary += str(args.inputFiles) + '\n'
 
     summary += "Input Totals:\n"
     totRefs = retainedSampleSet.getNumSamples() + \
-					    leftoverSampleSet.getNumSamples()
+                                            leftoverSampleSet.getNumSamples()
     totPos  = retainedSampleSet.getNumPositives() + \
-					    leftoverSampleSet.getNumPositives()
+                                            leftoverSampleSet.getNumPositives()
     totNeg  = retainedSampleSet.getNumNegatives() + \
-					    leftoverSampleSet.getNumNegatives()
+                                            leftoverSampleSet.getNumNegatives()
     summary += formatSummary(totRefs, totPos, totNeg, len(allJournals))
     summary += '\n'
 
     summary += "Retained Set Totals:\n"
     summary += formatSummary(retainedSampleSet.getNumSamples(),
-			    retainedSampleSet.getNumPositives(),
-			    retainedSampleSet.getNumNegatives(),
-			    len(retainedSampleSet.getJournals()),
-			    )
+                            retainedSampleSet.getNumPositives(),
+                            retainedSampleSet.getNumNegatives(),
+                            len(retainedSampleSet.getJournals()),
+                            )
     summary += "(%5.3f%% of inputs)\n" %  \
-			    (100.0 * retainedSampleSet.getNumSamples()/totRefs)
+                            (100.0 * retainedSampleSet.getNumSamples()/totRefs)
     summary += '\n'
     summary += "Leftover Set Totals:\n"
     summary += formatSummary(leftoverSampleSet.getNumSamples(),
-			    leftoverSampleSet.getNumPositives(),
-			    leftoverSampleSet.getNumNegatives(),
-			    len(leftoverSampleSet.getJournals()),
-			    )
+                            leftoverSampleSet.getNumPositives(),
+                            leftoverSampleSet.getNumNegatives(),
+                            len(leftoverSampleSet.getJournals()),
+                            )
     sys.stdout.write(summary + '\n')
     return
 # ---------------------
@@ -198,17 +198,17 @@ def main():
 def formatSummary(numRefs, numPos, numNeg, numJournals):
 
     sum = "%d refs: %d positive (%4.1f%%) %d negative (%4.1f%%) %d Journals\n" \
-		    % (numRefs,
-		    numPos, (100.0 * numPos/numRefs),
-		    numNeg, (100.0 * numNeg/numRefs),
-		    numJournals,)
+                    % (numRefs,
+                    numPos, (100.0 * numPos/numRefs),
+                    numNeg, (100.0 * numNeg/numRefs),
+                    numJournals,)
     return sum
 # ---------------------
 
 def verbose(text):
     if args.verbose:
-	sys.stderr.write(text)
-	sys.stderr.flush()
+        sys.stderr.write(text)
+        sys.stderr.flush()
 # ---------------------
 
 if __name__ == "__main__":

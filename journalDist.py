@@ -1,90 +1,154 @@
-#!/usr/bin/env python2.7 
+#!/usr/bin/env python3
 #
 # journalDist.py
-# Reads samples records from stdin and computes the journal counts/distribution 
+# Reads sample records from files and computes the journal counts/distribution 
 #  across 3 sets:
 #   all articles
 #   discard articles
 #   keep articles
 # Write to stdout:
 #  journalname all_count, discard_count, keep_count
-#
-# Assumes records are ';;' delimited with '|' between fields
-#   1st field is discard/keep
-#   5th field is journal
-#
+
+# ClassifiedSampleSet in sampleDataLib.py is responsible for reading the samples
+#   and sample details.
 #
 import sys
-import string
-import os
-import time
 import argparse
 
-RECORD_SEP = ';;'
-FIELD_SEP  = '|'
-#-----------------------------------
+# extend path up multiple parent dirs, hoping we can import sampleDataLib
+sys.path = ['/'.join(dots) for dots in [['..']*i for i in range(1,8)]] + \
+                sys.path
+import sampleDataLib
+
+DEFAULT_SAMPLE_TYPE  = "ClassifiedSample"
 #-----------------------------------
 
+def parseCmdLine():
+    parser = argparse.ArgumentParser( \
+    description='Apply preprocessor steps to files of samples. Write to stdout')
+
+    parser.add_argument('inputFiles', nargs=argparse.REMAINDER,
+        help='files of samples, "-" for stdin')
+
+    parser.add_argument('--sampletype', dest='sampleObjTypeName',
+        default=DEFAULT_SAMPLE_TYPE,
+        help="Sample class name to use if not specified in sample file. " +
+                                        "Default: %s" % DEFAULT_SAMPLE_TYPE)
+
+    parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
+        required=False, help="skip helpful messages to stderr")
+
+    return parser.parse_args()
+#-----------------------------------
+
+
 class JournalCounter (object):
-    # has totalCount, discardCount, keepCount
+    # has totalCount, positive & negative counts
     def __init__(self):
-	self.totalCount   = 0
-	self.discardCount = 0
-	self.keepCount    = 0
+        self.totalCount    = 0
+        self.positiveCount = 0
+        self.negativeCount = 0
 
 #----------------------
 # Main prog
 #----------------------
+args = parseCmdLine()
+
 def main():
 
+    # get default sampleObjType
+    if not hasattr(sampleDataLib, args.sampleObjTypeName):
+        sys.stderr.write("invalid sample class name '%s'" \
+                                                    % args.sampleObjTypeName)
+        exit(5)
+    sampleObjType = getattr(sampleDataLib, args.sampleObjTypeName)
+
     counts = {}		# counts[journal] is a JournalCounter
-    nTotal   = 0	# num of articles/samples seen
-    nDiscard = 0	# num of discard articles seen
-    nKeep    = 0	# num of Keep articles seen
+    nPos   = 0	        # num of positive (e.g., keep) articles seen
+    nNeg   = 0	        # num of negative (e.g., discard) articles seen
 
-    rcds = sys.stdin.read().split(RECORD_SEP)
+    firstFile = True
 
-    for r in rcds:
-	if len(r.strip()) == 0: continue
-	DorK, f2, f3, f4, journal, leftovers = r.split(FIELD_SEP, 5)
-	if journal == 'journal': continue	# skip header line(s)
-	if counts.has_key(journal):
-	    jc = counts[journal]
-	else:
-	    jc = JournalCounter()
-	    counts[journal] = jc
+    for fn in args.inputFiles:
 
-	jc.totalCount += 1
-	nTotal += 1
-	if DorK == 'discard':
-	    jc.discardCount += 1
-	    nDiscard += 1
-	else:
-	    jc.keepCount += 1
-	    nKeep += 1
+        if fn == '-': fn = sys.stdin
+        sampleSet = sampleDataLib.ClassifiedSampleSet( \
+                                        sampleObjType=sampleObjType).read(fn)
+        if firstFile:
+            sampleObjType = sampleSet.getSampleObjType()
+            verbose("Sample type: %s\n" % sampleObjType.__name__)
+            firstFile = False
+        else:
+            if sampleObjType != sampleSet.getSampleObjType():
+                sys.stderr.write( \
+                    "Input files have inconsistent sample types: %s & %s\n" % \
+                    (sampleObjType.__name__,
+                    sampleSet.getSampleObjType().__name__) )
+                exit(5)
 
+        for s in sampleSet.getSamples():
+            journal = s.getJournal()
+
+            if journal in counts:
+                jc = counts[journal]
+            else:
+                jc = JournalCounter()
+                counts[journal] = jc
+
+            jc.totalCount += 1
+            if s.isPositive():
+                jc.positiveCount += 1
+                nPos += 1
+            else:
+                jc.negativeCount += 1
+                nNeg += 1
+
+    nTotal = nPos + nNeg
+
+    # Output report
     outputHeader = '\t'.join( \
-		    [
-		    'Journal',
-		    'Total',
-		    'Discard',
-		    'Keep',
-		    ]) + '\n'
-
+                    [
+                    'Journal',
+                    'Articles',
+                    '%',
+                    sampleSet.getSampleClassNames()[sampleSet.getY_positive()],
+                    '%',
+                    sampleSet.getSampleClassNames()[sampleSet.getY_negative()],
+                    '%',
+                    ]) + '\n'
     sys.stdout.write(outputHeader)
 
-    for j in sorted(counts.keys()):
-	jc = counts[j]
-#	print jc.totalCount
-#	print nTotal
+    for j in sorted(list(counts.keys())):
+        jc = counts[j]
 
-	output = '%s\t%4.2f\t%4.2f\t%4.2f\n' % ( \
-			j,
-			float(100 * jc.totalCount)/float(nTotal),
-			float(100 * jc.discardCount)/float(nDiscard),
-			float(100 * jc.keepCount)/float(nKeep),
-			)
-	sys.stdout.write(output)
+        # get percentages, careful not to divide by zero counts
+        posPercent = 0.0
+        if nPos != 0: posPercent = float(100 * jc.positiveCount)/float(nPos)
+        negPercent = 0.0
+        if nNeg != 0: negPercent = float(100 * jc.negativeCount)/float(nNeg)
+
+        output = '%s\t%d\t%6.2f\t%d\t%6.2f\t%d\t%6.2f\n' % ( \
+                        j,
+                        jc.totalCount,
+                        float(100 * jc.totalCount)/float(nTotal),
+                        jc.positiveCount,
+                        posPercent,
+                        jc.negativeCount,
+                        negPercent,
+                        )
+        sys.stdout.write(output)
+
+    # Totals
+    output = '%s\t%d\t%6.2f\t%d\t%6.2f\t%d\t%6.2f\n' % ( \
+                    'Totals',
+                    nTotal,
+                    100.0,
+                    nPos,
+                    100.0,
+                    nNeg,
+                    100.0,
+                    )
+    sys.stdout.write(output)
 
 # ---------------------
 
