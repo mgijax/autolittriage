@@ -2119,3 +2119,16 @@ Mar 4, 2020
 	    ~/lib/python for the 2 versions
 	Will save the sdGetRaw..py scripts for the end as those will need
 	    db.py. I'll try to get everything else working in 3 1st.
+
+April 17, 2020
+    Finished converting autolittriage and MLtextTools to python3.
+
+    In MLtextTools, I did not convert comparePipeline.py getRandomSubset.py
+    and populateTrainingDirs.py since I have not been using these lately and
+    they are out of date anyway.
+    In autolittriage, I did not convert anything under Backpopulate. But I did
+    complete the removal of ModelAnalysis/, moving all models under Train/
+
+    This included converting NCBIutilsLib.py and simpleURLLib.py to python3.
+    These are currently part of the pdfdownload product and I have an identical
+    copy in my personal lib_py_jak repo.

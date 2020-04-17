@@ -1,0 +1,455 @@
+Fitting 1 folds for each of 1 candidates, totalling 1 fits
+### Start Time 2019/08/20-12-47-13  RF.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Data/aug15/tumor/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Data/aug15/tumor/LegendsWords/Proc1/valSet.txt
+Test data path:       /Users/jak/work/autolittriage/Data/aug15/tumor/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=633   randForSplit=853   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.88      0.91      0.90     18581
+Train discard       0.94      0.91      0.92     25654
+
+  avg / total       0.91      0.91      0.91     44235
+
+Train F2: 0.90741 (keep)
+
+['yes', 'no']
+[[16968  1613]
+ [ 2205 23449]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.69      0.79      0.74      1966
+Valid discard       0.95      0.91      0.93      7763
+
+  avg / total       0.89      0.89      0.89      9729
+
+Valid F2: 0.76889 (keep)
+
+['yes', 'no']
+[[1555  411]
+ [ 693 7070]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       0.65      0.77      0.70      1486
+Test  discard       0.94      0.90      0.92      5931
+
+  avg / total       0.88      0.87      0.88      7417
+
+Test  F2: 0.74021 (keep)
+
+['yes', 'no']
+[[1138  348]
+ [ 605 5326]]
+
+### Best Pipeline Parameters:
+classifier__min_samples_leaf: 25
+classifier__n_estimators: 50
+vectorizer__max_df: 0.75
+vectorizer__min_df: 0.02
+vectorizer__ngram_range: (1, 2)
+
+### GridSearch Pipeline:
+classifier:
+RandomForestClassifier(bootstrap=True, class_weight='balanced',
+            criterion='gini', max_depth=None, max_features='auto',
+            max_leaf_nodes=None, min_impurity_split=1e-07,
+            min_samples_leaf=25, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=50, n_jobs=6,
+            oob_score=False, random_state=633, verbose=1, warm_start=False)
+
+featureEvaluator:
+FeatureDocCounter()
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+### Parameter Options Tried:
+classifier__min_samples_leaf:[25]
+classifier__n_estimators:[50]
+vectorizer__max_df:[0.75]
+vectorizer__min_df:[0.02]
+vectorizer__ngram_range:[(1, 2)]
+
+### Top positive features - not available
+### Top negative features - not available
+
+### Vectorizer:   Number of Features: 6318
+First 10 features: [u'aa', u'aaa', u'aacr', u'ab', u'abbrevi', u'abcam', u'abdomin', u'aberr', u'abil', u'abl']
+
+Middle 10 features: [u'isol cell', u'isol mice', u'isol wild_typ', u'isotyp', u'isotyp control', u'issu', u'iv', u'jackson', u'japan', u'jnk']
+
+Last 10 features: [u'yfp', u'yield', u'young', u'zebrafish', u'zeiss', u'zero', u'zhang', u'zinc', u'zone', u'zoom']
+
+### False positives for Test set: 605
+29719257
+30517859
+29281816
+28538185
+30517737
+
+### False negatives for Test set: 348
+30257205
+28793256
+29212023
+29020630
+30257205
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Validation Set      :         9729         1966         7763          20%
+Training Set        :        44235        18581        25654          42%
+Test Set            :         7417         1486         5931          20%
+TestSplit: 0.20
+### End Time 2019/08/20-13-16-00. Total   1726.68 seconds
+
+Recall for papers selected by each curation group. 7417 papers analyzed
+ap             selected papers:  1182 predicted keep:   974 recall: 0.824
+gxd            selected papers:   116 predicted keep:    93 recall: 0.802
+go             selected papers:  1054 predicted keep:   845 recall: 0.802
+tumor          selected papers:   256 predicted keep:   239 recall: 0.934
+qtl            selected papers:     9 predicted keep:     1 recall: 0.111
+Totals         keep     papers:  1486 predicted keep:  1138 recall: 0.766
+Predictions from RF_test_pred.txt - Tue Aug 20 13:19:15 2019
+Fitting 1 folds for each of 1 candidates, totalling 1 fits
+### Start Time 2019/08/26-13-50-32  RF.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Data/aug15/tumor/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Data/aug15/tumor/LegendsWords/Proc1/valSet.txt
+Test data path:       /Users/jak/work/autolittriage/Data/aug15/tumor/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=633   randForSplit=853   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.89      0.91      0.90     18711
+Train discard       0.93      0.91      0.92     25546
+
+  avg / total       0.91      0.91      0.91     44257
+
+Train F2: 0.90570 (keep)
+
+['yes', 'no']
+[[17041  1670]
+ [ 2191 23355]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.69      0.80      0.74      1910
+Valid discard       0.95      0.91      0.93      7891
+
+  avg / total       0.90      0.89      0.89      9801
+
+Valid F2: 0.77188 (keep)
+
+['yes', 'no']
+[[1522  388]
+ [ 697 7194]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       0.65      0.76      0.70      1412
+Test  discard       0.94      0.90      0.92      5911
+
+  avg / total       0.88      0.87      0.88      7323
+
+Test  F2: 0.73712 (keep)
+
+['yes', 'no']
+[[1079  333]
+ [ 592 5319]]
+
+### Best Pipeline Parameters:
+classifier__min_samples_leaf: 25
+classifier__n_estimators: 50
+vectorizer__max_df: 0.75
+vectorizer__min_df: 0.02
+vectorizer__ngram_range: (1, 2)
+
+### GridSearch Pipeline:
+classifier:
+RandomForestClassifier(bootstrap=True, class_weight='balanced',
+            criterion='gini', max_depth=None, max_features='auto',
+            max_leaf_nodes=None, min_impurity_split=1e-07,
+            min_samples_leaf=25, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=50, n_jobs=6,
+            oob_score=False, random_state=633, verbose=1, warm_start=False)
+
+featureEvaluator:
+FeatureDocCounter()
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+### Parameter Options Tried:
+classifier__min_samples_leaf:[25]
+classifier__n_estimators:[50]
+vectorizer__max_df:[0.75]
+vectorizer__min_df:[0.02]
+vectorizer__ngram_range:[(1, 2)]
+
+### Top positive features - not available
+### Top negative features - not available
+
+### Vectorizer:   Number of Features: 6318
+First 10 features: [u'aa', u'aaa', u'aacr', u'ab', u'abbrevi', u'abcam', u'abdomin', u'aberr', u'abil', u'abl']
+
+Middle 10 features: [u'isol wild_typ', u'isotyp', u'isotyp control', u'issu', u'iv', u'jackson', u'japan', u'jnk', u'join', u'joint']
+
+Last 10 features: [u'yfp', u'yield', u'young', u'zebrafish', u'zeiss', u'zero', u'zhang', u'zinc', u'zone', u'zoom']
+
+### False positives for Test set: 592
+30645974
+24348096
+28845525
+29551360
+30610118
+
+### False negatives for Test set: 333
+26611103
+24418349
+29634937
+27765794
+16369487
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Validation Set      :         9801         1910         7891          19%
+Training Set        :        44257        18711        25546          42%
+Test Set            :         7323         1412         5911          19%
+TestSplit: 0.20
+### End Time 2019/08/26-14-16-38. Total   1566.05 seconds
+
+Fitting 1 folds for each of 1 candidates, totalling 1 fits
+### Start Time 2019/08/30-12-35-06  RF.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/tumor/data/aug15/LegendsWords/Proc1/trainSet2.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/tumor/data/aug15/LegendsWords/Proc1/valSet2.txt
+Test data path:       /Users/jak/work/autolittriage/Train/tumor/data/aug15/LegendsWords/Proc1/testSet2.txt
+Random Seeds:	randForClassifier=633   randForSplit=853   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       1.00      1.00      1.00     25546
+Train discard       0.00      0.00      0.00         0
+
+  avg / total       1.00      1.00      1.00     25546
+
+Train F2: 1.00000 (keep)
+
+['yes', 'no']
+[[25546     0]
+ [    0     0]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       1.00      1.00      1.00      7891
+Valid discard       0.00      0.00      0.00         0
+
+  avg / total       1.00      1.00      1.00      7891
+
+Valid F2: 1.00000 (keep)
+
+['yes', 'no']
+[[7891    0]
+ [   0    0]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       1.00      1.00      1.00      5911
+Test  discard       0.00      0.00      0.00         0
+
+  avg / total       1.00      1.00      1.00      5911
+
+Test  F2: 1.00000 (keep)
+
+['yes', 'no']
+[[5911    0]
+ [   0    0]]
+
+### Best Pipeline Parameters:
+classifier__min_samples_leaf: 25
+classifier__n_estimators: 50
+vectorizer__max_df: 0.75
+vectorizer__min_df: 0.02
+vectorizer__ngram_range: (1, 2)
+
+### GridSearch Pipeline:
+classifier:
+RandomForestClassifier(bootstrap=True, class_weight='balanced',
+            criterion='gini', max_depth=None, max_features='auto',
+            max_leaf_nodes=None, min_impurity_split=1e-07,
+            min_samples_leaf=25, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=50, n_jobs=6,
+            oob_score=False, random_state=633, verbose=1, warm_start=False)
+
+featureEvaluator:
+FeatureDocCounter()
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+### Parameter Options Tried:
+classifier__min_samples_leaf:[25]
+classifier__n_estimators:[50]
+vectorizer__max_df:[0.75]
+vectorizer__min_df:[0.02]
+vectorizer__ngram_range:[(1, 2)]
+
+### Top positive features - not available
+### Top negative features - not available
+
+### Vectorizer:   Number of Features: 5832
+First 10 features: [u'aa', u'aaa', u'ab', u'abbrevi', u'abcam', u'aberr', u'abil', u'abl', u'ablat', u'abnorm']
+
+Middle 10 features: [u'interfer', u'interferon', u'intergen', u'interleukin', u'interleukin il', u'intermedi', u'intern', u'intern control', u'interplay', u'interpret']
+
+Last 10 features: [u'yellow arrow', u'yield', u'young', u'zebrafish', u'zeiss', u'zero', u'zhang', u'zinc', u'zone', u'zoom']
+
+### False positives for Test set: 0
+
+### False negatives for Test set: 0
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Validation Set      :         7891         7891            0         100%
+Training Set        :        25546        25546            0         100%
+Test Set            :         5911         5911            0         100%
+TestSplit: 0.20
+### End Time 2019/08/30-12-48-55. Total    829.44 seconds
+
+Fitting 1 folds for each of 1 candidates, totalling 1 fits
+Fitting 1 folds for each of 1 candidates, totalling 1 fits
+### Start Time 2019/09/12-17-02-05  RF.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/tumor/data/sep10/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/tumor/data/sep10/LegendsWords/Proc1/valSet.txt
+Test data path:       /Users/jak/work/autolittriage/Train/tumor/data/sep10/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=390   randForSplit=64   
+### Metrics: Training Set
+                  precision    recall  f1-score   support
+
+  Train selected       0.87      0.97      0.92     13344
+Train unselected       0.99      0.93      0.96     29337
+
+     avg / total       0.95      0.94      0.94     42681
+
+Train F2: 0.94842 (selected)
+
+['yes', 'no']
+[[27336  2001]
+ [  381 12963]]
+
+### Metrics: Validation Set
+                  precision    recall  f1-score   support
+
+  Valid selected       0.36      0.93      0.52       337
+Valid unselected       1.00      0.94      0.97      8727
+
+     avg / total       0.97      0.94      0.95      9064
+
+Valid F2: 0.70946 (selected)
+
+['yes', 'no']
+[[8170  557]
+ [  22  315]]
+
+### Metrics: Test Set
+                  precision    recall  f1-score   support
+
+  Test  selected       0.31      0.95      0.47       245
+Test  unselected       1.00      0.92      0.96      6703
+
+     avg / total       0.97      0.92      0.94      6948
+
+Test  F2: 0.67013 (selected)
+
+['yes', 'no']
+[[6184  519]
+ [  13  232]]
+
+### Best Pipeline Parameters:
+classifier__min_samples_leaf: 25
+classifier__n_estimators: 50
+vectorizer__max_df: 0.75
+vectorizer__min_df: 0.02
+vectorizer__ngram_range: (1, 2)
+
+### GridSearch Pipeline:
+classifier:
+RandomForestClassifier(bootstrap=True, class_weight='balanced',
+            criterion='gini', max_depth=None, max_features='auto',
+            max_leaf_nodes=None, min_impurity_split=1e-07,
+            min_samples_leaf=25, min_samples_split=2,
+            min_weight_fraction_leaf=0.0, n_estimators=50, n_jobs=6,
+            oob_score=False, random_state=390, verbose=1, warm_start=False)
+
+featureEvaluator:
+FeatureDocCounter()
+
+vectorizer:
+CountVectorizer(analyzer=u'word', binary=True, decode_error='strict',
+        dtype=<type 'numpy.int64'>, encoding=u'utf-8', input=u'content',
+        lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+        ngram_range=(1, 2), preprocessor=None, stop_words='english',
+        strip_accents=None, token_pattern=u'(?u)\\b\\w\\w+\\b',
+        tokenizer=None, vocabulary=None)
+
+### Parameter Options Tried:
+classifier__min_samples_leaf:[25]
+classifier__n_estimators:[50]
+vectorizer__max_df:[0.75]
+vectorizer__min_df:[0.02]
+vectorizer__ngram_range:[(1, 2)]
+
+### Top positive features - not available
+### Top negative features - not available
+
+### Vectorizer:   Number of Features: 6354
+First 10 features: [u'aa', u'aaa', u'aacr', u'ab', u'abbrevi', u'abcam', u'abdomin', u'aberr', u'abil', u'abl']
+
+Middle 10 features: [u'join', u'joint', u'journal', u'journal__biochim_biophys_acta', u'journal__cancer_res', u'journal__j_biol_chem', u'journal__nat_commun', u'journal__oncogene', u'journal__plos_one', u'journal__plos_pathog']
+
+Last 10 features: [u'yfp', u'yield', u'young', u'zebrafish', u'zeiss', u'zero', u'zhang', u'zinc', u'zone', u'zoom']
+
+### False positives for Test set: 519
+31075260
+30076412
+27793051
+29907739
+29062041
+
+### False negatives for Test set: 13
+30728499
+30529251
+31142514
+30389926
+28338017
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Validation Set      :         9064          337         8727           4%
+Training Set        :        42681        13344        29337          31%
+Test Set            :         6948          245         6703           4%
+TestSplit: 0.20
+### End Time 2019/09/12-17-25-27. Total   1401.74 seconds
+
