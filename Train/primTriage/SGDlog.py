@@ -8,37 +8,37 @@ from sklearn.linear_model import SGDClassifier
 #-----------------------
 args = tl.args
 randomSeeds = tl.getRandomSeeds( { 	# None means generate a random seed
-		'randForSplit'      : args.randForSplit,
-		'randForClassifier' : args.randForClassifier,
-		} )
+                'randForSplit'      : args.randForSplit,
+                'randForClassifier' : args.randForClassifier,
+                } )
 pipeline = Pipeline( [
 ('vectorizer', CountVectorizer(
 #('vectorizer', TfidfVectorizer(
-		strip_accents=None,	# if done in preprocessing
-		decode_error='strict',	# if handled in preproc
-		lowercase=False,	# if done in preprocessing
-		stop_words='english',
-		binary=True,
-		#token_pattern=r'\b([a-z_]\w+)\b', Use default for now
-		ngram_range=(1,2),
-		min_df=0.02,
-		max_df=.75,
-		),),
+                strip_accents=None,	# if done in preprocessing
+                decode_error='strict',	# if handled in preproc
+                lowercase=False,	# if done in preprocessing
+                stop_words='english',
+                binary=True,
+                #token_pattern=r'\b([a-z_]\w+)\b', Use default for now
+                ngram_range=(1,2),
+                min_df=0.02,
+                max_df=.75,
+                ),),
 #('featureEvaluator', skHelper.FeatureDocCounter()),
 #('scaler'    ,StandardScaler(copy=True,with_mean=False,with_std=True)),
 #('scaler'    , MaxAbsScaler(copy=True)),
 ('classifier', SGDClassifier(verbose=0,
-			random_state=randomSeeds['randForClassifier'],
-		) ),
+                        random_state=randomSeeds['randForClassifier'],
+                ) ),
 ] )
 parameters={
-	'classifier__loss':[ 'log', ],
-	'classifier__alpha':[.5, ],
-	'classifier__class_weight': ['balanced'],
-	'classifier__learning_rate':['optimal'],
-	'classifier__eta0':[ .01],
-	'classifier__penalty':['l2'],
-	}
+        'classifier__loss':[ 'log', ],
+        'classifier__alpha':[.5, ],
+        'classifier__class_weight': ['balanced'],
+        'classifier__learning_rate':['optimal'],
+        'classifier__eta0':[ .01],
+        'classifier__penalty':['l2'],
+        }
 p = tl.TextPipelineTuningHelper( pipeline, parameters,
-		    randomSeeds=randomSeeds,         ).fit()
-print p.getReports()
+                    randomSeeds=randomSeeds,         ).fit()
+print(p.getReports())
