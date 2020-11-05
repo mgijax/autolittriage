@@ -17380,3 +17380,504 @@ tumor          selected papers:     0 predicted keep:     0 recall: 0.000
 qtl            selected papers:     0 predicted keep:     0 recall: 0.000
 Totals         keep     papers:     3 predicted keep:     3 recall: 1.000
 Predictions from GB_test_pred.txt - Fri Apr 17 11:35:50 2020
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.2616          -0.0067            3.59s
+         2           1.1719          -0.0000            2.57s
+         3           1.0813          -0.0052            2.19s
+         4           1.2614          -0.0067            2.00s
+         5           1.2604          -0.0064            1.88s
+         6           1.1719           0.0000            1.80s
+         7           1.0823          -0.0054            1.75s
+         8           1.0814          -0.0052            1.70s
+         9           1.0805          -0.0050            1.67s
+        10           1.1720          -0.0000            1.64s
+        20           1.2634          -0.0072            1.48s
+        30           1.0785          -0.0045            1.39s
+        40           1.2644          -0.0075            1.39s
+        50           1.1721          -0.0001            1.33s
+        60           1.1719          -0.0000            1.30s
+        70           1.2598          -0.0062            1.26s
+        80           1.0786          -0.0045            1.23s
+        90           1.1721          -0.0001            1.20s
+       100           1.1719          -0.0000            1.18s
+       200           1.1721          -0.0001            1.03s
+       300           1.0796          -0.0048            0.94s
+       400           1.1719          -0.0000            0.86s
+       500           1.1719          -0.0000            0.79s
+       600           1.1723          -0.0001            0.71s
+       700           1.0838          -0.0056            0.64s
+       800           1.2655          -0.0078            0.57s
+       900           1.2594          -0.0061            0.49s
+      1000           1.1719           0.0000            0.42s
+### Start Time 2020/09/01-20-50-12  GB.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/smalltest/data/small/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/smalltest/data/small/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=377   randForSplit=812   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.73      1.00      0.84        19
+Train discard       0.00      0.00      0.00         7
+
+     accuracy                           0.73        26
+    macro avg       0.37      0.50      0.42        26
+ weighted avg       0.53      0.73      0.62        26
+
+Train (keep) F2: 0.9314    P: 0.7308    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[19  0]
+ [ 7  0]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.33      1.00      0.50         1
+Valid discard       0.00      0.00      0.00         2
+
+     accuracy                           0.33         3
+    macro avg       0.17      0.50      0.25         3
+ weighted avg       0.11      0.33      0.17         3
+
+Valid (keep) F2: 0.7143    P: 0.3333    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[1 0]
+ [2 0]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+
+vectorizer:
+CountVectorizer(analyzer='word', binary=True, decode_error='strict',
+                dtype=<class 'numpy.int64'>, encoding='utf-8', input='content',
+                lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+                ngram_range=(1, 2), preprocessor=None, stop_words='english',
+                strip_accents=None, token_pattern='(?u)\\b\\w\\w+\\b',
+                tokenizer=None, vocabulary=None)
+
+classifier:
+GradientBoostingClassifier(criterion='friedman_mse', init=None,
+                           learning_rate=0.05, loss='deviance', max_depth=3,
+                           max_features=0.7, max_leaf_nodes=None,
+                           min_impurity_decrease=0.0, min_impurity_split=None,
+                           min_samples_leaf=150, min_samples_split=600,
+                           min_weight_fraction_leaf=0.0, n_estimators=1600,
+                           n_iter_no_change=None, presort='auto',
+                           random_state=377, subsample=0.85, tol=0.0001,
+                           validation_fraction=0.1, verbose=1,
+                           warm_start=False)
+
+
+### End Time 2020/09/01-20-50-13. Total      1.40 seconds
+
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.2616          -0.0067            2.59s
+         2           1.0813          -0.0051            2.03s
+         3           1.0804          -0.0050            1.83s
+         4           1.1720          -0.0000            1.74s
+         5           1.0797          -0.0048            1.66s
+         6           1.2632          -0.0072            1.61s
+         7           1.1720          -0.0000            1.58s
+         8           1.2619          -0.0068            1.55s
+         9           1.1719          -0.0000            1.53s
+        10           1.1719          -0.0000            1.51s
+        20           1.2618          -0.0068            1.52s
+        30           1.1721          -0.0001            1.47s
+        40           1.1720          -0.0000            1.38s
+        50           1.0789          -0.0046            1.31s
+        60           1.0794          -0.0047            1.27s
+        70           1.0816          -0.0052            1.23s
+        80           1.1719           0.0000            1.21s
+        90           1.1719           0.0000            1.18s
+       100           1.0887          -0.0063            1.16s
+       200           1.2618          -0.0068            1.04s
+       300           1.0795          -0.0048            0.95s
+       400           1.2600          -0.0063            0.87s
+       500           1.2595          -0.0061            0.79s
+       600           1.1721          -0.0001            0.72s
+       700           1.0773          -0.0042            0.64s
+       800           1.1719           0.0000            0.57s
+       900           1.1723          -0.0001            0.50s
+      1000           1.0782          -0.0044            0.43s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.3401          -0.0094            2.48s
+         2           1.2746          -0.0010            2.00s
+         3           1.2095          -0.0009            1.85s
+         4           1.2747          -0.0011            1.75s
+         5           1.1429          -0.0086            1.70s
+         6           1.2089          -0.0008            1.66s
+         7           1.2752          -0.0012            1.63s
+         8           1.3395          -0.0093            1.60s
+         9           1.3379          -0.0089            1.58s
+        10           1.2101          -0.0010            1.57s
+        20           1.2085          -0.0007            1.48s
+        30           1.1363          -0.0073            1.41s
+        40           1.0724          -0.0237            1.34s
+        50           1.1369          -0.0074            1.29s
+        60           1.2077          -0.0005            1.26s
+        70           1.2089          -0.0008            1.24s
+        80           1.2739          -0.0008            1.21s
+        90           1.2106          -0.0010            1.19s
+       100           1.2092          -0.0009            1.18s
+       200           1.2762          -0.0014            1.07s
+       300           1.2763          -0.0014            0.98s
+       400           1.2094          -0.0009            0.90s
+       500           1.2758          -0.0013            0.82s
+       600           1.2762          -0.0014            0.75s
+       700           1.3440          -0.0103            0.67s
+       800           1.3436          -0.0102            0.59s
+       900           1.2087          -0.0008            0.52s
+      1000           1.1438          -0.0087            0.44s
+### Start Time 2020/09/01-20-51-29  GB.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/smalltest/data/small/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/smalltest/data/small/LegendsWords/Proc1/valSet.txt
+Test data path:       /Users/jak/work/autolittriage/Train/smalltest/data/small/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=754   randForSplit=252   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.73      1.00      0.84        19
+Train discard       0.00      0.00      0.00         7
+
+     accuracy                           0.73        26
+    macro avg       0.37      0.50      0.42        26
+ weighted avg       0.53      0.73      0.62        26
+
+Train (keep) F2: 0.9314    P: 0.7308    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[19  0]
+ [ 7  0]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.33      1.00      0.50         1
+Valid discard       0.00      0.00      0.00         2
+
+     accuracy                           0.33         3
+    macro avg       0.17      0.50      0.25         3
+ weighted avg       0.11      0.33      0.17         3
+
+Valid (keep) F2: 0.7143    P: 0.3333    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[1 0]
+ [2 0]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       0.00      0.00      0.00       0.0
+Test  discard       0.00      0.00      0.00       1.0
+
+     accuracy                           0.00       1.0
+    macro avg       0.00      0.00      0.00       1.0
+ weighted avg       0.00      0.00      0.00       1.0
+
+Test  (keep) F2: 0.0000    P: 0.0000    R: 0.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[0 0]
+ [1 0]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+
+vectorizer:
+CountVectorizer(analyzer='word', binary=True, decode_error='strict',
+                dtype=<class 'numpy.int64'>, encoding='utf-8', input='content',
+                lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+                ngram_range=(1, 2), preprocessor=None, stop_words='english',
+                strip_accents=None, token_pattern='(?u)\\b\\w\\w+\\b',
+                tokenizer=None, vocabulary=None)
+
+classifier:
+GradientBoostingClassifier(criterion='friedman_mse', init=None,
+                           learning_rate=0.05, loss='deviance', max_depth=3,
+                           max_features=0.7, max_leaf_nodes=None,
+                           min_impurity_decrease=0.0, min_impurity_split=None,
+                           min_samples_leaf=150, min_samples_split=600,
+                           min_weight_fraction_leaf=0.0, n_estimators=1600,
+                           n_iter_no_change=None, presort='auto',
+                           random_state=754, subsample=0.85, tol=0.0001,
+                           validation_fraction=0.1, verbose=1,
+                           warm_start=False)
+
+
+### Feature weights: highest 20
++0.0000	a10
++0.0000	a10 relat
++0.0000	a10 respect
++0.0000	a11037
++0.0000	a11037 describ
++0.0000	a1978
++0.0000	a1978 sigma
++0.0000	a1express
++0.0000	a1express basement
++0.0000	a427
++0.0000	a427 h358
++0.0000	a68
++0.0000	a68 mm
++0.0000	a7c11
++0.0000	a7c11 breast
++0.0000	a7c11 brpkp110
++0.0000	a7c11 cell
++0.0000	a7c11 cell_lin
++0.0000	a7c11 growth
++0.0000	a7c11 mammari
+
+### Feature weights: lowest 20
++0.0000	zip domain
++0.0000	zip flag
++0.0000	zn
++0.0000	zn finger
++0.0000	znf822
++0.0000	znf822 synerg
++0.0000	znpp
++0.0000	znpp addit
++0.0000	znpp cell
++0.0000	znpp decreas
++0.0000	znpp impair
++0.0000	znpp prevent
++0.0000	zone
++0.0000	zone cell_lin
++0.0000	zpf57
++0.0000	zpf57 li
++0.0000	zygos
++0.0000	zygos crispr
++0.0000	zymo
++0.0000	zymo research
+
+### Vectorizer:   Number of Features: 40115
+First 10 features: ['a10', 'a10 relat', 'a10 respect', 'a11037', 'a11037 describ', 'a1978', 'a1978 sigma', 'a1express', 'a1express basement', 'a427']
+
+Middle 10 features: ['knock_out microglia', 'knock_out mix', 'knock_out model', 'knock_out moi', 'knock_out mutant', 'knock_out mwt', 'knock_out nppa', 'knock_out onli', 'knock_out phenotyp', 'knock_out popul']
+
+Last 10 features: ['znpp impair', 'znpp prevent', 'zone', 'zone cell_lin', 'zpf57', 'zpf57 li', 'zygos', 'zygos crispr', 'zymo', 'zymo research']
+
+### False positives for Validation set: 2
+29378950
+28533442
+
+### False negatives for Validation set: 0
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :           26           19            7          73%
+Validation Set      :            3            1            2          33%
+Test Set            :            1            0            1           0%
+ValidationSplit: 0.20
+### End Time 2020/09/01-20-51-32. Total      3.13 seconds
+
+Recall for papers selected by each curation group. 1 papers analyzed
+ap             selected papers:     0 predicted keep:     0 recall: 0.000
+gxd            selected papers:     0 predicted keep:     0 recall: 0.000
+go             selected papers:     0 predicted keep:     0 recall: 0.000
+tumor          selected papers:     0 predicted keep:     0 recall: 0.000
+qtl            selected papers:     0 predicted keep:     0 recall: 0.000
+Totals         keep     papers:     0 predicted keep:     0 recall: 0.000
+Predictions from GB_test_pred.txt - Tue Sep  1 20:51:41 2020
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.1720          -0.0000            3.97s
+         2           1.2615          -0.0067            2.77s
+         3           1.1719          -0.0000            2.34s
+         4           1.0814          -0.0052            2.13s
+         5           1.1719          -0.0000            2.00s
+         6           1.1719          -0.0000            1.92s
+         7           1.0806          -0.0050            1.85s
+         8           1.2622          -0.0069            1.80s
+         9           1.1719          -0.0000            1.75s
+        10           1.2610          -0.0066            1.71s
+        20           1.1719           0.0000            1.45s
+        30           0.9945          -0.0228            1.35s
+        40           1.2616          -0.0067            1.29s
+        50           1.1720          -0.0000            1.25s
+        60           1.1720          -0.0000            1.26s
+        70           1.2616          -0.0067            1.24s
+        80           1.2621          -0.0069            1.22s
+        90           1.0803          -0.0049            1.20s
+       100           1.0790          -0.0046            1.18s
+       200           1.2651          -0.0077            1.08s
+       300           1.2602          -0.0063            0.99s
+       400           1.1719           0.0000            0.90s
+       500           1.2594          -0.0061            0.82s
+       600           1.2570          -0.0052            0.75s
+       700           1.1719          -0.0000            0.67s
+       800           1.1719           0.0000            0.60s
+       900           1.1720          -0.0000            0.53s
+      1000           1.1722           0.0001            0.45s
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.2088          -0.0008            2.72s
+         2           1.2754          -0.0012            2.10s
+         3           1.2088          -0.0008            1.90s
+         4           1.3405          -0.0095            1.80s
+         5           1.2092          -0.0009            1.72s
+         6           1.2749          -0.0011            1.67s
+         7           1.2092          -0.0009            1.62s
+         8           1.1415          -0.0084            1.59s
+         9           1.2085          -0.0007            1.56s
+        10           1.1395          -0.0080            1.56s
+        20           1.2760          -0.0013            1.41s
+        30           1.2078          -0.0005            1.33s
+        40           1.3412          -0.0097            1.30s
+        50           1.2755          -0.0013            1.27s
+        60           1.2099          -0.0010            1.25s
+        70           1.2739          -0.0008            1.24s
+        80           1.2741          -0.0009            1.22s
+        90           1.2104          -0.0010            1.21s
+       100           1.2737          -0.0007            1.21s
+       200           1.1387          -0.0078            1.10s
+       300           1.2745          -0.0010            1.01s
+       400           1.2754          -0.0012            0.93s
+       500           1.3436          -0.0102            0.85s
+       600           1.1369          -0.0074            0.78s
+       700           1.2773          -0.0015            0.70s
+       800           1.0045          -0.0472            0.62s
+       900           1.2753          -0.0012            0.54s
+      1000           1.2084          -0.0007            0.46s
+### Start Time 2020/09/29-17-11-06  GB.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/smalltest/data/small/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/smalltest/data/small/LegendsWords/Proc1/valSet.txt
+Test data path:       /Users/jak/work/autolittriage/Train/smalltest/data/small/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=339   randForSplit=242   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.73      1.00      0.84        19
+Train discard       0.00      0.00      0.00         7
+
+     accuracy                           0.73        26
+    macro avg       0.37      0.50      0.42        26
+ weighted avg       0.53      0.73      0.62        26
+
+Train (keep) F2: 0.9314    P: 0.7308    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[19  0]
+ [ 7  0]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.33      1.00      0.50         1
+Valid discard       0.00      0.00      0.00         2
+
+     accuracy                           0.33         3
+    macro avg       0.17      0.50      0.25         3
+ weighted avg       0.11      0.33      0.17         3
+
+Valid (keep) F2: 0.7143    P: 0.3333    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[1 0]
+ [2 0]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       0.00      0.00      0.00       0.0
+Test  discard       0.00      0.00      0.00       1.0
+
+     accuracy                           0.00       1.0
+    macro avg       0.00      0.00      0.00       1.0
+ weighted avg       0.00      0.00      0.00       1.0
+
+Test  (keep) F2: 0.0000    P: 0.0000    R: 0.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[0 0]
+ [1 0]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                ngram_range=(1, 2), stop_words='english')
+
+classifier:
+GradientBoostingClassifier(learning_rate=0.05, max_features=0.7,
+                           min_samples_leaf=150, min_samples_split=600,
+                           n_estimators=1600, random_state=339, subsample=0.85,
+                           verbose=1)
+
+
+### Feature weights: highest 20
++0.0000	a10
++0.0000	a10 relat
++0.0000	a10 respect
++0.0000	a11037
++0.0000	a11037 describ
++0.0000	a1978
++0.0000	a1978 sigma
++0.0000	a1express
++0.0000	a1express basement
++0.0000	a427
++0.0000	a427 h358
++0.0000	a68
++0.0000	a68 mm
++0.0000	a7c11
++0.0000	a7c11 breast
++0.0000	a7c11 brpkp110
++0.0000	a7c11 cell
++0.0000	a7c11 cell_lin
++0.0000	a7c11 growth
++0.0000	a7c11 mammari
+
+### Feature weights: lowest 20
++0.0000	zip domain
++0.0000	zip flag
++0.0000	zn
++0.0000	zn finger
++0.0000	znf822
++0.0000	znf822 synerg
++0.0000	znpp
++0.0000	znpp addit
++0.0000	znpp cell
++0.0000	znpp decreas
++0.0000	znpp impair
++0.0000	znpp prevent
++0.0000	zone
++0.0000	zone cell_lin
++0.0000	zpf57
++0.0000	zpf57 li
++0.0000	zygos
++0.0000	zygos crispr
++0.0000	zymo
++0.0000	zymo research
+
+### Vectorizer:   Number of Features: 40115
+First 10 features: ['a10', 'a10 relat', 'a10 respect', 'a11037', 'a11037 describ', 'a1978', 'a1978 sigma', 'a1express', 'a1express basement', 'a427']
+
+Middle 10 features: ['knock_out microglia', 'knock_out mix', 'knock_out model', 'knock_out moi', 'knock_out mutant', 'knock_out mwt', 'knock_out nppa', 'knock_out onli', 'knock_out phenotyp', 'knock_out popul']
+
+Last 10 features: ['znpp impair', 'znpp prevent', 'zone', 'zone cell_lin', 'zpf57', 'zpf57 li', 'zygos', 'zygos crispr', 'zymo', 'zymo research']
+
+### False positives for Validation set: 2
+29378950
+28533442
+
+### False negatives for Validation set: 0
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :           26           19            7          73%
+Validation Set      :            3            1            2          33%
+Test Set            :            1            0            1           0%
+ValidationSplit: 0.20
+### End Time 2020/09/29-17-11-09. Total      3.09 seconds
+
+Recall for papers selected by each curation group. 1 papers analyzed
+ap             selected papers:     0 predicted keep:     0 recall: 0.000
+gxd            selected papers:     0 predicted keep:     0 recall: 0.000
+go             selected papers:     0 predicted keep:     0 recall: 0.000
+tumor          selected papers:     0 predicted keep:     0 recall: 0.000
+qtl            selected papers:     0 predicted keep:     0 recall: 0.000
+Totals         keep     papers:     0 predicted keep:     0 recall: 0.000
+Predictions from GB_test_pred.txt - Tue Sep 29 17:11:17 2020
