@@ -97,18 +97,22 @@ args = getArgs()
 ####################
 SQLSEPARATOR = '||'
 LIT_TRIAGE_DATE = "10/31/2017"		# when we switched to new lit triage
-START_DATE = "10/01/2016" 		# earliest date for refs to get
+START_DATE = "1/01/2017" 		# earliest date for refs to get
                                         #  before lit Triage
 TUMOR_START_DATE = "07/01/2013"		# date to get add'l tumor papers from
+END_DATE = "12/31/2019"                 # last date to get training data from
 
 #----------------
 # SQL to build tmp tables 
 #----------------
 BUILD_TMP_TABLES = [ \
     # Tmp table of samples to omit.
-    # Currently, only one reason to omit:
-    # (1) articles "indexed" by pm2gene and not reviewed by a curator yet
-    #     we don't really know if these are relevant (not good ground truth)
+    # Currently, reasons to omit:
+    # (1) articles "indexed" by pm2gene and not selected by a group other than
+    #     GO
+    # (2) created by the goa load and not selected by a group other than GO.
+    # In these cases, no curator has selected the paper, so we don't really
+    #  know if these are relevant (not good ground truth)
 '''
     create temporary table tmp_omit
     as
@@ -120,15 +124,19 @@ BUILD_TMP_TABLES = [ \
         on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
             and a._mgitype_key=1 )
     where 
-        (
-            (bs._status_key = 31576673 and bs._group_key = 31576666 and 
-                bs._createdby_key = 1571) -- index for GO by pm2geneload
-
-            and bsv.ap_status in ('Not Routed', 'Rejected')
+        (   (   (bs._status_key = 31576673 and bs._group_key = 31576666 and 
+                    bs._createdby_key = 1571 -- index for GO by pm2geneload
+                )
+                or r._createdby_key = 1575 -- created by littriage_goa
+            )
+            and           -- not selected by any other group
+            (
+                bsv.ap_status in ('Not Routed', 'Rejected')
             and bsv.gxd_status in ('Not Routed', 'Rejected')
             and bsv.tumor_status in ('Not Routed', 'Rejected')
             and bsv.qtl_status in ('Not Routed', 'Rejected')
             and r.creation_date >= '%s'
+            )
         )
 ''' % (START_DATE),
 '''
@@ -236,7 +244,8 @@ WHERE_CLAUSES = { \
     -- discard_after
     where r.isdiscard = 1
     and tr.creation_date > '%s' -- After lit triage release
-    ''' % LIT_TRIAGE_DATE,
+    and tr.creation_date <= '%s' -- before end date
+    ''' % (LIT_TRIAGE_DATE, END_DATE),
 'keep_after' :
     '''
     -- keep_after
@@ -248,7 +257,8 @@ WHERE_CLAUSES = { \
      or bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
     )
     and tr.creation_date > '%s' -- After lit triage release
-    ''' % LIT_TRIAGE_DATE,
+    and tr.creation_date <= '%s' -- before end date
+    ''' % (LIT_TRIAGE_DATE, END_DATE),
 'keep_before' :
     '''
     -- keep_before
@@ -548,7 +558,8 @@ def doCounts(args):
     selectCount = 'select count(distinct _refs_key) as num from tmp_omit\n'
     q = BUILD_TMP_TABLES + [selectCount]
     
-    writeStat("Omitted references (only pm2gene indexed)", SQLSEPARATOR.join(q))
+    writeStat("Omitted references (GOA loaded or only pm2gene indexed)",
+                        SQLSEPARATOR.join(q))
 
     baseSQL = COUNTS_FIELDS + COUNTS_FROM
     if args.restrictArticles:
@@ -558,16 +569,16 @@ def doCounts(args):
         restrict = ''
         sys.stdout.write("Including review and non-peer reviewed articles\n")
 
-    writeStat("Discard after %s" % LIT_TRIAGE_DATE,
+    writeStat("Discard after: %s - %s" % (LIT_TRIAGE_DATE, END_DATE),
                         baseSQL + WHERE_CLAUSES['discard_after'] + restrict)
 
-    writeStat("Keep after %s" % LIT_TRIAGE_DATE,
+    writeStat("Keep after: %s - %s" % (LIT_TRIAGE_DATE, END_DATE),
                         baseSQL + WHERE_CLAUSES['keep_after'] + restrict)
 
-    writeStat("Keep before %s through %s" % (START_DATE, LIT_TRIAGE_DATE),
+    writeStat("Keep before: %s - %s" % (START_DATE, LIT_TRIAGE_DATE),
                         baseSQL + WHERE_CLAUSES['keep_before'] + restrict)
 
-    writeStat("Tumor papers %s through %s" % (TUMOR_START_DATE, START_DATE),
+    writeStat("Tumor papers: %s - %s" % (TUMOR_START_DATE, START_DATE),
                         baseSQL + WHERE_CLAUSES['keep_tumor'] + restrict)
 #-----------------------------------
 

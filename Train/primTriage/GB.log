@@ -7579,209 +7579,210 @@ ValidationSplit: 0.20
 ### End Time 2020/04/15-20-56-49. Total   9216.91 seconds
 
       Iter       Train Loss      OOB Improve   Remaining Time 
-         1           1.3400           0.0407           54.89m
-         2           1.3047           0.0367           46.44m
-         3           1.2703           0.0342           44.05m
-         4           1.2384           0.0312           42.28m
-         5           1.2107           0.0287           41.53m
-         6           1.1843           0.0272           41.22m
-         7           1.1593           0.0235           40.60m
-         8           1.1364           0.0227           40.19m
-         9           1.1154           0.0209           39.91m
-        10           1.0973           0.0200           39.45m
-        20           0.9578           0.0112           38.13m
-        30           0.8756           0.0060           37.66m
-        40           0.8272           0.0035           36.95m
-        50           0.7925           0.0026           36.29m
-        60           0.7712           0.0020           35.82m
-        70           0.7529           0.0015           35.45m
-        80           0.7394           0.0011           34.94m
-        90           0.7229           0.0011           34.50m
-       100           0.7114           0.0007           34.05m
-       200           0.6453           0.0003           30.75m
-       300           0.6032           0.0001           28.18m
-       400           0.5748          -0.0000           25.80m
-       500           0.5515           0.0000           23.50m
-       600           0.5359           0.0000           21.12m
-       700           0.5225           0.0000           18.91m
-       800           0.5033          -0.0000           16.82m
-       900           0.4940          -0.0001           14.67m
-      1000           0.4840          -0.0000           12.56m
+         1           1.3390           0.0408           78.47m
+         2           1.3011           0.0370           67.85m
+         3           1.2672           0.0340           64.14m
+         4           1.2365           0.0292           62.44m
+         5           1.2092           0.0286           61.29m
+         6           1.1824           0.0262           60.77m
+         7           1.1587           0.0232           60.26m
+         8           1.1366           0.0223           59.99m
+         9           1.1174           0.0212           59.78m
+        10           1.0967           0.0193           59.54m
+        20           0.9565           0.0101           58.57m
+        30           0.8768           0.0060           57.70m
+        40           0.8297           0.0038           56.93m
+        50           0.7941           0.0030           56.21m
+        60           0.7688           0.0022           55.51m
+        70           0.7518           0.0013           54.66m
+        80           0.7366           0.0013           53.95m
+        90           0.7192           0.0012           53.31m
+       100           0.7101           0.0009           52.69m
+       200           0.6400           0.0004           47.69m
+       300           0.6027           0.0001           43.86m
+       400           0.5743           0.0000           40.22m
+       500           0.5498           0.0000           36.64m
+       600           0.5336          -0.0000           33.39m
+       700           0.5208          -0.0000           29.90m
+       800           0.5073          -0.0000           26.49m
+       900           0.4919          -0.0001           23.08m
+      1000           0.4802          -0.0001           19.72m
       Iter       Train Loss      OOB Improve   Remaining Time 
-         1           1.3440           0.0410           62.33m
-         2           1.3076           0.0371           53.99m
-         3           1.2725           0.0337           51.66m
-         4           1.2412           0.0314           50.12m
-         5           1.2119           0.0297           49.31m
-         6           1.1847           0.0271           48.53m
-         7           1.1607           0.0253           47.89m
-         8           1.1376           0.0232           48.00m
-         9           1.1171           0.0209           47.74m
-        10           1.0967           0.0196           47.43m
-        20           0.9559           0.0103           46.51m
-        30           0.8735           0.0062           46.83m
-        40           0.8239           0.0038           46.74m
-        50           0.7880           0.0029           46.83m
-        60           0.7639           0.0019           46.84m
-        70           0.7457           0.0015           46.73m
-        80           0.7328           0.0010           46.61m
-        90           0.7198           0.0009           46.17m
-       100           0.7092           0.0007           45.73m
-       200           0.6460           0.0004           42.43m
-       300           0.6074           0.0001           39.50m
-       400           0.5772           0.0001           36.58m
-       500           0.5621           0.0000           33.50m
-       600           0.5428           0.0000           30.37m
-       700           0.5319          -0.0000           27.24m
-       800           0.5177          -0.0000           24.10m
-       900           0.5048          -0.0000           21.04m
-      1000           0.4930           0.0000           18.01m
-### Start Time 2020/09/30-11-22-16  GB.py	index file: index.out
-Training data path:   /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
-Validation data path: /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/valSet.txt
-Test data path:       /Users/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/testSet.txt
-Random Seeds:	randForClassifier=852   randForSplit=995   
+         1           1.3454           0.0391          102.68m
+         2           1.3088           0.0370           87.82m
+         3           1.2737           0.0350           82.66m
+         4           1.2423           0.0303           80.14m
+         5           1.2129           0.0295           78.40m
+         6           1.1855           0.0274           77.46m
+         7           1.1599           0.0249           76.85m
+         8           1.1371           0.0221           76.50m
+         9           1.1161           0.0203           76.17m
+        10           1.0971           0.0197           76.36m
+        20           0.9566           0.0113           74.60m
+        30           0.8763           0.0067           73.71m
+        40           0.8257           0.0041           72.15m
+        50           0.7906           0.0028           71.19m
+        60           0.7675           0.0019           70.44m
+        70           0.7454           0.0014           69.86m
+        80           0.7321           0.0012           68.85m
+        90           0.7193           0.0008           67.90m
+       100           0.7069           0.0009           67.05m
+       200           0.6473           0.0003           61.40m
+       300           0.6044           0.0002           56.67m
+       400           0.5788           0.0000           52.12m
+       500           0.5591           0.0000           47.70m
+       600           0.5393           0.0000           43.35m
+       700           0.5255          -0.0000           38.94m
+       800           0.5147           0.0000           34.52m
+       900           0.5035          -0.0001           30.17m
+      1000           0.4922          -0.0001           25.76m
+### Start Time 2020/04/20-15-05-52  GB.py
+Training data path:   /home/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /home/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/valSet.txt
+Test data path:       /home/jak/work/autolittriage/Train/primTriage/data/sep18/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=588   randForSplit=676   
 ### Metrics: Training Set
                precision    recall  f1-score   support
 
-   Train keep       0.94      0.91      0.92     28216
-Train discard       0.90      0.93      0.91     24521
+   Train keep       0.94      0.91      0.92     28178
+Train discard       0.90      0.93      0.91     23813
 
-     accuracy                           0.92     52737
-    macro avg       0.92      0.92      0.92     52737
- weighted avg       0.92      0.92      0.92     52737
+     accuracy                           0.92     51991
+    macro avg       0.92      0.92      0.92     51991
+ weighted avg       0.92      0.92      0.92     51991
 
-Train (keep) F2: 0.9161    P: 0.9368    R: 0.9110    NPV: 0.9008
+Train (keep) F2: 0.9164    P: 0.9381    R: 0.9111    NPV: 0.8983
 
 ['keep', 'discard']
-[[25706  2510]
- [ 1735 22786]]
+[[25674  2504]
+ [ 1694 22119]]
 
 ### Metrics: Validation Set
                precision    recall  f1-score   support
 
-   Valid keep       0.87      0.88      0.88      5493
-Valid discard       0.91      0.91      0.91      7594
+   Valid keep       0.87      0.89      0.88      5596
+Valid discard       0.92      0.90      0.91      7463
 
-     accuracy                           0.90     13087
-    macro avg       0.89      0.89      0.89     13087
- weighted avg       0.90      0.90      0.90     13087
+     accuracy                           0.90     13059
+    macro avg       0.90      0.90      0.90     13059
+ weighted avg       0.90      0.90      0.90     13059
 
-Valid (keep) F2: 0.8793    P: 0.8712    R: 0.8813    NPV: 0.9134
+Valid (keep) F2: 0.8893    P: 0.8731    R: 0.8935    NPV: 0.9187
 
 ['keep', 'discard']
-[[4841  652]
- [ 716 6878]]
+[[5000  596]
+ [ 727 6736]]
 
 ### Metrics: Test Set
                precision    recall  f1-score   support
 
-   Test  keep       0.88      0.87      0.88      4253
-Test  discard       0.90      0.91      0.91      5585
+   Test  keep       0.87      0.88      0.88      4188
+Test  discard       0.91      0.90      0.91      5506
 
-     accuracy                           0.89      9838
-    macro avg       0.89      0.89      0.89      9838
- weighted avg       0.89      0.89      0.89      9838
+     accuracy                           0.90      9694
+    macro avg       0.89      0.89      0.89      9694
+ weighted avg       0.90      0.90      0.90      9694
 
-Test  (keep) F2: 0.8758    P: 0.8813    R: 0.8744    NPV: 0.9049
+Test  (keep) F2: 0.8821    P: 0.8750    R: 0.8840    NPV: 0.9110
 
 ['keep', 'discard']
-[[3719  534]
- [ 501 5084]]
+[[3702  486]
+ [ 529 4977]]
 
 ### Note: blessed GB.
 
 ### Best Pipeline Parameters:
 
 vectorizer:
-CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
-                ngram_range=(1, 2), stop_words='english')
+CountVectorizer(analyzer='word', binary=True, decode_error='strict',
+                dtype=<class 'numpy.int64'>, encoding='utf-8', input='content',
+                lowercase=False, max_df=0.75, max_features=None, min_df=0.02,
+                ngram_range=(1, 2), preprocessor=None, stop_words='english',
+                strip_accents=None, token_pattern='(?u)\\b\\w\\w+\\b',
+                tokenizer=None, vocabulary=None)
 
 classifier:
-GradientBoostingClassifier(learning_rate=0.05, max_features=0.7,
+GradientBoostingClassifier(criterion='friedman_mse', init=None,
+                           learning_rate=0.05, loss='deviance', max_depth=3,
+                           max_features=0.7, max_leaf_nodes=None,
+                           min_impurity_decrease=0.0, min_impurity_split=None,
                            min_samples_leaf=150, min_samples_split=600,
-                           n_estimators=1600, random_state=852, subsample=0.85,
-                           verbose=1)
+                           min_weight_fraction_leaf=0.0, n_estimators=1600,
+                           n_iter_no_change=None, presort='auto',
+                           random_state=588, subsample=0.85, tol=0.0001,
+                           validation_fraction=0.1, verbose=1,
+                           warm_start=False)
 
 
 ### Feature weights: highest 20
-+0.2497	mice figur
-+0.1407	wild_typ mice
-+0.0925	cre
-+0.0709	wild_typ
-+0.0374	litterm
-+0.0276	genotyp
-+0.0267	mut_mut
-+0.0235	transgen mice
-+0.0192	knock_out
-+0.0165	knock_out mice
-+0.0140	transgen
-+0.0088	relat figur
-+0.0084	mice compar
-+0.0080	mut_mut mice
-+0.0076	embryonic_day
-+0.0070	mice strain
-+0.0060	embryon
-+0.0051	defici
-+0.0044	xenograft
-+0.0043	mice express
++0.2667	mice figur
++0.1369	wild_typ mice
++0.0842	cre
++0.0659	wild_typ
++0.0382	litterm
++0.0303	genotyp
++0.0259	mut_mut
++0.0220	transgen mice
++0.0180	knock_out
++0.0178	knock_out mice
++0.0174	transgen
++0.0089	mice compar
++0.0077	mice strain
++0.0075	relat figur
++0.0074	mut_mut mice
++0.0070	embryonic_day
++0.0049	mice model
++0.0048	defici
++0.0048	mice express
++0.0046	embryon
 
 ### Feature weights: lowest 20
++0.0000	wk
 +0.0000	wnt
 +0.0000	wnt signal
 +0.0000	wonder
 +0.0000	wors
++0.0000	wound
 +0.0000	wound heal
 +0.0000	wrote
-+0.0000	wrote manuscript
 +0.0000	xenograft model
 +0.0000	xenograft tumor_typ
 +0.0000	xlsx
-+0.0000	yellow
 +0.0000	yellow arrow
-+0.0000	yfp
 +0.0000	younger
 +0.0000	zeiss
 +0.0000	zero
++0.0000	zhang
 +0.0000	zhang et
 +0.0000	zinc
 +0.0000	zone
 +0.0000	zoom
 
-### Vectorizer:   Number of Features: 6776
-First 10 features: ['aa', 'aaa', 'aav', 'ab', 'abbrevi', 'abcam', 'abdomin', 'aberr', 'abil', 'abl']
+### Vectorizer:   Number of Features: 6769
+First 10 features: ['aa', 'aaa', 'aav', 'ab', 'abbrevi', 'abcam', 'aberr', 'abil', 'abl', 'ablat']
 
-Middle 10 features: ['invad', 'invas', 'invers', 'invers correl', 'invert', 'investig', 'investig effect', 'investig mechan', 'investig possibl', 'investig potenti']
+Middle 10 features: ['investig mechan', 'investig possibl', 'investig potenti', 'investig role', 'invitrogen', 'involv', 'involv cell', 'involv regul', 'iodid', 'ion']
 
 Last 10 features: ['young', 'younger', 'zebrafish', 'zeiss', 'zero', 'zhang', 'zhang et', 'zinc', 'zone', 'zoom']
 
-### False positives for Validation set: 716
-28389561
-28107409
-28151936
-27474411
-27223694
+### False positives for Validation set: 727
+29406270
+29228333
+29955044
+28993663
+28963450
 
-### False negatives for Validation set: 652
-28594915
-29070491
-28687930
-29126777
-30255127
+### False negatives for Validation set: 596
+29953499
+28062700
+26673701
+28775166
+28837808
 
 ### Sample set sizes
                     :      Samples     Positive     Negative   % Positive
-Training Set        :        52737        28216        24521          54%
-Validation Set      :        13087         5493         7594          42%
-Test Set            :         9838         4253         5585          43%
+Training Set        :        51991        28178        23813          54%
+Validation Set      :        13059         5596         7463          43%
+Test Set            :         9694         4188         5506          43%
 ValidationSplit: 0.20
-### End Time 2020/09/30-12-58-24. Total   5767.75 seconds
-
-Recall for papers selected by each curation group. 13087 papers analyzed
-ap             selected papers:  4794 predicted keep:  4374 recall: 0.912
-gxd            selected papers:   459 predicted keep:   432 recall: 0.941
-go             selected papers:  4019 predicted keep:  3600 recall: 0.896
-tumor          selected papers:   328 predicted keep:   297 recall: 0.905
-qtl            selected papers:    17 predicted keep:    15 recall: 0.882
-Totals         keep     papers:  5493 predicted keep:  4841 recall: 0.881
-Predictions from GB_val_pred.txt - Wed Sep 30 13:25:19 2020
+### End Time 2020/04/20-17-23-47. Total   8274.33 seconds
