@@ -2132,3 +2132,36 @@ April 17, 2020
     This included converting NCBIutilsLib.py and simpleURLLib.py to python3.
     These are currently part of the pdfdownload product and I have an identical
     copy in my personal lib_py_jak repo.
+
+Oct 2, 2020
+    Have installed latest Anaconda on
+        our servers: ~/anaconda3
+        and my Mac:  /opt/anaconda3
+        This is: anaconda-2020.07-py38_0, python3.8.3, sklearn0.23.1
+        On our servers, I used pip to locally install latest psycopg2 for
+            python 3.8 (this is under ~/.local)
+            but in ~/lib/python3, I'm not differentiating our libraries for
+            python 3.7 vs 3.8. I could do that, but I'm presuming things should
+            work with both versions.
+    Modified sdGetRawPrimtriage.py to
+        a) omit papers loaded by littriage_goa if they have not been selected
+            by a group other than GO
+        b) added end date for training set selection (12/31/2019), and changed
+            the START_DATE to 1/1/2017 to lower the number of keep_before
+            articles selected.
+        Generated a new training set:
+            Fri Oct  2 09:57:41 2020
+               2884 Omitted references (GOA loaded or only pm2gene indexed)
+            Omitting review and non-peer reviewed articles
+              41207 Discard after: 10/31/2017 - 12/31/2019
+              32760 Keep after: 10/31/2017 - 12/31/2019
+               5715 Keep before: 1/01/2017 - 10/31/2017
+               2825 Tumor papers: 07/01/2013 - 1/01/2017
+
+Nov 2, 2020
+    On my Mac, I had to install the latest psycopg2_binary-2.8.6 with pip,
+        and it installed it under /opt/anaconda3/python3.8/site-packages
+        (earlier version did not with work with python3.8)
+
+Nov 5, 2020
+    Starting preprocessing and retraining on this data new dataset.

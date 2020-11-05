@@ -1,6 +1,6 @@
 model=GB dataDir=./data/small
 #baseDir=$dataDir/LegendsPara/Proc1
 baseDir=$dataDir/LegendsWords/Proc1
-mtrun ${model}.py  -d $baseDir/trainSet.txt --valpath  $baseDir/valSet.txt --gsverbose
-#mtrun ${model}.py --features --savemodel ${model}.pkl --predict -d $baseDir/trainSet.txt --valpath $baseDir/valSet.txt  --testpath $baseDir/testSet.txt -v --gsverbose
+#mtrun ${model}.py  -d $baseDir/trainSet.txt --valpath  $baseDir/valSet.txt --gsverbose
+mtrun ${model}.py --features --savemodel ${model}.pkl --predict -d $baseDir/trainSet.txt --valpath $baseDir/valSet.txt  --testpath $baseDir/testSet.txt -v --gsverbose
 subsetPandR.py --group ${model}_test_pred.txt | tee -a ${model}.log
