@@ -44,7 +44,7 @@ def getArgs():
     parser.add_argument('--query', dest='queryKey', action='store',
         required=False, default='all',
         choices=['all', 'discard_after', 'keep_after', 'keep_before',
-                    'keep_tumor'],
+                    'keep_tumor', 'test_2020'],
         help='which subset of the training samples to get. Default: "all"')
 
     parser.add_argument('--counts', dest='counts', action='store_true',
@@ -67,7 +67,7 @@ def getArgs():
         required=False, help="skip helpful messages to stderr")
 
     defaultHost = os.environ.get('PG_DBSERVER', 'bhmgidevdb01')
-    defaultDatabase = os.environ.get('PG_DBNAME', 'mgd')
+    defaultDatabase = os.environ.get('PG_DBNAME', 'prod')
 
     parser.add_argument('-s', '--server', dest='server', action='store',
         required=False, default=defaultHost,
@@ -114,6 +114,8 @@ END_DATE = "12/31/2019"                 # last date to get training data from
 #----------------
 # SQL to build tmp tables 
 #----------------
+OMIT_TEXT = "Omitted refs\n" + \
+    "\t(GOA loaded or only pm2gene indexed or MGI:Mice_in_references_only)"
 BUILD_TMP_TABLES = [ \
     # Tmp table of samples to omit.
     # Currently, reasons to omit:
@@ -122,6 +124,11 @@ BUILD_TMP_TABLES = [ \
     # (2) created by the goa load and not selected by a group other than GO.
     # In these cases, no curator has selected the paper, so we don't really
     #  know if these are relevant (not good ground truth)
+    #
+    # (3) articles marked as discard with MGI:Mice_in_references_only tag
+    # Since these articles are discarded for a different reason, and they
+    #  will not go through relevance classification, it seems we should not
+    #  train on them.
 '''
     create temporary table tmp_omit
     as
@@ -129,6 +136,7 @@ BUILD_TMP_TABLES = [ \
     from bib_refs r join bib_workflow_status bs
         on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
         join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+        left join bib_workflow_tag bt on (r._refs_key = bt._refs_key)
         join acc_accession a
         on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
             and a._mgitype_key=1 )
@@ -146,6 +154,11 @@ BUILD_TMP_TABLES = [ \
             and bsv.qtl_status in ('Not Routed', 'Rejected')
             and r.creation_date >= '%s'
             )
+        )
+        or
+        (
+            r.isDiscard = 1
+            and bt._tag_key = 49170000  -- MGI:Mice_in_references_only
         )
 ''' % (START_DATE),
 '''
@@ -289,6 +302,24 @@ WHERE_CLAUSES = { \
      and tr.creation_date >= '%s' -- after tumor start date
      and tr.creation_date <= '%s' -- before start date
     ''' % ( TUMOR_START_DATE, START_DATE, ),
+
+'test_2020' :
+    '''
+    -- test set of 2020 refs
+    where
+    tr.creation_date > '%s' -- After end date
+    and
+    (
+        (r.isdiscard = 1)
+        or
+        (bsv.ap_status in ('Chosen', 'Indexed', 'Full-coded')
+         or bsv.go_status in ('Chosen', 'Indexed', 'Full-coded')
+         or bsv.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
+         or bsv.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
+         or bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
+        )
+    )
+    ''' % (END_DATE),
 }	# end WHERE_CLAUSES
 #-----------------------------------
 
@@ -474,8 +505,7 @@ def doCounts(args):
     selectCount = 'select count(distinct _refs_key) as num from tmp_omit\n'
     q = BUILD_TMP_TABLES + [selectCount]
     
-    writeStat("Omitted references (GOA loaded or only pm2gene indexed)",
-                        SQLSEPARATOR.join(q))
+    writeStat(OMIT_TEXT, SQLSEPARATOR.join(q))
 
     baseSQL = COUNTS_FIELDS + COUNTS_FROM
     if args.restrictArticles:
@@ -496,6 +526,9 @@ def doCounts(args):
 
     writeStat("Tumor papers: %s - %s" % (TUMOR_START_DATE, START_DATE),
                         baseSQL + WHERE_CLAUSES['keep_tumor'] + restrict)
+
+    writeStat("Test set from 2020" ,
+                        baseSQL + WHERE_CLAUSES['test_2020'] + restrict)
 #-----------------------------------
 
 def writeStat(label, q):

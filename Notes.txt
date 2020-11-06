@@ -2165,3 +2165,14 @@ Nov 2, 2020
 
 Nov 5, 2020
     Starting preprocessing and retraining on this data new dataset.
+
+Nov 6, 2020
+    Took care of this call in MLtextTools/tuningReportsLib.py:
+
+    /opt/anaconda3/lib/python3.8/site-packages/sklearn/utils/validation.py:68: FutureWarning: Pass beta=2 as keyword args. From version 0.25 passing these as positional arguments will result in an error
+      warnings.warn("Pass {} as keyword args. From version 0.25 "
+
+    changed sdGetRawPrimTriage.py to:
+        - omit discard refs that have MGI:Mice_in_references_only tag
+        - add test_2020 output set of recent articles for a held out test set
+    Regenerated nov2020 training and test sets.
