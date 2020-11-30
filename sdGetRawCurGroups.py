@@ -21,6 +21,7 @@ import argparse
 import db
 import utilsLib
 import sampleDataLib
+from ExtractedTextSet import ExtractedTextSet
 #-----------------------------------
 
 SAMPLE_OBJ_TYPE = sampleDataLib.CurGroupClassifiedSample
@@ -41,14 +42,6 @@ def getArgs():
     parser.add_argument('--test', dest='test', action='store_true',
         required=False,
         help="just run ad hoc test code")
-
-    parser.add_argument('-s', '--server', dest='server', action='store',
-        required=False, default='dev',
-        help='db server. Shortcuts:  adhoc, prod, or dev (default)')
-
-    parser.add_argument('-d', '--database', dest='database', action='store',
-        required=False, default='mgd',
-        help='which database. Example: mgd (default)')
 
     parser.add_argument('--group', dest='group', action='store', required=True, 
         choices=['ap', 'gxd', 'go', 'tumor',], help='which curation group')
@@ -76,6 +69,18 @@ def getArgs():
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
         required=False, help="skip helpful messages to stderr")
 
+    defaultHost = os.environ.get('PG_DBSERVER', 'bhmgidevdb01')
+    defaultDatabase = os.environ.get('PG_DBNAME', 'prod')
+
+    parser.add_argument('-s', '--server', dest='server', action='store',
+        required=False, default=defaultHost,
+        help='db server. Shortcuts:  adhoc, prod, dev, test. (Default %s)' %
+                defaultHost)
+
+    parser.add_argument('-d', '--database', dest='database', action='store',
+        required=False, default=defaultDatabase,
+        help='which database. Example: mgd (Default %s)' % defaultDatabase)
+
     args =  parser.parse_args()
 
     if args.server == 'adhoc':
@@ -85,6 +90,9 @@ def getArgs():
         args.host = 'bhmgidb01.jax.org'
         args.db = 'prod'
     elif args.server == 'dev':
+        args.host = 'mgi-testdb4.jax.org'
+        args.db = 'jak'
+    elif args.server == 'test':
         args.host = 'bhmgidevdb01.jax.org'
         args.db = 'prod'
     else:
@@ -495,99 +503,6 @@ dataSets = {
     }
 #-----------------------------------
 
-class ExtractedTextSet (object): # {
-    """
-    IS:	a collection of extracted text records (from multiple references)
-    Has: each record is dict with fields
-         {'_refs_key' : int, 'text_type': (e.g, 'body', 'references'), 
-         'text_part': text} 
-        The records may have other fields too that are not used here.
-        The field names '_refs_key', 'text_type', 'text_part' are specifiable.
-    DOES: (1)collects and concatenates all the fields for a given _refs_key into
-        a single text field in the correct order - thus recapitulating the 
-        full extracted text.
-        (2) join a set of basic reference records to their extracted text
-    """
-    # from Vocab_key = 142 (Lit Triage Extracted Text Section vocab)
-    validTextTypes = [ 'body', 'reference',
-                        'author manuscript fig legends',
-                        'star methods',
-                        'supplemental', ]
-    #-----------------------------------
-
-    def __init__(self,
-        extTextRcds,		# list of rcds as above
-        keyLabel='_refs_key',	# name of the reference key field
-        typeLabel='text_type',	# name of the text type field
-        textLabel='text_part',	# name of the text field
-        ):
-        self.keyLabel  = keyLabel
-        self.typeLabel = typeLabel
-        self.textLabel = textLabel
-        self.extTextRcds = extTextRcds
-        self.key2TextParts = self.gatherExtText()
-    #-----------------------------------
-
-    def gatherExtText(self, ):
-        """
-        Gather the extracted text sections for each _refs_key
-        Return dict { _refs_key: { extratedTextType : text } }
-        E.g., { 12345 : {   'body'        : 'body section text',
-                            'references'  : 'ref section text',
-                            'star methods': '...text...',
-                            } }
-        """
-        resultDict = {}
-        for r in self.extTextRcds:
-            refKey   = r[self.keyLabel]
-            textType = r[self.typeLabel]
-            textPart = r[self.textLabel]
-
-            if textType not in self.validTextTypes:
-                raise ValueError("Invalid extracted text type: '%s'\n" % \
-                                                                    textType)
-            if refKey not in resultDict:
-                resultDict[refKey] = {}
-
-            resultDict[refKey][textType] = textPart
-        return resultDict
-    #-----------------------------------
-
-    def joinRefs2ExtText(self,
-                        refRcds,
-                        refKeyLabel='_refs_key',
-                        extTextLabel='ext_text',
-                        allowNoText=True,
-        ):
-        """
-        Assume refRcds is a list of records { refKeyLabel : xxx, ...}
-        For each record in the list, add a field: extTextLabel: text 
-        """
-        for r in refRcds:
-            refKey = r[refKeyLabel]
-
-            if not allowNoText and refKey not in self.key2TextParts:
-                raise ValueError("No extracted text found for '%s'\n" % \
-                                                                    str(refKey))
-
-            r[extTextLabel] = self.getExtText(refKey)
-
-        return refRcds
-    #-----------------------------------
-
-    def getExtText(self, refKey ):
-
-        extTextDict = self.key2TextParts.get(refKey,{})
-
-        text =  extTextDict.get('body','') + \
-                extTextDict.get('reference', '') + \
-                extTextDict.get('author manuscript fig legends', '') + \
-                extTextDict.get('star methods', '') + \
-                extTextDict.get('supplemental', '')
-        return text
-    #-----------------------------------
-# end class ExtractedTextSet ----------------------------------- }
-
 ####################
 def main():
 ####################
@@ -728,7 +643,7 @@ if __name__ == "__main__":
     if not (len(sys.argv) > 1 and sys.argv[1] == '--test'):
         main()
     else: 			# ad hoc test code
-        if True:
+        if True:                # debug SQL
             group = args.group
             searches = dataSets[group]
             for sName in searches.keys():
@@ -739,37 +654,3 @@ if __name__ == "__main__":
                 refSQL, textSQL = ds.buildRefRecordsSQL()
                 print(refSQL)
                 print(textSQL)
-
-        if False:	# debug SQL
-            for i, (b,t) in enumerate(buildGetSamplesSQL(args, )):
-                print("%d:" % i)
-                print(b)
-                print(t)
-        if False:	# test ExtractedTextSet
-            authFig = 'author manuscript fig legends'
-            rcds = [ \
-                {'rk':'1234', 'ty': 'body', 'text_part': 'here is a body text'},
-                {'rk':'1234', 'ty': 'reference','text_part':' & ref text'},
-                {'rk':'1234', 'ty': 'supplemental', 'text_part':' & supp text'},
-                {'rk':'1234', 'ty': 'star methods', 'text_part':' & star text'},
-                {'rk':'1234', 'ty': authFig, 'text_part': ' & author figs'},
-                {'rk':'2345', 'ty': 'body', 'text_part': 'a second body text'},
-                {'rk':'4567', 'ty': 'supplemental', 'text_part': 'text'},
-                ]
-            refs = [ \
-                    {'_refs_key' : '1234', 'otherfield':'xyz',}, 
-                    {'_refs_key' : '2345', 'otherfield':'stu',}, 
-                    {'_refs_key' : '7890', 'otherfield':'stu',}, # no rcd above
-                ]
-            ets = ExtractedTextSet( rcds, keyLabel='rk', typeLabel='ty',)
-            print(ets.gatherExtText())
-            print("%s: '%s'" % ('1234', ets.getExtText('1234')))
-            print("%s: '%s'" % ('2345', ets.getExtText('2345')))
-            print("%s: '%s'" % ('7890', ets.getExtText('7890')))
-            refs = ets.joinRefs2ExtText(refs, allowNoText=True)
-            print(refs)
-            try:
-                refs = ets.joinRefs2ExtText(refs, allowNoText=False)
-            except ValueError:
-                (t,val,traceback) = sys.exc_info()
-                print('Correctly got %s exception:\n%s' % (str(t),val))

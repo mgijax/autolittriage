@@ -20,6 +20,7 @@ import time
 import argparse
 import db
 import sampleDataLib
+from ExtractedTextSet import ExtractedTextSet
 #-----------------------------------
 
 sampleObjType = sampleDataLib.PrimTriageClassifiedSample
@@ -38,14 +39,6 @@ def getArgs():
     parser.add_argument('--test', dest='test', action='store_true',
         required=False,
         help="just run ad hoc test code")
-
-    parser.add_argument('-s', '--server', dest='server', action='store',
-        required=False, default='dev',
-        help='db server. Shortcuts:  adhoc, prod, or dev (default)')
-
-    parser.add_argument('-d', '--database', dest='database', action='store',
-        required=False, default='mgd',
-        help='which database. Example: mgd (default)')
 
     parser.add_argument('--query', dest='queryKey', action='store',
         required=False, default='backpopulated',
@@ -71,6 +64,18 @@ def getArgs():
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
         required=False, help="skip helpful messages to stderr")
 
+    defaultHost = os.environ.get('PG_DBSERVER', 'bhmgidevdb01')
+    defaultDatabase = os.environ.get('PG_DBNAME', 'prod')
+
+    parser.add_argument('-s', '--server', dest='server', action='store',
+        required=False, default=defaultHost,
+        help='db server. Shortcuts:  adhoc, prod, dev, test. (Default %s)' %
+                defaultHost)
+
+    parser.add_argument('-d', '--database', dest='database', action='store',
+        required=False, default=defaultDatabase,
+        help='which database. Example: mgd (Default %s)' % defaultDatabase)
+
     args =  parser.parse_args()
 
     if args.server == 'adhoc':
@@ -80,6 +85,9 @@ def getArgs():
         args.host = 'bhmgidb01.jax.org'
         args.db = 'prod'
     elif args.server == 'dev':
+        args.host = 'mgi-testdb4.jax.org'
+        args.db = 'jak'
+    elif args.server == 'test':
         args.host = 'bhmgidevdb01.jax.org'
         args.db = 'prod'
     else:
@@ -103,11 +111,21 @@ TUMOR_START_DATE = "07/01/2013"		# date to get add'l tumor papers from
 #----------------
 # SQL to build tmp tables 
 #----------------
+OMIT_TEXT = "Omitted refs\n" + \
+    "\t(GOA loaded or only pm2gene indexed or MGI:Mice_in_references_only)"
 BUILD_TMP_TABLES = [ \
     # Tmp table of samples to omit.
-    # Currently, only one reason to omit:
-    # (1) articles "indexed" by pm2gene and not reviewed by a curator yet
-    #     we don't really know if these are relevant (not good ground truth)
+    # Currently, reasons to omit:
+    # (1) articles "indexed" by pm2gene and not selected by a group other than
+    #     GO
+    # (2) created by the goa load and not selected by a group other than GO.
+    # In these cases, no curator has selected the paper, so we don't really
+    #  know if these are relevant (not good ground truth)
+    #
+    # (3) articles marked as discard with MGI:Mice_in_references_only tag
+    # Since these articles are discarded for a different reason, and they
+    #  will not go through relevance classification, it seems we should not
+    #  train on them.
 '''
     create temporary table tmp_omit
     as
@@ -115,19 +133,29 @@ BUILD_TMP_TABLES = [ \
     from bib_refs r join bib_workflow_status bs
         on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
         join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+        left join bib_workflow_tag bt on (r._refs_key = bt._refs_key)
         join acc_accession a
         on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
             and a._mgitype_key=1 )
     where 
-        (
-            (bs._status_key = 31576673 and bs._group_key = 31576666 and 
-                bs._createdby_key = 1571) -- index for GO by pm2geneload
-
-            and bsv.ap_status in ('Not Routed', 'Rejected')
+        (   (   (bs._status_key = 31576673 and bs._group_key = 31576666 and 
+                    bs._createdby_key = 1571 -- index for GO by pm2geneload
+                )
+                or r._createdby_key = 1575 -- created by littriage_goa
+            )
+            and           -- not selected by any other group
+            (
+                bsv.ap_status in ('Not Routed', 'Rejected')
             and bsv.gxd_status in ('Not Routed', 'Rejected')
             and bsv.tumor_status in ('Not Routed', 'Rejected')
             and bsv.qtl_status in ('Not Routed', 'Rejected')
             and r.creation_date >= '%s'
+            )
+        )
+        or
+        (
+            r.isDiscard = 1
+            and bt._tag_key = 49170000  -- MGI:Mice_in_references_only
         )
 ''' % (START_DATE),
 '''
@@ -232,142 +260,10 @@ from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
 WHERE_CLAUSES = { \
 'backpopulated' :
     '''
-    -- backpopulated
+    -- backpopulated (no where clause needed)
     ''',
-'discard_after' :
-    '''
-    -- discard_after
-    where r.isdiscard = 1
-    and tr.creation_date > '%s' -- After lit triage release
-    ''' % LIT_TRIAGE_DATE,
-'keep_after' :
-    '''
-    -- keep_after
-    where 
-    (bsv.ap_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bsv.go_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bsv.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bsv.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
-    )
-    and tr.creation_date > '%s' -- After lit triage release
-    ''' % LIT_TRIAGE_DATE,
-'keep_before' :
-    '''
-    -- keep_before
-    where 
-    (bsv.ap_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bsv.go_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bsv.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bsv.qtl_status in ('Chosen', 'Indexed', 'Full-coded')
-     or bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
-    )
-    and tr.creation_date >= '%s' -- after start date
-    and tr.creation_date <= '%s' -- before lit triage release
-    ''' % (START_DATE, LIT_TRIAGE_DATE, ),
-'keep_tumor' :
-    '''
-    -- keep_tumor
-    where 
-     bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
-     and tr.creation_date >= '%s' -- after tumor start date
-     and tr.creation_date <= '%s' -- before start date
-    ''' % ( TUMOR_START_DATE, START_DATE, ),
 }	# end WHERE_CLAUSES
 #-----------------------------------
-
-class ExtractedTextSet (object):
-    """
-    IS	a collection of extracted text records (from multiple references)
-    Has	each record is dict with fields
-        {'_refs_key' : int, 'text_type': (e.g, 'body', 'references'), 
-         'text_part': text} 
-        The records may have other fields too that are not used here.
-        The field names '_refs_key', 'text_type', 'text_part' are specifiable.
-    DOES (1)collects and concatenates all the fields for a given _refs_key into
-        a single text field in the correct order - thus recapitulating the 
-        full extracted text.
-        (2) join a set of basic reference records to their extracted text
-    """
-    # from Vocab_key = 142 (Lit Triage Extracted Text Section vocab)
-    validTextTypes = [ 'body', 'reference',
-                        'author manuscript fig legends',
-                        'star methods',
-                        'supplemental', ]
-    #-----------------------------------
-
-    def __init__(self,
-        extTextRcds,		# list of rcds as above
-        keyLabel='_refs_key',	# name of the reference key field
-        typeLabel='text_type',	# name of the text type field
-        textLabel='text_part',	# name of the text field
-        ):
-        self.keyLabel  = keyLabel
-        self.typeLabel = typeLabel
-        self.textLabel = textLabel
-        self.extTextRcds = extTextRcds
-        self.key2TextParts = self.gatherExtText()
-    #-----------------------------------
-
-    def gatherExtText(self, ):
-        """
-        Gather the extracted text sections for each _refs_key
-        Return dict { _refs_key: { extratedTextType : text } }
-        E.g., { 12345 : {   'body'        : 'body section text',
-                            'references'  : 'ref section text',
-                            'star methods': '...text...',
-                            } }
-        """
-        resultDict = {}
-        for r in self.extTextRcds:
-            refKey   = r[self.keyLabel]
-            textType = r[self.typeLabel]
-            textPart = r[self.textLabel]
-
-            if textType not in self.validTextTypes:
-                raise ValueError("Invalid extracted text type: '%s'\n" % \
-                                                                    textType)
-            if refKey not in resultDict:
-                resultDict[refKey] = {}
-
-            resultDict[refKey][textType] = textPart
-        return resultDict
-    #-----------------------------------
-
-    def joinRefs2ExtText(self,
-                        refRcds,
-                        refKeyLabel='_refs_key',
-                        extTextLabel='ext_text',
-                        allowNoText=True,
-        ):
-        """
-        Assume refRcds is a list of records { refKeyLabel : xxx, ...}
-        For each record in the list, add a field: extTextLabel: text 
-        """
-        for r in refRcds:
-            refKey = r[refKeyLabel]
-
-            if not allowNoText and refKey not in self.key2TextParts:
-                raise ValueError("No extracted text found for '%s'\n" % \
-                                                                    str(refKey))
-
-            r[extTextLabel] = self.getExtText(refKey)
-
-        return refRcds
-    #-----------------------------------
-
-    def getExtText(self, refKey ):
-
-        extTextDict = self.key2TextParts.get(refKey,{})
-
-        text =  extTextDict.get('body','') + \
-                extTextDict.get('reference', '') + \
-                extTextDict.get('author manuscript fig legends', '') + \
-                extTextDict.get('star methods', '') + \
-                extTextDict.get('supplemental', '')
-        return text
-    #-----------------------------------
-# end class ExtractedTextSet -----------------------------------
 
 ####################
 def main():
@@ -551,7 +447,7 @@ def doCounts(args):
     selectCount = 'select count(distinct _refs_key) as num from tmp_omit\n'
     q = BUILD_TMP_TABLES + [selectCount]
     
-    writeStat("Omitted references (only pm2gene indexed)", SQLSEPARATOR.join(q))
+    writeStat(OMIT_TEXT, SQLSEPARATOR.join(q))
 
     baseSQL = COUNTS_FIELDS + COUNTS_FROM
     if args.restrictArticles:
@@ -561,17 +457,9 @@ def doCounts(args):
         restrict = ''
         sys.stdout.write("Including review and non-peer reviewed articles\n")
 
-    writeStat("Discard after %s" % LIT_TRIAGE_DATE,
-                        baseSQL + WHERE_CLAUSES['discard_after'] + restrict)
+    writeStat("Backpopulated refs",
+                        baseSQL + WHERE_CLAUSES['backpopulated'] + restrict)
 
-    writeStat("Keep after %s" % LIT_TRIAGE_DATE,
-                        baseSQL + WHERE_CLAUSES['keep_after'] + restrict)
-
-    writeStat("Keep before %s through %s" % (START_DATE, LIT_TRIAGE_DATE),
-                        baseSQL + WHERE_CLAUSES['keep_before'] + restrict)
-
-    writeStat("Tumor papers %s through %s" % (TUMOR_START_DATE, START_DATE),
-                        baseSQL + WHERE_CLAUSES['keep_tumor'] + restrict)
 #-----------------------------------
 
 def writeStat(label, q):
@@ -624,7 +512,7 @@ if __name__ == "__main__":
                     {'_refs_key' : '7890', 'otherfield':'stu',}, # no rcd above
                 ]
             ets = ExtractedTextSet( rcds, keyLabel='rk', typeLabel='ty',)
-            print(ets.gatherExtText())
+            print(ets._gatherExtText())
             print("%s: '%s'" % ('1234', ets.getExtText('1234')))
             print("%s: '%s'" % ('2345', ets.getExtText('2345')))
             print("%s: '%s'" % ('7890', ets.getExtText('7890')))
