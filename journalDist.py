@@ -25,7 +25,7 @@ DEFAULT_SAMPLE_TYPE  = "ClassifiedSample"
 
 def parseCmdLine():
     parser = argparse.ArgumentParser( \
-    description='Apply preprocessor steps to files of samples. Write to stdout')
+    description='Report journal counts from files of samples. Write to stdout')
 
     parser.add_argument('inputFiles', nargs=argparse.REMAINDER,
         help='files of samples, "-" for stdin')

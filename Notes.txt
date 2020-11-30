@@ -2176,3 +2176,38 @@ Nov 6, 2020
         - omit discard refs that have MGI:Mice_in_references_only tag
         - add test_2020 output set of recent articles for a held out test set
     Regenerated nov2020 training and test sets.
+
+Nov 10, 2020
+    Problems with loading psycopg2 in anaconda python after switching mgiconfig
+    to use postgres 12.
+    Here is error:
+
+bhmgiapp14ld AC3 ~: . work/mgiconfigApp14ld/master.config.sh
+bhmgiapp14ld AC3 ~: /opt/anaconda/bin/python
+Python 3.8.3 (default, Jul  2 2020, 16:21:59) 
+[GCC 7.3.0] :: Anaconda, Inc. on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import psycopg2
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/jak/lib/python3/site-packages/psycopg2/__init__.py", line 51, in <module>
+    from psycopg2._psycopg import (                     # noqa
+ImportError: /lib64/libgssapi_krb5.so.2: symbol krb5_ser_context_init, version krb5_3_MIT not defined in file libkrb5.so.3 with link time reference
+
+    The relevant lines in the server config are:
+
+#POSTGRES_HOME                   /usr//pgsql-12
+POSTGRES_HOME                   /usr/local/pgsql
+LD_LIBRARY_PATH         ${POSTGRES_HOME}/lib:/usr/lib
+
+    If I use the pgsql-12 directory, I get the error above, if I use the non-12
+    POSTGRES_HOME, it loads ok.
+
+    THE PROBLEM:
+    /usr/lib64 (next door to /usr/pgsql-12) has /libgssapi_krb5.so.2
+    /opt/anaconda/lib also has that library.
+    If I put /opt/anaconda/lib on LD_LIBRARY_PATH 1st, everything works.
+    Not clear why putting /usr/pgsql-12 on LD_LIBRARY_PATH on the path causes
+    the /usr/lib64 lib to get loaded.
+
+    But at least it is clear the problem is which lib verson gets loaded.

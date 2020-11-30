@@ -1,5 +1,10 @@
 #!/bin/bash
 
+dataDir=""              # default - must specify
+subDir=""               # default - must specify
+curationGroup="n"	# default is not by curation group, discard/keep instead
+preProcessors="-p removeURLsCleanStem"   # default preprocessors
+
 #######################################
 function Usage() {
 #######################################
@@ -13,8 +18,8 @@ $0 {--discard|--group} --datadir dir --subdir subdir [-- preprocess_options...]
 
     Files to preprocess are in dir
     Store resulting files in dir/subdir
-    Preprocess options are typically:  -p removeURLsCleanStem
-	(steps defined in sampleDataLib.py)
+    Specify multiple preprocessors each with its own -p: "-p pp1 -p pp2 ..."
+    Default preprocessors:  ${preProcessors}
     If no preprocessing options, will just copy the files to dir/subdir
 ENDTEXT
     exit 5
@@ -23,10 +28,6 @@ ENDTEXT
 # cmdline options
 #######################################
 
-dataDir=""
-subDir=""
-curationGroup="n"	# default is not by curation group, discard/keep instead
-
 while [ $# -gt 0 ]; do
     case "$1" in
     -h|--help) Usage ;;
@@ -34,12 +35,11 @@ while [ $# -gt 0 ]; do
     --subdir)  subDir="$2"; shift; shift; ;;
     --group)   curationGroup="y"; shift; ;;
     --discard) curationGroup="n"; shift; ;;
-    --)        shift; break ;;
+    --)        shift; preProcessors=$*; break ;;
     -*|--*) echo "invalid option $1"; Usage ;;
     *) break; ;;
     esac
 done
-# remaining args, $*, are the preprocess params
 
 if [ "$dataDir" == "" -o "$subDir" == "" ]; then
     Usage
@@ -56,11 +56,12 @@ fi
 # preprocess the files
 #######################################
 
+echo "Preprocessors: ${preProcessors}"
 echo Running in parallel
 date
 for f in $files; do
     set -x
-    preprocessSamples.py $* $dataDir/$f  >  $dataDir/$subDir/$f 2> $dataDir/$subDir/$f.log &
+    preprocessSamples.py $preProcessors $dataDir/$f  >  $dataDir/$subDir/$f 2> $dataDir/$subDir/$f.log &
     set +x
 done
 wait
