@@ -1,5 +1,5 @@
 model=GB
-dataDir=./data/oct2020
+dataDir=./data/nov2020
 #baseDir=$dataDir/LegendsPara/Proc1
 baseDir=$dataDir/LegendsWords/Proc1
 #mtrun ${model}.py -d $baseDir/trainSet.txt --valpath $baseDir/valSet.txt --testpath  $baseDir/testSet.txt -v --gsverbose
