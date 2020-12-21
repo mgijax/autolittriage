@@ -54,7 +54,7 @@ fi
 #######################################
 # extract figure text
 #######################################
-figTextOpt="-p figureText"
+figTextOpt="-p figureTextLegCloseWords50"
 
 for f in $files; do
     set -x

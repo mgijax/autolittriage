@@ -25,7 +25,7 @@ $0 {--group groupname |--discard} [--server name] [--limit n] [--norestrict]
     --discard	Get data for primary triage (discard/keep)
     		output files: $primTriageRawFiles
 
-    --server	Database server: dev (bhmgidevdb01, default) or prod
+    --server	Database server: dev (default) or test or prod
     --limit	limit on sql query results (default = 0 = no limit)
     --norestrict when populating raw files, include all articles,
 		default: skip review and non-peer reviewed

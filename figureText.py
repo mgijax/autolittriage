@@ -32,10 +32,11 @@ class Text2FigConverter (object):
             the whole paragraph, just words close to "figure")
     """
     def __init__(self,
-                conversionType='legend', # which flavor discussed above:
-                                        # 'legend', 'paragraph', 'close words'
-                numWords=50,		# if 'close words', how many close words
-                                        #  to include on each side of "fig"
+                conversionType='legends', # which flavor discussed above:
+                                        # 'legends', 'legParagraphs',
+                                        #   'legCloseWords'
+                numWords=50,		# if 'legCloseWords', how many words
+                                        #   to include on each side of "fig"
                 ):
         self.conversionType = conversionType
         self.numWords = numWords
@@ -45,11 +46,11 @@ class Text2FigConverter (object):
         """
         Return list of figure/table text blurbs in text
         """
-        if self.conversionType == 'legend':
+        if self.conversionType == 'legends':
             return text2FigText_Legend(text)
-        elif self.conversionType == 'paragraph':
+        elif self.conversionType == 'legParagraphs':
             return text2FigText_LegendAndParagraph(text)
-        elif self.conversionType == 'close words':
+        elif self.conversionType == 'legCloseWords':
             return text2FigText_LegendAndWords(text,self.numWords)
         else:
             raise AttributeError("invalid text2fig conversion type '%s'\n" % \
@@ -266,7 +267,7 @@ And here is the end of this amazing document. Really it is over
 
         print()
         print("Text2FigConverter Legends and Paragraphs")
-        blurbs = Text2FigConverter(conversionType="paragraph").text2FigText(simpleTestDoc)
+        blurbs = Text2FigConverter(conversionType="legParagraphs").text2FigText(simpleTestDoc)
         for b in blurbs:
             print(b)
             print()
@@ -274,7 +275,7 @@ And here is the end of this amazing document. Really it is over
 
         print()
         print("Text2FigConverter Legends and Words, numWords=5")
-        blurbs = Text2FigConverter(conversionType="close words", numWords=5).text2FigText(simpleTestDoc)
+        blurbs = Text2FigConverter(conversionType="legCloseWords", numWords=5).text2FigText(simpleTestDoc)
         for b in blurbs:
             print("****|%s|****" % b)
             print()

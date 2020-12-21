@@ -8,7 +8,6 @@ import os.path
 import string
 import re
 from copy import copy
-import utilsLib
 import figureText
 import featureTransform
 #-----------------------------------
@@ -26,16 +25,17 @@ import featureTransform
 #  * so try to use "python class" or "object type" for these
 #-----------------------------------
 
-config = utilsLib.getConfig()
 
-FIELDSEP     = eval( config.get("DEFAULT", "FIELDSEP") )
-RECORDEND    = eval( config.get("DEFAULT", "RECORDEND") )
-SAMPLE_OBJ_TYPE_NAME = config.get("CLASS_NAMES", "SAMPLE_OBJ_TYPE_NAME")
+FIELDSEP     = '|'      # field separator when reading/writing sample fields
+RECORDEND    = ';;'     # record ending str when reading/writing sample files
 
-FIG_CONVERSION        = config.get("DEFAULT", "FIG_CONVERSION")
-FIG_CONVERSION_NWORDS = config.getint("DEFAULT", "FIG_CONVERSION_NWORDS")
-figConverter = figureText.Text2FigConverter(conversionType=FIG_CONVERSION,
-                                                numWords=FIG_CONVERSION_NWORDS)
+figConverterLegends      = figureText.Text2FigConverter( \
+                                            conversionType='legends')
+figConverterLegParagraphs   = figureText.Text2FigConverter( \
+                                            conversionType='legParagraphs')
+figConverterLegCloseWords50 = figureText.Text2FigConverter( \
+                                            conversionType='legCloseWords',
+                                            numWords=50)
 #-----------------------------------
 
 class SampleSet (object):
@@ -212,12 +212,7 @@ class ClassifiedSampleSet (SampleSet):
     HAS:    sample record list, list of journals, counts of pos/neg samples
     """
     def __init__(self, sampleObjType=None):
-        if not sampleObjType:	# get from config
-            self.sampleObjType = \
-                            getattr(sys.modules[__name__], SAMPLE_OBJ_TYPE_NAME)
-        else: self.sampleObjType = sampleObjType
-
-        SampleSet.__init__(self, sampleObjType=self.sampleObjType)
+        SampleSet.__init__(self, sampleObjType=sampleObjType)
         self.numPositives = 0
         self.numNegatives = 0
         self.journals     = set()   # set of all journal names in the samples
@@ -454,9 +449,24 @@ class BaseSample (object):
     #  Each preprocessor should modify this sample and return itself
     #----------------------
 
-    def figureText(self):		# preprocessor
+    def figureTextLegends(self):	# preprocessor
+        # just figure legends
         self.setExtractedText('\n\n'.join( \
-                            figConverter.text2FigText(self.getExtractedText())))
+                figConverterLegends.text2FigText(self.getExtractedText())))
+        return self
+    # ---------------------------
+
+    def figureTextLegParagraphs(self):	# preprocessor
+        # figure legends + paragraphs discussing figures
+        self.setExtractedText('\n\n'.join( \
+            figConverterLegParagraphs.text2FigText(self.getExtractedText())))
+        return self
+    # ---------------------------
+
+    def figureTextLegCloseWords50(self):	# preprocessor
+        # figure legends + 50 words around "figure" references in paragraphs
+        self.setExtractedText('\n\n'.join( \
+            figConverterLegCloseWords50.text2FigText(self.getExtractedText())))
         return self
     # ---------------------------
 
@@ -772,9 +782,6 @@ class PrimTriageUnClassifiedSample(BaseSample):
     # fields of a sample as an input/output record (as text), in order
     fieldNames = [ \
             'ID'            ,
-            'isReview'      ,
-            'refType'       ,
-            'journal'       ,
             'title'         ,
             'abstract'      ,
             'extractedText' ,
@@ -792,9 +799,6 @@ class CurGroupUnClassifiedSample(BaseSample):
     # fields of a sample as an input/output record (as text), in order
     fieldNames = [ \
             'ID'            ,
-            'isReview'      ,
-            'refType'       ,
-            'journal'       ,
             'title'         ,
             'abstract'      ,
             'extractedText' ,
@@ -912,7 +916,6 @@ if __name__ == "__main__":	# ad hoc test code
         print("----------------------")
         print("PrimTriageUnClassifiedSample tests\n")
         print("SampleName: '%s'"	% r1.getSampleName())
-        print("Journal: '%s'"		% r1.getJournal())
         print("title: \n'%s'\n"		% r1.getTitle())
         print("abstract: \n'%s'\n"	% r1.getAbstract())
         print("extractedText: \n'%s'\n"	% r1.getExtractedText())
@@ -929,7 +932,6 @@ if __name__ == "__main__":	# ad hoc test code
     if True:		# preprocessor tests
         print("---------------")
         print("Preprocessor tests\n")
-        r1.addJournalFeature()
         #r1.removeURLsCleanStem()
 #	r1.removeText()
         r1.truncateText()
