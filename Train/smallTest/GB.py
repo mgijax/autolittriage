@@ -26,7 +26,7 @@ pipeline = Pipeline( [
                 max_df=.75,
                 ),),
 #('featureEvaluator', skHelper.FeatureDocCounter()),
-('classifier', GradientBoostingClassifier(verbose=1, 
+('classifier', GradientBoostingClassifier(verbose=0, 
                 random_state=randomSeeds['randForClassifier'],
                 learning_rate=0.05,
                 n_estimators=1600,
@@ -40,7 +40,7 @@ pipeline = Pipeline( [
 parameters={
 #	'classifier__learning_rate': [0.025],
 #	'classifier__n_estimators': [3200,],
-#	'classifier__max_depth': [3, 6, 9 ],
+	'classifier__max_depth': [3, 6 ],
 #	'classifier__min_samples_split': [525, 550, 575, 600, 625, ],
 #	'classifier__min_samples_leaf': [100, 125, 150, 175],
 #	'classifier__max_features': [0.6, 0.65, 0.7, 0.75, 0.8, 0.9, None, ],

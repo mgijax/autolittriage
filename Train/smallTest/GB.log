@@ -1,0 +1,139 @@
+Fitting 1 folds for each of 2 candidates, totalling 2 fits
+### Start Time 2020/12/31-13-01-23  GB.py	index file: index.out
+Training data path:   /home/jak/work/autolittriage/Train/smallTest/data/dec2020/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /home/jak/work/autolittriage/Train/smallTest/data/dec2020/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=313   randForSplit=978   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.81      1.00      0.89       273
+Train discard       0.00      0.00      0.00        66
+
+     accuracy                           0.81       339
+    macro avg       0.40      0.50      0.45       339
+ weighted avg       0.65      0.81      0.72       339
+
+Train (keep) F2: 0.9539    P: 0.8053    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[273   0]
+ [ 66   0]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.39      1.00      0.57        13
+Valid discard       0.00      0.00      0.00        20
+
+     accuracy                           0.39        33
+    macro avg       0.20      0.50      0.28        33
+ weighted avg       0.16      0.39      0.22        33
+
+Valid (keep) F2: 0.7647    P: 0.3939    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[13  0]
+ [20  0]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+classifier__max_depth: 3
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                ngram_range=(1, 2), stop_words='english')
+
+classifier:
+GradientBoostingClassifier(learning_rate=0.05, max_features=0.7,
+                           min_samples_leaf=150, min_samples_split=600,
+                           n_estimators=1600, random_state=313, subsample=0.85)
+
+
+### Grid Search Parameter Options Tried:
+classifier__max_depth:[3, 6]
+
+### Grid Search Scores:
+{'classifier__max_depth': 3}
+mean_test_score:  0.764706
+{'classifier__max_depth': 6}
+mean_test_score:  0.764706
+
+### Grid Search Best Score: 0.764706
+
+### Feature weights: highest 20
++0.0000	aa
++0.0000	aaa
++0.0000	aacr
++0.0000	ab
++0.0000	abbrevi
++0.0000	abcam
++0.0000	aberr
++0.0000	abil
++0.0000	abl
++0.0000	ablat
++0.0000	abnorm
++0.0000	abolish
++0.0000	abov
++0.0000	abrog
++0.0000	absenc
++0.0000	absenc presenc
++0.0000	absent
++0.0000	absolut
++0.0000	abund
++0.0000	abund express
+
+### Feature weights: lowest 20
++0.0000	wiley
++0.0000	window
++0.0000	wk
++0.0000	wnt
++0.0000	wnt signal
++0.0000	work
++0.0000	worldwid
++0.0000	wound
++0.0000	wound heal
++0.0000	xenograft
++0.0000	xenograft tumor_typ
++0.0000	year
++0.0000	year age
++0.0000	yellow
++0.0000	yellow arrow
++0.0000	yfp
++0.0000	yield
++0.0000	young
++0.0000	zero
++0.0000	zone
+
+### Vectorizer:   Number of Features: 5263
+First 10 features: ['aa', 'aaa', 'aacr', 'ab', 'abbrevi', 'abcam', 'aberr', 'abil', 'abl', 'ablat']
+
+Middle 10 features: ['kd', 'kda', 'keratin', 'keratinocyt', 'key', 'key role', 'kg', 'kg bodi', 'kg cell_lin', 'ki']
+
+Last 10 features: ['xenograft tumor_typ', 'year', 'year age', 'yellow', 'yellow arrow', 'yfp', 'yield', 'young', 'zero', 'zone']
+
+### False positives for Validation set: 20
+27191591
+28510599
+28461337
+28151956
+28324068
+
+### False negatives for Validation set: 0
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :          339          273           66          81%
+Validation Set      :           33           13           20          39%
+ValidationSplit: 0.20
+### End Time 2020/12/31-13-01-40. Total     16.96 seconds
+
+Recall for papers selected by each curation group. 28 papers analyzed
+ap             selected papers:    14 predicted keep:    14 recall: 1.000
+gxd            selected papers:     1 predicted keep:     1 recall: 1.000
+go             selected papers:    12 predicted keep:    12 recall: 1.000
+tumor          selected papers:     0 predicted keep:     0 recall: 0.000
+qtl            selected papers:     0 predicted keep:     0 recall: 0.000
+Totals         keep     papers:    14 predicted keep:    14 recall: 1.000
+Predictions from GB_test_pred.txt - Thu Dec 31 13:01:59 2020
