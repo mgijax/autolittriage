@@ -3,4 +3,4 @@ model=GB
 #baseDir=$dataDir/LegendsWords/Proc1
 #mtrun ${model}.py  --gsverbose
 mtrun ${model}.py --features --savemodel ${model}.pkl --predict  -v --gsverbose
-subsetPandR.py --group ${model}_test_pred.txt | tee -a ${model}.log
+subsetPandR.py --group ${model}_val_pred.txt | tee -a ${model}.log

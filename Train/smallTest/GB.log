@@ -137,3 +137,417 @@ tumor          selected papers:     0 predicted keep:     0 recall: 0.000
 qtl            selected papers:     0 predicted keep:     0 recall: 0.000
 Totals         keep     papers:    14 predicted keep:    14 recall: 1.000
 Predictions from GB_test_pred.txt - Thu Dec 31 13:01:59 2020
+Fitting 1 folds for each of 2 candidates, totalling 2 fits
+### Start Time 2021/01/03-20-35-40  GB.py	index file: index.out
+Training data path:   /home/jak/work/autolittriage/Train/smallTest/data/jan2021/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /home/jak/work/autolittriage/Train/smallTest/data/jan2021/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=0   randForSplit=132   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.80      1.00      0.89       133
+Train discard       0.00      0.00      0.00        34
+
+     accuracy                           0.80       167
+    macro avg       0.40      0.50      0.44       167
+ weighted avg       0.63      0.80      0.71       167
+
+Train (keep) F2: 0.9514    P: 0.7964    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[133   0]
+ [ 34   0]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.47      1.00      0.64         8
+Valid discard       0.00      0.00      0.00         9
+
+     accuracy                           0.47        17
+    macro avg       0.24      0.50      0.32        17
+ weighted avg       0.22      0.47      0.30        17
+
+Valid (keep) F2: 0.8163    P: 0.4706    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[8 0]
+ [9 0]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+classifier__max_depth: 3
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                ngram_range=(1, 2), stop_words='english')
+
+classifier:
+GradientBoostingClassifier(learning_rate=0.05, max_features=0.7,
+                           min_samples_leaf=150, min_samples_split=600,
+                           n_estimators=1600, random_state=0, subsample=0.85)
+
+
+### Grid Search Parameter Options Tried:
+classifier__max_depth:[3, 6]
+
+### Grid Search Scores:
+{'classifier__max_depth': 3}
+mean_test_score:  0.816327
+{'classifier__max_depth': 6}
+mean_test_score:  0.816327
+
+### Grid Search Best Score: 0.816327
+
+### Feature weights: highest 20
++0.0000	aa
++0.0000	aacr
++0.0000	ab
++0.0000	abbrevi
++0.0000	abcam
++0.0000	aberr
++0.0000	aberr express
++0.0000	abil
++0.0000	abl
++0.0000	ablat
++0.0000	ablat figur
++0.0000	abnorm
++0.0000	abolish
++0.0000	abov
++0.0000	abrog
++0.0000	absenc
++0.0000	absenc presenc
++0.0000	absent
++0.0000	absent figur
++0.0000	absolut
+
+### Feature weights: lowest 20
++0.0000	wound
++0.0000	wound heal
++0.0000	wrote
++0.0000	xenograft
++0.0000	xenograft model
++0.0000	xenograft tumor_typ
++0.0000	year
++0.0000	year age
++0.0000	year old
++0.0000	yellow
++0.0000	yellow arrow
++0.0000	yellow line
++0.0000	yfp
++0.0000	yield
++0.0000	young
++0.0000	zebrafish
++0.0000	zero
++0.0000	zinc
++0.0000	zone
++0.0000	zoom
+
+### Vectorizer:   Number of Features: 7986
+First 10 features: ['aa', 'aacr', 'ab', 'abbrevi', 'abcam', 'aberr', 'aberr express', 'abil', 'abl', 'ablat']
+
+Middle 10 features: ['kappab activ', 'karyotyp', 'kb', 'kb activ', 'kb signal', 'kcl', 'kd', 'kda', 'kegg', 'kegg pathway']
+
+Last 10 features: ['yellow arrow', 'yellow line', 'yfp', 'yield', 'young', 'zebrafish', 'zero', 'zinc', 'zone', 'zoom']
+
+### False positives for Validation set: 9
+24336208
+27191591
+28068387
+28759640
+28800364
+
+### False negatives for Validation set: 0
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :          167          133           34          80%
+Validation Set      :           17            8            9          47%
+ValidationSplit: 0.20
+### End Time 2021/01/03-20-35-54. Total     14.80 seconds
+
+Fitting 1 folds for each of 2 candidates, totalling 2 fits
+### Start Time 2021/01/03-20-43-50  GB.py	index file: index.out
+Training data path:   /home/jak/work/autolittriage/Train/smallTest/data/jan2021/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /home/jak/work/autolittriage/Train/smallTest/data/jan2021/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=133   randForSplit=773   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.82      1.00      0.90       533
+Train discard       0.00      0.00      0.00       119
+
+     accuracy                           0.82       652
+    macro avg       0.41      0.50      0.45       652
+ weighted avg       0.67      0.82      0.74       652
+
+Train (keep) F2: 0.9573    P: 0.8175    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[533   0]
+ [119   0]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.39      1.00      0.56        33
+Valid discard       0.00      0.00      0.00        52
+
+     accuracy                           0.39        85
+    macro avg       0.19      0.50      0.28        85
+ weighted avg       0.15      0.39      0.22        85
+
+Valid (keep) F2: 0.7604    P: 0.3882    R: 1.0000    NPV: 0.0000
+
+['keep', 'discard']
+[[33  0]
+ [52  0]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+classifier__max_depth: 3
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                ngram_range=(1, 2), stop_words='english')
+
+classifier:
+GradientBoostingClassifier(learning_rate=0.05, max_features=0.7,
+                           min_samples_leaf=150, min_samples_split=600,
+                           n_estimators=1600, random_state=133, subsample=0.85)
+
+
+### Grid Search Parameter Options Tried:
+classifier__max_depth:[3, 6]
+
+### Grid Search Scores:
+{'classifier__max_depth': 3}
+mean_test_score:  0.760369
+{'classifier__max_depth': 6}
+mean_test_score:  0.760369
+
+### Grid Search Best Score: 0.760369
+
+### Feature weights: highest 20
++0.0000	aa
++0.0000	aaa
++0.0000	aacr
++0.0000	ab
++0.0000	abbrevi
++0.0000	abdomin
++0.0000	aberr
++0.0000	abi
++0.0000	abil
++0.0000	abl
++0.0000	ablat
++0.0000	abnorm
++0.0000	abolish
++0.0000	abov
++0.0000	abrog
++0.0000	absenc
++0.0000	absenc presenc
++0.0000	absent
++0.0000	absolut
++0.0000	absolut number
+
+### Feature weights: lowest 20
++0.0000	wound heal
++0.0000	wrote
++0.0000	xenograft
++0.0000	xenograft model
++0.0000	xlsx
++0.0000	yang
++0.0000	year
++0.0000	year age
++0.0000	yeast
++0.0000	yellow
++0.0000	yellow arrow
++0.0000	yfp
++0.0000	yield
++0.0000	young
++0.0000	younger
++0.0000	zeiss
++0.0000	zero
++0.0000	zinc
++0.0000	zone
++0.0000	zoom
+
+### Vectorizer:   Number of Features: 6985
+First 10 features: ['aa', 'aaa', 'aacr', 'ab', 'abbrevi', 'abdomin', 'aberr', 'abi', 'abil', 'abl']
+
+Middle 10 features: ['ki67 figur', 'ki67 posit', 'ki67 stain', 'kidney', 'kill', 'kinas', 'kinas activ', 'kinas erk', 'kinas inhibitor', 'kind']
+
+Last 10 features: ['yellow arrow', 'yfp', 'yield', 'young', 'younger', 'zeiss', 'zero', 'zinc', 'zone', 'zoom']
+
+### False positives for Validation set: 52
+28827789
+27191591
+25101646
+28542339
+28368454
+
+### False negatives for Validation set: 0
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :          652          533          119          82%
+Validation Set      :           85           33           52          39%
+ValidationSplit: 0.20
+### End Time 2021/01/03-20-44-42. Total     52.34 seconds
+
+Recall for papers selected by each curation group. 85 papers analyzed
+ap             selected papers:    33 predicted keep:    33 recall: 1.000
+gxd            selected papers:     5 predicted keep:     5 recall: 1.000
+go             selected papers:    28 predicted keep:    28 recall: 1.000
+tumor          selected papers:     2 predicted keep:     2 recall: 1.000
+qtl            selected papers:     1 predicted keep:     1 recall: 1.000
+Totals         keep     papers:    33 predicted keep:    33 recall: 1.000
+Predictions from GB_val_pred.txt - Sun Jan  3 20:45:41 2021
+Fitting 1 folds for each of 2 candidates, totalling 2 fits
+### Start Time 2021/01/03-20-53-53  GB.py	index file: index.out
+Training data path:   /home/jak/work/autolittriage/Train/smallTest/data/jan2021/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /home/jak/work/autolittriage/Train/smallTest/data/jan2021/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=615   randForSplit=450   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       1.00      0.99      0.99       528
+Train discard       0.99      1.00      0.99       507
+
+     accuracy                           0.99      1035
+    macro avg       0.99      0.99      0.99      1035
+ weighted avg       0.99      0.99      0.99      1035
+
+Train (keep) F2: 0.9890    P: 0.9981    R: 0.9867    NPV: 0.9864
+
+['keep', 'discard']
+[[521   7]
+ [  1 506]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.62      0.85      0.72        46
+Valid discard       0.95      0.86      0.91       172
+
+     accuracy                           0.86       218
+    macro avg       0.79      0.85      0.81       218
+ weighted avg       0.88      0.86      0.87       218
+
+Valid (keep) F2: 0.7895    P: 0.6190    R: 0.8478    NPV: 0.9548
+
+['keep', 'discard']
+[[ 39   7]
+ [ 24 148]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+classifier__max_depth: 3
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                ngram_range=(1, 2), stop_words='english')
+
+classifier:
+GradientBoostingClassifier(learning_rate=0.05, max_features=0.7,
+                           min_samples_leaf=150, min_samples_split=600,
+                           n_estimators=1600, random_state=615, subsample=0.85)
+
+
+### Grid Search Parameter Options Tried:
+classifier__max_depth:[3, 6]
+
+### Grid Search Scores:
+{'classifier__max_depth': 3}
+mean_test_score:  0.789474
+{'classifier__max_depth': 6}
+mean_test_score:  0.789474
+
+### Grid Search Best Score: 0.789474
+
+### Feature weights: highest 20
++0.1828	mice figur
++0.1487	wild_typ mice
++0.0747	support inform
++0.0646	genotyp
++0.0412	knock_out
++0.0300	tumor_typ
++0.0297	transgen
++0.0228	defici
++0.0213	infect
++0.0180	mice model
++0.0147	et
++0.0146	mice compar
++0.0124	supplementari figur
++0.0083	et al
++0.0080	wild_typ
++0.0071	hour
++0.0065	supplementari
++0.0064	immun
++0.0058	genet
++0.0056	establish
+
+### Feature weights: lowest 20
++0.0000	worldwid
++0.0000	wound
++0.0000	wound heal
++0.0000	xenograft
++0.0000	xlsx
++0.0000	xlsx tabl
++0.0000	year
++0.0000	year old
++0.0000	yeast
++0.0000	yellow
++0.0000	yellow arrow
++0.0000	yfp
++0.0000	yield
++0.0000	young
++0.0000	zebrafish
++0.0000	zeiss
++0.0000	zero
++0.0000	zinc
++0.0000	zinc finger
++0.0000	zone
+
+### Vectorizer:   Number of Features: 6704
+First 10 features: ['aa', 'aa aaa', 'aaa', 'aacr', 'ab', 'abbrevi', 'abdomin', 'aberr', 'abil', 'abl']
+
+Middle 10 features: ['junction', 'june', 'just', 'kaplan', 'kaplan meier', 'kappab', 'kb', 'kd', 'kda', 'kegg']
+
+Last 10 features: ['yellow arrow', 'yfp', 'yield', 'young', 'zebrafish', 'zeiss', 'zero', 'zinc', 'zinc finger', 'zone']
+
+### False positives for Validation set: 24
+28827789
+27191591
+28754672
+28291824
+28710231
+
+### False negatives for Validation set: 7
+20585572
+28375156
+23024437
+24949848
+26565411
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :         1035          528          507          51%
+Validation Set      :          218           46          172          21%
+ValidationSplit: 0.20
+### End Time 2021/01/03-20-56-02. Total    128.42 seconds
+
+Recall for papers selected by each curation group. 218 papers analyzed
+ap             selected papers:    46 predicted keep:    39 recall: 0.848
+gxd            selected papers:     4 predicted keep:     4 recall: 1.000
+go             selected papers:    36 predicted keep:    31 recall: 0.861
+tumor          selected papers:     5 predicted keep:     4 recall: 0.800
+qtl            selected papers:     0 predicted keep:     0 recall: 0.000
+Totals         keep     papers:    46 predicted keep:    39 recall: 0.848
+Predictions from GB_val_pred.txt - Sun Jan  3 20:56:15 2021

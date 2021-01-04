@@ -80,10 +80,10 @@ if [ "$doGroup" == "yes" ]; then
     done
 else
     getRaw=$projectHome/sdGetRawPrimTriage.py
-    $getRaw --server $server $restrictOpt --counts | tee -a $getRawLog counts
+    $getRaw --server $server $restrictOpt counts | tee -a $getRawLog counts
     for f in $primTriageRawFiles; do
 	set -x
-	$getRaw --server $server -l $limit $restrictOpt --query $f > $f 2>> $getRawLog
+	$getRaw --server $server -l $limit $restrictOpt $f > $f 2>> $getRawLog
 	set +x
     done
 fi

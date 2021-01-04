@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-
-#-----------------------------------
 '''
   Purpose:
            run sql to get lit triage relevance training set
@@ -20,7 +18,8 @@ import time
 import argparse
 import db
 import sampleDataLib
-from ExtractedTextSet import ExtractedTextSet
+from utilsLib import removeNonAscii
+import ExtractedTextSet
 #-----------------------------------
 
 sampleObjType = sampleDataLib.PrimTriageClassifiedSample
@@ -29,7 +28,6 @@ sampleObjType = sampleDataLib.PrimTriageClassifiedSample
 outputSampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=sampleObjType)
 RECORDEND    = outputSampleSet.getRecordEnd()
 FIELDSEP     = sampleObjType.getFieldSep()
-
 #-----------------------------------
 
 def getArgs():
@@ -41,19 +39,14 @@ def getArgs():
         required=False,
         help="just run ad hoc test code")
 
-    parser.add_argument('--query', dest='queryKey', action='store',
-        required=False, default='all',
-        choices=['all', 'discard_after', 'keep_after', 'keep_before',
-                    'keep_tumor', 'test_2020'],
-        help='which subset of the training samples to get. Default: "all"')
-
-    parser.add_argument('--counts', dest='counts', action='store_true',
-        required=False,
-        help="don't get samples, just get counts")
+    parser.add_argument('option', action='store', default='counts',
+        choices=['discard_after', 'keep_after', 'keep_before',
+                    'keep_tumor', 'test_2020', 'counts'],
+        help='which subset of training samples to get or "counts" (default)')
 
     parser.add_argument('-l', '--limit', dest='nResults',
         required=False, type=int, default=0, 		# 0 means ALL
-        help="limit SQL to n results. Default is no limit")
+        help="limit results to n references. Default is no limit")
 
     parser.add_argument('--textlength', dest='maxTextLength',
         type=int, required=False, default=None,
@@ -103,8 +96,19 @@ args = getArgs()
 
 ####################
 # SQL fragments used to build up queries
+#    We build the queries in the following steps:
+#    1) A tmp OMIT_TABLE of references to omit from the training set because
+#        their ground truth may be questionable
+#    2) a tmp BASE_TABLE of all refs NOT in the OMIT_TABLE and build an
+#        index on creation_date for that table. This speeds things dramatically
+#    3) a final tmp table pulled from the BASE_TABLE with specific where clause
+#        criteria for the specific training sample option
+#    4) using the final tmp table,
+#        do a "select *" to get the basic reference data
+#        use ExtractedTextSet.getExtractedTextSetForTable() to get their
+#            extracted text
+#        do select count(*) to get data set counts.
 ####################
-SQLSEPARATOR = '||'
 LIT_TRIAGE_DATE = "10/31/2017"		# when we switched to new lit triage
 START_DATE = "1/01/2017" 		# earliest date for refs to get
                                         #  before lit Triage
@@ -112,15 +116,13 @@ TUMOR_START_DATE = "07/01/2013"		# date to get add'l tumor papers from
 END_DATE = "12/31/2019"                 # last date to get training data from
 
 #----------------
-# SQL to build tmp tables 
-#----------------
 OMIT_TEXT = "Omitted refs\n" + \
     "\t(GOA loaded or only pm2gene indexed or MGI:Mice_in_references_only)"
-BUILD_TMP_TABLES = [ \
+BUILD_OMIT_TABLE = [ \
     # Tmp table of samples to omit.
     # Currently, reasons to omit:
-    # (1) articles "indexed" by pm2gene and not selected by a group other than
-    #     GO
+    # (1) articles "indexed" by pm2gene & not selected by a group other than GO
+    #
     # (2) created by the goa load and not selected by a group other than GO.
     # In these cases, no curator has selected the paper, so we don't really
     #  know if these are relevant (not good ground truth)
@@ -164,8 +166,9 @@ BUILD_TMP_TABLES = [ \
 '''
     create index tmp_idx1 on tmp_omit(_refs_key)
 ''',
-    # tmp table of references matching initial criteria. Need this tmp tble
-    #  to make subsequent selects run fast.
+]
+#----------------
+BUILD_BASE_TABLE = [ \
 '''
     create temporary table tmp_refs
     as
@@ -185,41 +188,35 @@ BUILD_TMP_TABLES = [ \
 ''',
 ]
 #----------------
-# We get the data for a reference in 2 steps (separate SQL):
-#  (1) basic ref info
-#  (2) extracted text parts (body, references, star methods, ...)
-# Then we concat the text parts in the right order to get the full ext text
-#  and then join this to the basic ref info.
-#----------------
-# SQL Parts for getting basic info on refs (not extracted text)
-#----------------
-BASE_FIELDS =  \
+FINAL_TMP_TABLE_SQL =  \
 '''
-select distinct r._refs_key,
-    r.isdiscard, r.year,
-    to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
-    r.isreviewarticle,
-    typeTerm.term as ref_type,
-    'ignore supp term' as supp_status,
-    -- suppTerm.term as supp_status,
-    r.journal, r.title, r.abstract,
-    a.accid pubmed,
-    bsv.ap_status,
-    bsv.gxd_status, 
-    bsv.go_status, 
-    bsv.tumor_status, 
-    bsv.qtl_status
-'''
-BASE_FROM =  \
-'''
-from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
-    join bib_workflow_data bd on (r._refs_key = bd._refs_key)
-    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
-    -- join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
-    join voc_term typeTerm on (r._referencetype_key = typeTerm._term_key)
-    join acc_accession a on
-         (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
-          and a._mgitype_key=1 and a.preferred=1 )
+    create temporary table %s
+    as
+    select distinct r._refs_key,
+        r.isdiscard, r.year,
+        to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
+        r.isreviewarticle,
+        typeTerm.term as ref_type,
+        'ignore supp term' as supp_status,
+        -- suppTerm.term as supp_status,
+        r.journal, r.title, r.abstract,
+        a.accid pubmed,
+        bsv.ap_status,
+        bsv.gxd_status, 
+        bsv.go_status, 
+        bsv.tumor_status, 
+        bsv.qtl_status
+    from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
+        join bib_workflow_data bd on (r._refs_key = bd._refs_key)
+        join bib_status_view bsv on (r._refs_key = bsv._refs_key)
+        -- join voc_term suppTerm on (bd._supplemental_key = suppTerm._term_key)
+        -- (was originally including supp status term for analysis, but
+        --  sometimes there were duplicate status rcds in bib_workflow_data,
+        --  so I'm skipping this for now)
+        join voc_term typeTerm on (r._referencetype_key = typeTerm._term_key)
+        join acc_accession a on
+             (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
+              and a._mgitype_key=1 and a.preferred=1 )
 '''
 RESTRICT_REF_TYPE = \
 '''
@@ -227,51 +224,19 @@ RESTRICT_REF_TYPE = \
     and r.isreviewarticle != 1
 '''
 #----------------
-# SQL Parts for getting extracted text parts so they can be catted together
-#----------------
-EXTTEXT_FIELDS =  \
-'''
-select bd._refs_key, bd.extractedtext as text_part, t.term as text_type
-'''
-EXTTEXT_FROM =  \
-'''
-from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
-    join bib_workflow_data bd on (r._refs_key = bd._refs_key)
-    join voc_term t on (bd._extractedtext_key = t._term_key)
-    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
-'''
-#----------------
-# SQL Parts for getting counts of references
-#----------------
-COUNTS_FIELDS = 'select count(distinct r._refs_key) as num\n'
-COUNTS_FROM =  \
-'''
-from bib_refs r join tmp_refs tr on (r._refs_key = tr._refs_key)
-    join bib_status_view bsv on (r._refs_key = bsv._refs_key)
-    join acc_accession a on
-         (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
-          and a._mgitype_key=1 and a.preferred=1)
-'''
-#----------------
-# SQL where clauses for each subset of refs to get
-#----------------
-# Dict of where clause components for specific queries,
+# Dict of where clause components for specific query options,
 #  these should be non-overlapping result sets
-# These where clauses are shared between the basic ref SQL, extracted
-#  text SQL, and counts SQL
-
 WHERE_CLAUSES = { \
 'discard_after' :
     '''
-    -- discard_after
-    where r.isdiscard = 1
+    where -- discard_after
+    r.isdiscard = 1
     and tr.creation_date > '%s' -- After lit triage release
     and tr.creation_date <= '%s' -- before end date
     ''' % (LIT_TRIAGE_DATE, END_DATE),
 'keep_after' :
     '''
-    -- keep_after
-    where 
+    where -- keep_after
     (bsv.ap_status in ('Chosen', 'Indexed', 'Full-coded')
      or bsv.go_status in ('Chosen', 'Indexed', 'Full-coded')
      or bsv.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
@@ -283,8 +248,7 @@ WHERE_CLAUSES = { \
     ''' % (LIT_TRIAGE_DATE, END_DATE),
 'keep_before' :
     '''
-    -- keep_before
-    where 
+    where -- keep_before
     (bsv.ap_status in ('Chosen', 'Indexed', 'Full-coded')
      or bsv.go_status in ('Chosen', 'Indexed', 'Full-coded')
      or bsv.gxd_status in ('Chosen', 'Indexed', 'Full-coded')
@@ -296,17 +260,14 @@ WHERE_CLAUSES = { \
     ''' % (START_DATE, LIT_TRIAGE_DATE, ),
 'keep_tumor' :
     '''
-    -- keep_tumor
-    where 
+    where -- keep_tumor
      bsv.tumor_status in ('Chosen', 'Indexed', 'Full-coded')
      and tr.creation_date >= '%s' -- after tumor start date
      and tr.creation_date <= '%s' -- before start date
-    ''' % ( TUMOR_START_DATE, START_DATE, ),
-
+    ''' % (TUMOR_START_DATE, START_DATE, ),
 'test_2020' :
     '''
-    -- test set of 2020 refs
-    where
+    where -- test set of 2020 refs
     tr.creation_date > '%s' -- After end date
     and
     (
@@ -323,116 +284,137 @@ WHERE_CLAUSES = { \
 }	# end WHERE_CLAUSES
 #-----------------------------------
 
-####################
-def main():
-####################
-    db.set_sqlServer  ( args.host)
-    db.set_sqlDatabase( args.db)
-    db.set_sqlUser    ("mgd_public")
-    db.set_sqlPassword("mgdpub")
+def doCounts():
+    '''
+    Get counts of sample records from db and write them to stdout
+    '''
+    sys.stdout.write(time.ctime() + '\n')
+    sys.stdout.write("Hitting database %s %s as mgd_public\n" % \
+                                                    (args.host, args.db))
+    sys.stdout.write(getRestrictedArticleText())
 
-    verbose( "Hitting database %s %s as mgd_public\n" % (args.host, args.db))
-    verbose( "Query option:  %s\n" % args.queryKey)
+    selectCountSQL = 'select count(distinct _refs_key) as num from %s\n'
 
-    startTime = time.time()
+    db.sql(BUILD_OMIT_TABLE, 'auto')
+    db.sql(BUILD_BASE_TABLE, 'auto')
 
-    if args.counts: doCounts(args)
-    else: doSamples(args)
+    doCount(OMIT_TEXT, [selectCountSQL % "tmp_omit"])
 
-    verbose( "Total time: %8.3f seconds\n\n" % (time.time()-startTime))
+    tmpTableName, finalTmpTableSQL = buildFinalTmpTableSQL('discard_after')
+    doCount("Discard after: %s - %s" % (LIT_TRIAGE_DATE, END_DATE),
+                        finalTmpTableSQL + [selectCountSQL % tmpTableName])
+
+    tmpTableName, finalTmpTableSQL = buildFinalTmpTableSQL('keep_after')
+    doCount("Keep after: %s - %s" % (LIT_TRIAGE_DATE, END_DATE),
+                        finalTmpTableSQL + [selectCountSQL % tmpTableName])
+
+    tmpTableName, finalTmpTableSQL = buildFinalTmpTableSQL('keep_before')
+    doCount("Keep before: %s - %s" % (START_DATE, LIT_TRIAGE_DATE),
+                        finalTmpTableSQL + [selectCountSQL % tmpTableName])
+
+    tmpTableName, finalTmpTableSQL = buildFinalTmpTableSQL('keep_tumor')
+    doCount("Tumor papers: %s - %s" % (TUMOR_START_DATE, START_DATE),
+                        finalTmpTableSQL + [selectCountSQL % tmpTableName])
+
+    tmpTableName, finalTmpTableSQL = buildFinalTmpTableSQL('test_2020')
+    doCount("Test set from 2020" ,
+                        finalTmpTableSQL + [selectCountSQL % tmpTableName])
 #-----------------------------------
 
-def buildGetSamplesSQL(args, ):
-    """
-    Assemble SQL statements (strings) to run to get samples from db.
-    Return list of pairs of SQL (basic fields query, text query)
-    """
-    # list of keys in WHERE_CLAUSES to run
-    if args.queryKey == 'all':
-        queryKeys = list(WHERE_CLAUSES.keys())
-    else:
-        queryKeys = [ args.queryKey ]
+def doCount(label, q  # list of sql stmts. last one being 'select count as num'
+    ):
+    results = db.sql(q, 'auto')
+    num = results[-1][0]['num']
+    sys.stdout.write("%7d\t%s\n" % (num, label))
+#-----------------------------------
 
-    # Assemble shared query parts
-    baseSQL = BASE_FIELDS + BASE_FROM
-    textSQL = EXTTEXT_FIELDS + EXTTEXT_FROM
-
+def getRestrictedArticleText():
     if args.restrictArticles:
-        restrict = RESTRICT_REF_TYPE
-        verbose("Omitting review and non-peer reviewed articles\n")
+        text = "Omitting review and non-peer reviewed articles\n"
     else:
-        restrict = ''
-        verbose("Including review and non-peer reviewed articles\n")
+        text = "Including review and non-peer reviewed articles\n"
+    return text
+#-----------------------------------
+
+def buildFinalTmpTableSQL(queryKey):
+    """
+    Assemble SQL statements to build final tmp table with the references from
+        the desired queryKey
+    Return tmpTableName and list of SQL stmts
+    """
+    if args.restrictArticles: restrict = RESTRICT_REF_TYPE
+    else: restrict = ''
 
     if args.nResults > 0: limitSQL = "\nlimit %d\n" % args.nResults
     else: limitSQL = ''
 
-    # Add in specific where clauses
-    queryPairs = []
+    finalTmpTableName = 'tmp_' + queryKey
 
-    for qk in queryKeys:
-        fullBaseSQL = baseSQL + WHERE_CLAUSES[qk] + restrict + limitSQL
-        fullTextSQL = textSQL + WHERE_CLAUSES[qk] + restrict + limitSQL
-        queryPairs.append( (fullBaseSQL, fullTextSQL) )
+    finalTmpTableSQL = (FINAL_TMP_TABLE_SQL % finalTmpTableName) + \
+                        WHERE_CLAUSES[queryKey] + restrict + limitSQL
 
-    return queryPairs
+    buildIndexSQL = 'create index tmp_idx_%s on %s(_refs_key)' % \
+                                            (queryKey, finalTmpTableName)
+
+    return finalTmpTableName, [finalTmpTableSQL, buildIndexSQL]
 #-----------------------------------
 
-def doSamples(args):
+####################
+def main():
+####################
+    db.set_sqlServer  (args.host)
+    db.set_sqlDatabase(args.db)
+    db.set_sqlUser    ("mgd_public")
+    db.set_sqlPassword("mgdpub")
+    startTime = time.time()
+
+    if args.option == 'counts': doCounts()
+    else: doSamples()
+
+    verbose("Total time: %8.3f seconds\n\n" % (time.time()-startTime))
+#-----------------------------------
+
+def doSamples():
     '''
     Run SQL to get samples from DB and output them to stdout
     '''
+    verbose("Hitting database %s %s as mgd_public\n" % (args.host, args.db))
+    verbose(getRestrictedArticleText())
+    verbose("Retreiving reference set: %s\n" % args.option)
+    startTime = time.time()
+
+    # build initial tmp tables
+    db.sql(BUILD_OMIT_TABLE, 'auto')
+    db.sql(BUILD_BASE_TABLE, 'auto')
+
+    # build final tmp tbl with the desired references
+    tmpTableName, finalTmpTableSQL = buildFinalTmpTableSQL(args.option)
+    db.sql(finalTmpTableSQL, 'auto')
+
+    # get the result set
+    refRcds = db.sql(['select * from %s' % tmpTableName], 'auto')[-1]
+    verbose("%d references retrieved\n" % (len(refRcds)))
+    verbose("SQL time: %8.3f seconds\n\n" % (time.time()-startTime))
+
+    # get their extracted text and join it to refRcds
+    verbose("Getting extracted text\n")
+    startTime = time.time()
+    extTextSet = ExtractedTextSet.getExtractedTextSetForTable(db, tmpTableName)
+    extTextSet.joinRefs2ExtText(refRcds, allowNoText=True)
+    verbose("%8.3f seconds\n\n" % (time.time()-startTime))
+
+    # build Sample objects and write SampleSet
     global outputSampleSet
-    db.sql( BUILD_TMP_TABLES, 'auto')
-
-    for i, (baseQ, textQ) in enumerate(buildGetSamplesSQL(args)):
-        refRecords = getQueryResults(i, baseQ, textQ)
-
-        for r in refRecords:
-            sample = sqlRecord2ClassifiedSample( r)
-            outputSampleSet.addSample( sample)
-
     startTime = time.time()
-    verbose("writing %d samples:\n" % outputSampleSet.getNumSamples())
+    verbose("constructing and writing samples:\n")
+    for r in refRcds:
+        sample = sqlRecord2ClassifiedSample(r)
+        outputSampleSet.addSample(sample)
 
-    nResults = writeSamples(outputSampleSet)
-    verbose( "%8.3f seconds\n\n" %  (time.time()-startTime))
+    writeSamples(outputSampleSet)
+    verbose("wrote %d samples:\n" % outputSampleSet.getNumSamples())
+    verbose("%8.3f seconds\n\n" %  (time.time()-startTime))
     return
-#-----------------------------------
-
-def getQueryResults(i, baseQ, textQ):
-    """
-    Run SQL for basic fields and extracted text fields, & join them.
-    Return list of records.
-    Each record represents one article w/ its basic fields & its extracted text
-    """
-    #### get basic reference fields
-    startTime = time.time()
-    refResults = db.sql( baseQ.split(SQLSEPARATOR), 'auto')
-    refRcds = refResults[-1]
-
-    verbose( "Query %d:  %d references retrieved\n" % (i, len(refRcds)))
-    verbose( "SQL time: %8.3f seconds\n\n" % (time.time()-startTime))
-
-    #### get extended text parts
-    startTime = time.time()
-    extTextResults = db.sql(textQ.split(SQLSEPARATOR), 'auto')
-    extTextRcds = extTextResults[-1]
-
-    verbose( "Query %d:  %d extracted text rcds retrieved\n" % \
-                                                (i, len(extTextRcds)))
-    verbose( "SQL time: %8.3f seconds\n\n" % (time.time()-startTime))
-
-    #### join basic fields and extracted text
-    startTime = time.time()
-    verbose( "Joining ref info to extracted text:\n")
-
-    extTextSet = ExtractedTextSet( extTextRcds )
-    extTextSet.joinRefs2ExtText( refRcds, allowNoText=True )
-
-    verbose( "%8.3f seconds\n\n" %  (time.time()-startTime))
-
-    return refRcds
 #-----------------------------------
 
 def writeSamples(sampleSet):
@@ -442,7 +424,7 @@ def writeSamples(sampleSet):
     sampleSet.write(sys.stdout)
 #-----------------------------------
 
-def sqlRecord2ClassifiedSample( r,		# sql Result record
+def sqlRecord2ClassifiedSample(r,		# sql Result record
     ):
     """
     Encapsulates knowledge of ClassifiedSample.setFields() field names
@@ -455,7 +437,7 @@ def sqlRecord2ClassifiedSample( r,		# sql Result record
     else:
         knownClassIndex = newSample.getY_positive()
 
-    newR['knownClassName']= newSample.getClassNames()[ knownClassIndex ]
+    newR['knownClassName']= newSample.getClassNames()[knownClassIndex]
    
     newR['ID']            = str(r['pubmed'])
     newR['creationDate']  = str(r['creation_date'])
@@ -490,63 +472,14 @@ def cleanUpTextField(rcd,
         text = text[:args.maxTextLength]
         text = text.replace('\n', ' ')
 
-    text = removeNonAscii( cleanDelimiters( text))
+    text = removeNonAscii(cleanDelimiters(text))
     return text
-#-----------------------------------
-
-def doCounts(args):
-    '''
-    Get counts of sample records from db and write them to stdout
-    '''
-    sys.stdout.write(time.ctime() + '\n')
-
-    # Count of records in the omit temp table
-    # Do this 1st so tmp table exists for the other queries
-    selectCount = 'select count(distinct _refs_key) as num from tmp_omit\n'
-    q = BUILD_TMP_TABLES + [selectCount]
-    
-    writeStat(OMIT_TEXT, SQLSEPARATOR.join(q))
-
-    baseSQL = COUNTS_FIELDS + COUNTS_FROM
-    if args.restrictArticles:
-        restrict = RESTRICT_REF_TYPE
-        sys.stdout.write("Omitting review and non-peer reviewed articles\n")
-    else:
-        restrict = ''
-        sys.stdout.write("Including review and non-peer reviewed articles\n")
-
-    writeStat("Discard after: %s - %s" % (LIT_TRIAGE_DATE, END_DATE),
-                        baseSQL + WHERE_CLAUSES['discard_after'] + restrict)
-
-    writeStat("Keep after: %s - %s" % (LIT_TRIAGE_DATE, END_DATE),
-                        baseSQL + WHERE_CLAUSES['keep_after'] + restrict)
-
-    writeStat("Keep before: %s - %s" % (START_DATE, LIT_TRIAGE_DATE),
-                        baseSQL + WHERE_CLAUSES['keep_before'] + restrict)
-
-    writeStat("Tumor papers: %s - %s" % (TUMOR_START_DATE, START_DATE),
-                        baseSQL + WHERE_CLAUSES['keep_tumor'] + restrict)
-
-    writeStat("Test set from 2020" ,
-                        baseSQL + WHERE_CLAUSES['test_2020'] + restrict)
-#-----------------------------------
-
-def writeStat(label, q):
-    results = db.sql( q.split(SQLSEPARATOR), 'auto')
-    num = results[-1][0]['num']
-    sys.stdout.write( "%7d\t%s\n" % (num, label))
 #-----------------------------------
 
 def cleanDelimiters(text):
     """ remove RECORDEND and FIELDSEPs from text (replace w/ ' ')
     """
-    new = text.replace(RECORDEND,' ').replace(FIELDSEP,' ')
-    return new
-#-----------------------------------
-
-nonAsciiRE = re.compile(r'[^\x00-\x7f]')	# match non-ascii chars
-def removeNonAscii(text):
-    return nonAsciiRE.sub(' ',text)
+    return text.replace(RECORDEND,' ').replace(FIELDSEP,' ')
 #-----------------------------------
 
 def verbose(text):
@@ -560,35 +493,7 @@ if __name__ == "__main__":
         main()
     else: 			# ad hoc test code
         if True:	# debug SQL
-            for i, (b,t) in enumerate(buildGetSamplesSQL(args, )):
-                print("%d:" % i)
-                print(b)
-                print(t)
-        if True:	# test ExtractedTextSet
-            authFig = 'author manuscript fig legends'
-            rcds = [ \
-                {'rk':'1234', 'ty': 'body', 'text_part': 'here is a body text'},
-                {'rk':'1234', 'ty': 'reference','text_part':' & ref text'},
-                {'rk':'1234', 'ty': 'supplemental', 'text_part':' & supp text'},
-                {'rk':'1234', 'ty': 'star methods', 'text_part':' & star text'},
-                {'rk':'1234', 'ty': authFig, 'text_part': ' & author figs'},
-                {'rk':'2345', 'ty': 'body', 'text_part': 'a second body text'},
-                {'rk':'4567', 'ty': 'supplemental', 'text_part': 'text'},
-                ]
-            refs = [ \
-                    {'_refs_key' : '1234', 'otherfield':'xyz',}, 
-                    {'_refs_key' : '2345', 'otherfield':'stu',}, 
-                    {'_refs_key' : '7890', 'otherfield':'stu',}, # no rcd above
-                ]
-            ets = ExtractedTextSet( rcds, keyLabel='rk', typeLabel='ty',)
-            print(ets._gatherExtText())
-            print("%s: '%s'" % ('1234', ets.getExtText('1234')))
-            print("%s: '%s'" % ('2345', ets.getExtText('2345')))
-            print("%s: '%s'" % ('7890', ets.getExtText('7890')))
-            refs = ets.joinRefs2ExtText(refs, allowNoText=True)
-            print(refs)
-            try:
-                refs = ets.joinRefs2ExtText(refs, allowNoText=False)
-            except ValueError:
-                (t,val,traceback) = sys.exc_info()
-                print('Correctly got %s exception:\n%s' % (str(t),val))
+            for query in WHERE_CLAUSES.keys():
+                tmpTableName, finalTmpTableSQL = buildFinalTmpTableSQL(query)
+                print('||'.join(finalTmpTableSQL))
+                print()
