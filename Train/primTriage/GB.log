@@ -8407,3 +8407,210 @@ tumor          selected papers:   458 predicted keep:   413 recall: 0.902
 qtl            selected papers:    26 predicted keep:    22 recall: 0.846
 Totals         keep     papers:  6706 predicted keep:  6038 recall: 0.900
 Predictions from GB_val_pred.txt - Fri Jan  1 15:23:44 2021
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.3382           0.0430           99.01m
+         2           1.2992           0.0389           85.15m
+         3           1.2635           0.0357           80.07m
+         4           1.2318           0.0318           78.41m
+         5           1.2019           0.0290           76.57m
+         6           1.1763           0.0268           75.70m
+         7           1.1500           0.0240           75.34m
+         8           1.1278           0.0231           74.84m
+         9           1.1058           0.0205           74.61m
+        10           1.0866           0.0194           74.43m
+        20           0.9404           0.0107           71.87m
+        30           0.8585           0.0058           71.09m
+        40           0.8061           0.0045           69.94m
+        50           0.7694           0.0030           68.90m
+        60           0.7422           0.0021           68.29m
+        70           0.7220           0.0016           67.37m
+        80           0.7043           0.0016           66.66m
+        90           0.6896           0.0013           65.74m
+       100           0.6803           0.0008           64.92m
+       200           0.6123           0.0002           58.98m
+       300           0.5723           0.0002           54.78m
+       400           0.5474           0.0001           50.58m
+       500           0.5250          -0.0000           46.32m
+       600           0.5117          -0.0000           42.02m
+       700           0.4928          -0.0001           37.82m
+       800           0.4799          -0.0001           33.63m
+       900           0.4680           0.0000           29.34m
+      1000           0.4574          -0.0001           25.10m
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.3427           0.0423          135.80m
+         2           1.3035           0.0385          115.18m
+         3           1.2686           0.0357          116.14m
+         4           1.2361           0.0330          113.60m
+         5           1.2058           0.0292          110.89m
+         6           1.1764           0.0283          110.22m
+         7           1.1513           0.0267          109.36m
+         8           1.1267           0.0238          108.31m
+         9           1.1030           0.0235          107.62m
+        10           1.0826           0.0206          107.12m
+        20           0.9331           0.0103          100.44m
+        30           0.8518           0.0068           97.31m
+        40           0.7955           0.0041           94.43m
+        50           0.7590           0.0032           92.63m
+        60           0.7330           0.0024           91.45m
+        70           0.7121           0.0017           89.89m
+        80           0.6950           0.0015           88.95m
+        90           0.6848           0.0013           87.65m
+       100           0.6734           0.0008           86.58m
+       200           0.6045           0.0002           78.70m
+       300           0.5660           0.0001           72.16m
+       400           0.5409           0.0001           66.00m
+       500           0.5234           0.0000           60.05m
+       600           0.5072          -0.0000           54.55m
+       700           0.4944           0.0000           48.99m
+       800           0.4816          -0.0000           43.38m
+       900           0.4721           0.0001           37.81m
+      1000           0.4609           0.0001           32.29m
+### Start Time 2021/01/04-11-44-56  GB.py	index file: index.out
+Training data path:   /home/jak/work/autolittriage/Train/primTriage/data/nov2020/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /home/jak/work/autolittriage/Train/primTriage/data/nov2020/LegendsWords/Proc1/valSet.txt
+Test data path:       /home/jak/work/autolittriage/Train/primTriage/data/nov2020/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=656   randForSplit=895   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.94      0.92      0.93     29894
+Train discard       0.91      0.93      0.92     25954
+
+     accuracy                           0.92     55848
+    macro avg       0.92      0.92      0.92     55848
+ weighted avg       0.92      0.92      0.92     55848
+
+Train (keep) F2: 0.9207    P: 0.9382    R: 0.9164    NPV: 0.9062
+
+['keep', 'discard']
+[[27395  2499]
+ [ 1806 24148]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.90      0.90      0.90      6706
+Valid discard       0.92      0.91      0.91      7967
+
+     accuracy                           0.91     14673
+    macro avg       0.91      0.91      0.91     14673
+ weighted avg       0.91      0.91      0.91     14673
+
+Valid (keep) F2: 0.9013    P: 0.8962    R: 0.9026    NPV: 0.9175
+
+['keep', 'discard']
+[[6053  653]
+ [ 701 7266]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       0.89      0.90      0.90      4814
+Test  discard       0.92      0.91      0.92      5980
+
+     accuracy                           0.91     10794
+    macro avg       0.91      0.91      0.91     10794
+ weighted avg       0.91      0.91      0.91     10794
+
+Test  (keep) F2: 0.9010    P: 0.8933    R: 0.9030    NPV: 0.9212
+
+['keep', 'discard']
+[[4347  467]
+ [ 519 5461]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                ngram_range=(1, 2), stop_words='english')
+
+classifier:
+GradientBoostingClassifier(learning_rate=0.05, max_features=0.7,
+                           min_samples_leaf=150, min_samples_split=600,
+                           n_estimators=1600, random_state=656, subsample=0.85,
+                           verbose=1)
+
+
+### Feature weights: highest 20
++0.3268	mice figur
++0.1142	wild_typ mice
++0.0717	cre
++0.0576	wild_typ
++0.0349	litterm
++0.0341	genotyp
++0.0332	mut_mut
++0.0279	transgen mice
++0.0171	knock_out
++0.0160	transgen
++0.0140	knock_out mice
++0.0113	relat figur
++0.0079	mice compar
++0.0076	mut_mut mice
++0.0071	mice strain
++0.0052	embryonic_day
++0.0048	support inform
++0.0045	mice model
++0.0043	xenograft
++0.0043	mice express
+
+### Feature weights: lowest 20
++0.0000	withdraw
++0.0000	wnt
++0.0000	wnt signal
++0.0000	wonder
++0.0000	wors
++0.0000	worsen
++0.0000	wound heal
++0.0000	xenograft model
++0.0000	xenograft tumor_typ
++0.0000	yeast
++0.0000	yellow
++0.0000	yellow arrow
++0.0000	yfp
++0.0000	younger
++0.0000	zeiss
++0.0000	zero
++0.0000	zhang
++0.0000	zinc
++0.0000	zone
++0.0000	zoom
+
+### Vectorizer:   Number of Features: 6740
+First 10 features: ['aa', 'aaa', 'aav', 'ab', 'abbrevi', 'abcam', 'abdomin', 'aberr', 'abil', 'abl']
+
+Middle 10 features: ['invert', 'investig', 'investig effect', 'investig express', 'investig mechan', 'investig possibl', 'investig potenti', 'investig role', 'invitrogen', 'involv']
+
+Last 10 features: ['young', 'younger', 'zebrafish', 'zeiss', 'zero', 'zhang', 'zhang et', 'zinc', 'zone', 'zoom']
+
+### False positives for Validation set: 701
+30118751
+30530483
+29863499
+27458976
+28694481
+
+### False negatives for Validation set: 653
+26909801
+26808375
+24316165
+31371490
+31714935
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :        55848        29894        25954          54%
+Validation Set      :        14673         6706         7967          46%
+Test Set            :        10794         4814         5980          45%
+ValidationSplit: 0.20
+### End Time 2021/01/04-14-37-52. Total  10376.20 seconds
+
+Recall for papers selected by each curation group. 14673 papers analyzed
+ap             selected papers:  6222 predicted keep:  5714 recall: 0.919
+gxd            selected papers:   499 predicted keep:   469 recall: 0.940
+go             selected papers:  5385 predicted keep:  4987 recall: 0.926
+tumor          selected papers:   458 predicted keep:   414 recall: 0.904
+qtl            selected papers:    26 predicted keep:    22 recall: 0.846
+Totals         keep     papers:  6706 predicted keep:  6053 recall: 0.903
+Predictions from GB_val_pred.txt - Mon Jan  4 14:38:09 2021

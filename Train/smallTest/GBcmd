@@ -1,6 +1,6 @@
 model=GB
-#dataDir=./data/dec2020
+#dataDir=./data/jan2021
 #baseDir=$dataDir/LegendsWords/Proc1
 #mtrun ${model}.py  --gsverbose
-mtrun ${model}.py --features --savemodel ${model}.pkl --predict  -v --gsverbose
+mtrun ${model}.py --features --savemodel ${model}.pkl --predict  -v --gsverbose --rclassifier 341
 subsetPandR.py --group ${model}_val_pred.txt | tee -a ${model}.log
