@@ -74,6 +74,7 @@ class SampleSet (object):
         else: fp = inFile
 
         self.textToSamples(fp.read())
+        # probably should close the file if we opened it here?
         return self
     #-------------------------
 
@@ -116,6 +117,8 @@ class SampleSet (object):
 
         for s in self.sampleIterator(omitRejects=omitRejects):
             fp.write(s.getSampleAsText() + RECORDEND)
+
+        # probably should close the file if we opened it here?
         return self
     #-------------------------
 
@@ -305,7 +308,7 @@ class SampleSetMetaData (object):
         return self.metaData != None
     
     def __bool__(self):
-        return self.metaData == None
+        return self.metaData != None
 
 # end class SampleSetMetaData ---------------------
 
@@ -440,6 +443,10 @@ class BaseSample (object):
     def getY_negative(cls):	return cls.y_negative
 
     #----------------------
+    def setReject(self, value, reason=None):
+        self.isRejected = value         # value should be True or False
+        self.rejectReason = reason
+
     def isReject(self):	
         return self.isRejected
     def getRejectReason(self):	return self.rejectReason
