@@ -16,8 +16,8 @@
 #  file consistent with the inputs.
 #  (although, by random selection, the distributions will likely be maintained)
 #
-# ClassifiedSampleRecord Class in sampleDataLib.py is responsible for the sample
-#   handling
+# ClassifiedRefSampleRecord Class in sampleDataLib.py is responsible for the
+#   sample handling
 #
 # Assumes all input files have the same column structure. see sampleDataLib.py.
 #
@@ -27,9 +27,6 @@ import os
 import time
 import argparse
 import random
-# extend path up multiple parent dirs, hoping we can import sampleDataLib
-sys.path = ['/'.join(dots) for dots in [['..']*i for i in range(1,8)]] + \
-                sys.path
 import sampleDataLib
 
 DEFAULT_OUTPUT_RETAINED = 'retainedRefs.txt'
@@ -119,14 +116,14 @@ def main():
 
     for fn in args.inputFiles:
         verbose("Reading %s\n" % fn)
-        inputSampleSet = sampleDataLib.ClassifiedSampleSet( \
+        inputSampleSet = sampleDataLib.ClassifiedRefSampleSet( \
                                         sampleObjType=sampleObjType).read(fn)
 
         if not retainedSampleSet:	# processing 1st input file
             sampleObjType     = inputSampleSet.getSampleObjType()
-            retainedSampleSet = sampleDataLib.ClassifiedSampleSet( \
+            retainedSampleSet = sampleDataLib.ClassifiedRefSampleSet( \
                                                 sampleObjType=sampleObjType)
-            leftoverSampleSet = sampleDataLib.ClassifiedSampleSet( \
+            leftoverSampleSet = sampleDataLib.ClassifiedRefSampleSet( \
                                                 sampleObjType=sampleObjType)
             verbose("Sample type: %s\n" % sampleObjType.__name__)
         else:

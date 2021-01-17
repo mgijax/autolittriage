@@ -9,15 +9,12 @@
 # Write to stdout:
 #  journalname all_count, discard_count, keep_count
 
-# ClassifiedSampleSet in sampleDataLib.py is responsible for reading the samples
-#   and sample details.
+# ClassifiedRefSampleSet in sampleDataLib.py is responsible for reading the
+#   samples and sample details.
 #
 import sys
 import argparse
 
-# extend path up multiple parent dirs, hoping we can import sampleDataLib
-sys.path = ['/'.join(dots) for dots in [['..']*i for i in range(1,8)]] + \
-                sys.path
 import sampleDataLib
 
 DEFAULT_SAMPLE_TYPE  = "ClassifiedSample"
@@ -72,7 +69,7 @@ def main():
     for fn in args.inputFiles:
 
         if fn == '-': fn = sys.stdin
-        sampleSet = sampleDataLib.ClassifiedSampleSet( \
+        sampleSet = sampleDataLib.ClassifiedRefSampleSet( \
                                         sampleObjType=sampleObjType).read(fn)
         if firstFile:
             sampleObjType = sampleSet.getSampleObjType()

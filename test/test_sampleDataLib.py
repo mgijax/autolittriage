@@ -16,178 +16,6 @@ The pattern:
     exercise methods.
 """
 ######################################
-### TODO: add preprocessor tests for Sample and ClassifiedSample classes?
-class BaseSample_tests(unittest.TestCase):
-    # will have to rejigger this when it shifts to just ID + text
-    def setUp(self):
-        self.sample1Text = \
-        '''pmID1|journal1|title1|abstract1|text1'''
-        self.sample1 = BaseSample().parseSampleRecordText(self.sample1Text)
-        self.sample2 = BaseSample().parseSampleRecordText(\
-                                '''pmID2|journal2|title2|abstract2|text2''')
-
-    def test_setgetFields(self):
-        s = BaseSample()
-        d = {'ID': 'pmID4', 'extractedText': 'text', 'foo': 'invalid field'}
-        s.setFields(d)
-        self.assertEqual('pmID4', s.getField('ID'))
-        self.assertEqual('text', s.getField('extractedText'))
-        self.assertEqual('', s.getField('journal'))  # '' since we didn't set it
-        self.assertRaises(KeyError, s.getField, 'foo')
-
-    def test_setgetID(self):
-        self.assertEqual(self.sample1.getID(), 'pmID1')
-        self.sample1.setID('pmID25')
-        self.assertEqual(self.sample1.getID(), 'pmID25')
-
-    def test_getSampleName(self):
-        self.assertEqual(self.sample1.getSampleName(), 'pmID1')
-
-    def test_getSampleID(self):
-        self.assertEqual(self.sample1.getSampleID(), 'pmID1')
-
-    def test_getJournal(self):
-        self.assertEqual(self.sample1.getJournal(), 'journal1')
-
-    def test_getTitle(self):
-        self.assertEqual(self.sample1.getTitle(), 'title1')
-
-    def test_getAbstract(self):
-        self.assertEqual(self.sample1.getAbstract(), 'abstract1')
-
-    def test_getExtractedText(self):
-        self.assertEqual(self.sample1.getExtractedText(), 'text1')
-
-    def test_getDocument(self):
-        doc = '\n'.join([self.sample1.getTitle(), self.sample1.getAbstract(),
-                         self.sample1.getExtractedText()])
-        self.assertEqual(self.sample1.getDocument(), doc)
-
-    def test_getSampleAsText(self):
-        self.assertEqual(self.sample1.getSampleAsText(), self.sample1Text)
-
-    def test_getFieldNames(self):
-        # not bothering to check for all fields, just a few
-        self.assertIn('ID',   self.sample1.getFieldNames())
-        self.assertIn('extractedText', self.sample1.getFieldNames())
-
-    def test_getClassNames(self):
-        self.assertEqual(['no', 'yes'], self.sample1.getClassNames())
-
-    def test_getY_positive(self):
-        self.assertEqual(1, self.sample1.getY_positive())
-
-    def test_getY_negative(self):
-        self.assertEqual(0, self.sample1.getY_negative())
-
-    def test_getHeaderLine(self):
-        self.assertIn('ID', self.sample1.getHeaderLine())
-
-    def test_getFieldSep(self):
-        self.assertEqual('|', self.sample1.getFieldSep())
-
-# end class BaseSample_tests
-######################################
-
-class ClassifiedSample_tests(unittest.TestCase):
-    # will have to rejigger this when it shifts to just ID + text
-    def setUp(self):
-        self.sample1Text = \
-        '''no|pmID1|journal1|title1|abstract1|text1'''
-        self.sample1 = ClassifiedSample().parseSampleRecordText( \
-                                                           self.sample1Text)
-        self.sample2 = ClassifiedSample().parseSampleRecordText( \
-                                '''yes|pmID2|journal2|title2|abstract2|text2''')
-
-    def test_setgetFields(self):
-        s = ClassifiedSample()
-        d = {'knownClassName': 'yes', 'ID': 'pmID4', 'extractedText': 'text',
-                'foo': 'invalid field'}
-        s.setFields(d)
-        self.assertEqual('pmID4', s.getField('ID'))
-        self.assertEqual('yes', s.getField('knownClassName'))
-        self.assertEqual('text', s.getField('extractedText'))
-        self.assertEqual('', s.getField('journal'))  # '' since we didn't set it
-        self.assertRaises(KeyError, s.getField, 'foo')
-
-    def test_setgetID(self):
-        self.assertEqual(self.sample1.getID(), 'pmID1')
-        self.sample1.setID('pmID25')
-        self.assertEqual(self.sample1.getID(), 'pmID25')
-
-    def test_getSampleName(self):
-        self.assertEqual(self.sample1.getSampleName(), 'pmID1')
-
-    def test_getSampleID(self):
-        self.assertEqual(self.sample1.getSampleID(), 'pmID1')
-
-    def test_getJournal(self):
-        self.assertEqual(self.sample1.getJournal(), 'journal1')
-
-    def test_getTitle(self):
-        self.assertEqual(self.sample1.getTitle(), 'title1')
-
-    def test_getAbstract(self):
-        self.assertEqual(self.sample1.getAbstract(), 'abstract1')
-
-    def test_getExtractedText(self):
-        self.assertEqual(self.sample1.getExtractedText(), 'text1')
-
-    def test_getDocument(self):
-        doc = '\n'.join([self.sample1.getTitle(), self.sample1.getAbstract(),
-                         self.sample1.getExtractedText()])
-        self.assertEqual(self.sample1.getDocument(), doc)
-
-    def test_getSampleAsText(self):
-        self.assertEqual(self.sample1.getSampleAsText(), self.sample1Text)
-
-    def test_getFieldNames(self):
-        # not bothering to check for all fields, just a few
-        self.assertIn('ID',   self.sample1.getFieldNames())
-        self.assertIn('extractedText', self.sample1.getFieldNames())
-
-    def test_getClassNames(self):
-        self.assertEqual(['no', 'yes'], self.sample1.getClassNames())
-
-    def test_getY_positive(self):
-        self.assertEqual(1, self.sample1.getY_positive())
-
-    def test_getY_negative(self):
-        self.assertEqual(0, self.sample1.getY_negative())
-
-    def test_getHeaderLine(self):
-        self.assertIn('ID', self.sample1.getHeaderLine())
-
-    def test_getFieldSep(self):
-        self.assertEqual('|', self.sample1.getFieldSep())
-
-    def test_setgetKnownClassName(self):
-        self.assertEqual(self.sample1.getKnownClassName(), 'no')
-        self.assertEqual(self.sample2.getKnownClassName(), 'yes')
-
-        self.assertRaises(ValueError, self.sample1.setKnownClassName, 'bad')
-        self.sample1.setKnownClassName(';no')
-        self.assertEqual(self.sample1.getKnownClassName(), 'no')
-        self.sample1.setKnownClassName(';yes')
-        self.assertEqual(self.sample1.getKnownClassName(), 'yes')
-
-    def test_getKnownYvalue(self):
-        self.assertEqual(self.sample1.getKnownYvalue(), 0)
-        self.assertEqual(self.sample2.getKnownYvalue(), 1)
-
-    def test_isPositiveNegative(self):
-        self.assertFalse(self.sample1.isPositive())
-        self.assertTrue( self.sample1.isNegative())
-        self.assertTrue( self.sample2.isPositive())
-        self.assertFalse(self.sample2.isNegative())
-
-    def test_getExtraInfo(self):
-        # not bothering to check for all fields, just a few
-        self.assertEqual([], self.sample1.getExtraInfoFieldNames())
-        self.assertEqual([], self.sample1.getExtraInfo())
-
-# end class ClassifiedSample_tests
-######################################
 
 class PrimTriageClassifiedSample_tests(unittest.TestCase):
     def setUp(self):
@@ -294,7 +122,7 @@ the final words'''
         self.assertIn('journal1', self.sample1.getExtraInfo())
         self.assertIn(str(len('abstract1')), self.sample1.getExtraInfo())
 
-    def test_figureTextLegCloseWords50(self): # basic exercise of preprocessor
+    def test_figureTextLegCloseWords50(self):
         expectedText = \
 """
 My Title w/ Fig text
@@ -307,7 +135,7 @@ Figure. 1: this is a figure legend
         self.sample2.figureTextLegCloseWords50()
         self.assertEqual(expectedText, self.sample2.getDocument().strip())
 
-    def test_removeURLsCleanStem(self): # basic exercise of preprocessor
+    def test_removeURLsCleanStem(self):
         expectedText = \
 """
 my titl figur text
@@ -393,7 +221,7 @@ the final words'''
     def test_getFieldSep(self):
         self.assertEqual('|', self.sample1.getFieldSep())
 
-    def test_figureTextLegCloseWords50(self): # basic exercise of preprocessor
+    def test_figureTextLegCloseWords50(self):
         expectedText = \
 """
 My Title w/ Fig text
@@ -406,7 +234,7 @@ Figure. 1: this is a figure legend
         self.sample2.figureTextLegCloseWords50()
         self.assertEqual(expectedText, self.sample2.getDocument().strip())
 
-    def test_removeURLsCleanStem(self): # basic exercise of preprocessor
+    def test_removeURLsCleanStem(self):
         expectedText = \
 """
 my titl figur text
@@ -419,41 +247,8 @@ my titl figur text
 # end class PrimTriageUnClassifiedSample_tests
 ######################################
 
-class SampleSetMetaData_tests(unittest.TestCase):
+class SampleSet_tests(unittest.TestCase): # test PrimTriageUnclassifiedSamples
     def setUp(self):
-        line1 = "#meta foo=blah   nose=toes     rose=rose"
-        self.meta1 = SampleSetMetaData(line1)
-
-    def test_hasMetaData(self):
-        self.assertTrue(self.meta1.hasMetaData())
-        self.assertTrue(self.meta1)    # test m as a __bool__
-
-        m = SampleSetMetaData("#text with no\nmeta line")
-        self.assertFalse(m.hasMetaData())
-        self.assertFalse(m)            # test m as a __bool__
-
-    def test_setgetMetaDict(self):
-        d = {'foo': '1', 'blah': 'abc'}
-        self.meta1.setMetaDict(d)
-        self.assertEqual(d, self.meta1.getMetaDict())
-
-    def test_setgetMetaItem(self):
-        self.assertEqual('toes', self.meta1.getMetaItem('nose'))
-        self.meta1.setMetaItem('nose', 'tomatoes')
-        self.assertEqual('tomatoes', self.meta1.getMetaItem('nose'))
-
-    def test_buildMetaLine(self):
-        m = SampleSetMetaData('')
-        m.setMetaDict({'foo': 'blah'})
-        expectedText = '#meta foo=blah'
-        self.assertEqual(expectedText, m.buildMetaLine())
-
-# end class SampleSetMetaData_tests
-######################################
-
-class SampleSet_tests(unittest.TestCase):
-    def setUp(self):
-        # test with PrimTriageUnclassifiedSamples
         self.ss = SampleSet(sampleObjType=PrimTriageUnClassifiedSample)
         self.sample1Text =  '''pmID1|title1|abstract1|text1'''
         self.sample1 = PrimTriageUnClassifiedSample().parseSampleRecordText(\
@@ -563,6 +358,7 @@ title
 
 my
 abstract
+w
 end
 abstract
 
@@ -573,13 +369,13 @@ and
 text
 """
         self.ss.preprocess(['removeURLs', 'tokenPerLine'])
-        #print("'%s'" % self.ss.getDocuments()[2])
         self.assertEqual(expectedText, self.ss.getDocuments()[2])
 
 # end class SampleSet_tests
 ######################################
 
 class ClassifiedSampleSet_tests(unittest.TestCase):
+    # test with PrimTriageClassifiedSamples
     def setUp(self):
         # build sampleSet w/ 3 samples
         self.ss = ClassifiedSampleSet(sampleObjType=PrimTriageClassifiedSample)
@@ -704,6 +500,7 @@ title
 
 my
 abstract
+w
 end
 abstract
 
@@ -714,7 +511,6 @@ and
 text
 """
         self.ss.preprocess(['removeURLs', 'tokenPerLine'])
-        #print("'%s'" % self.ss.getDocuments()[3])
         self.assertEqual(expectedText, self.ss.getDocuments()[3])
 
     ### Methods from ClassifiedSampleSet
@@ -730,16 +526,37 @@ text
     def test_getNumNegatives(self):
         self.assertEqual(2, self.ss.getNumNegatives())
 
-    def test_getJournals(self):
-        # will have to move to ReferenceSampleSet class?
-        self.assertEqual(set(['journal1', 'journal2', 'journal3']),
-                                                self.ss.getJournals())
     def test_getExtraInfoFieldNames(self):
         # not bothering to check for all fields, just a few
         self.assertIn('year',     self.ss.getExtraInfoFieldNames())
         self.assertIn('apStatus', self.ss.getExtraInfoFieldNames())
 
 # end class ClassifiedSampleSet_tests
+######################################
+
+class ClassifiedRefSampleSet_tests (unittest.TestCase):
+    # test with PrimTriageClassifiedSamples
+    def setUp(self):
+        self.ss = ClassifiedRefSampleSet(sampleObjType=PrimTriageClassifiedSample)
+        self.sample1Text = \
+        '''discard|pmID1|10/3/2017|1901|1|peer reviewed|supp status1|apStat1|gxdStat1|goStat1|tumorStat1|qtlStat1|journal1|title1|abstract1|text1'''
+        self.sample1 = PrimTriageClassifiedSample().parseSampleRecordText(\
+                                                            self.sample1Text)
+        self.sample2 = PrimTriageClassifiedSample().parseSampleRecordText(\
+        '''keep|pmID2|01/01/1900|1900|0|non-peer reviewed|supp status2|apStat2|gxdstat2|goStat2|tumorStat2|qtlStat2|journal2|title2|abstract2|text2'''
+        )
+        self.ss.addSamples([self.sample1, self.sample2])
+
+    def test_getJournals(self):
+        self.assertEqual(set(['journal1', 'journal2']), self.ss.getJournals())
+
+    def test_getNumSamples(self):
+        self.assertEqual(2, self.ss.getNumSamples())
+
+    def test_getNumPositives(self):
+        self.assertEqual(1, self.ss.getNumPositives())
+
+# end class ClassifiedRefSampleSet_tests
 ######################################
 
 def makeSuites():           # experimenting with Suites, skip for now
