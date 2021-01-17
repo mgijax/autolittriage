@@ -8,12 +8,14 @@ function Usage() {
 #######################################
     cat - <<ENDTEXT
 
-$0 {--group|--discard} --datadir dir
+$0 {--group|--discard} [--seed nnnn]  --datadir dir
 
     Split sample files into random test, train, validation files
 
     --group     sample files are from curation group
     --discard   sample files are for discard/keep (primary triage). Default.
+
+    --seed      integer:  random seed for the split. Default is time based.
 
     --datadir	directory where the input files live.
     Puts all output files into the current directory.
@@ -39,11 +41,13 @@ valFraction="0.235"		# want 20% {keep|discard}_after
 #######################################
 dataDir=""
 curationGroup="n"       # default is not by curation group, discard/keep instead
+seedParam=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
     -h|--help)   Usage ;;
     --datadir) dataDir="$2"; shift; shift; ;;
+    --seed)    seedParam="--seed $2"; shift; shift; ;;
     --group)   curationGroup="y"; shift; ;;
     --discard) curationGroup="n"; shift; ;;
     -*|--*) echo "invalid option $1"; Usage ;;
@@ -53,6 +57,8 @@ done
 if [ "$dataDir" == "" ]; then
     Usage
 fi
+splitCmd="$splitCmd $seedParam"         # add optional seed
+
 #######################################
 # Input file names
 # "after" are files containing samples after lit triage started,
