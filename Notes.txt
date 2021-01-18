@@ -2177,6 +2177,44 @@ Nov 6, 2020
         - add test_2020 output set of recent articles for a held out test set
     Regenerated nov2020 training and test sets.
 
+Nov 9, 2020
+    Retrained GB.py with the production data from Nov 6 (all samples from
+    discard_after, keep_after, keep_before, keep_tumor).
+    Predicted on the test_2020 held out set.
+
+    Data set summary:
+    -----
+    Fri Nov  6 15:35:01 2020
+       6338 Omitted refs
+            (GOA loaded or only pm2gene indexed or MGI:Mice_in_references_only)
+    Omitting review and non-peer reviewed articles
+      39899 Discard after: 10/31/2017 - 12/31/2019
+      32876 Keep after: 10/31/2017 - 12/31/2019
+       5715 Keep before: 1/01/2017 - 10/31/2017
+       2825 Tumor papers: 07/01/2013 - 1/01/2017
+      22965 Test set from 2020
+    -----
+
+    test_2020 prediction results:
+    -----
+    ### Metrics: Preds
+                   precision    recall  f1-score   support
+
+       Preds keep       0.85      0.90      0.88     11112
+    Preds discard       0.90      0.86      0.88     11853
+
+         accuracy                           0.88     22965
+        macro avg       0.88      0.88      0.88     22965
+     weighted avg       0.88      0.88      0.88     22965
+
+    Preds (keep) F2: 0.8891    P: 0.8536    R: 0.8985    NPV: 0.8999
+
+    ['keep', 'discard']
+    [[ 9984  1128]
+     [ 1712 10141]]
+    --------
+    Prediction analysis: https://docs.google.com/spreadsheets/d/16-PKnKrpiyb-Ct0b3lzskEamNealDNWaaXPEcPrghfg/edit#gid=1446446491
+
 Nov 10, 2020
     Problems with loading psycopg2 in anaconda python after switching mgiconfig
     to use postgres 12.
@@ -2211,3 +2249,51 @@ LD_LIBRARY_PATH         ${POSTGRES_HOME}/lib:/usr/lib
     the /usr/lib64 lib to get loaded.
 
     But at least it is clear the problem is which lib verson gets loaded.
+
+Dec 18, 2020
+    added relevanceClassifier.py - the actual (untrained) source code for
+    the GB based relevance classifier.
+    relevanceClassifier.pkl is the trained classifer - trained on the Nov 6 set
+
+Dec 21, 2020
+    Got rid of top level config.cfg file in autolittriage so it would not
+        be confused with MGI's std configuration file.
+        - converted the config file to just be a config file for the tuning
+            scripts, read by textTuningLib.py (not used by sampleDataLib.py)
+            (this was actually completed Jan 1, 2021)
+        - this cleaned things up a lot. Now the file lives in the training
+            directory
+        - involved creating a preprocessor method for each of the figure text
+            algorithms (the relevanceClassifier uses figureTextLegCloseWords50)
+
+Dec 22, 2020
+    Wrote sample scripts for lori to incorporate into the littriageload 
+    product to invoke the relevanceClassifier:
+        getRefsToPredict.py - pulls refs that need to be predicted from db 
+        getPredictions.sh - runs the relevanceClassifier and creates pred file
+
+Jan 3, 2021
+    Reorganized sdGetRawPrimTriage.py to simplify SQL and get the full ext
+    text for refs even if you are using --limit to build a small test set.
+        - this makes the small test sets more useful as they have full text.
+
+Jan 5, 2021
+    Fixed sklearn future warning fixes about param changes in a couple methods.
+
+Jan 12, 2021
+    Added initial automated unit tests for sampleDataLib.py in test/ subdir
+
+Jan 17, 2021
+    Completed splitting sampleDataLib.py into baseSampleDataLib.py that is now
+        in MLtextTools.
+        - so now there are generic BaseSample and ClassifiedSample classes
+            in MLtextTools that can be used in other ML projects
+        - SampleSet and ClassifiedSampleSet live in MLtextTools too.
+        - This removed assumption that the Sample classes are defined in
+            sampleDataLib.py, I added "moduleName=" to the meta data of sample
+            files.
+        - includes automated tests: test_baseSampleDataLib.py in  MLtextTools
+        - added --seed option to sdBuild4Split.sh so we can control how the
+            test set is built and added buildSmall.sh to automate the building
+            of the small test dataset. These made it easier to verify that all
+            the changes to sampleDataLib.py had no effect on the sample files.

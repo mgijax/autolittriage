@@ -31,7 +31,50 @@ import featureTransform
 #      ClassifiedSample subclass to instantiate.
 #  * so try to use "python class" or "object type" for these
 #-----------------------------------
-
+Class_Hierarchy_Overview = \
+"""
+In baseSampleDataLib.py (MLTextTools)
+    BaseSample
+        - a text sample (classified or not) for a binary ML problem.
+        - knows the two class names for the problem (e.g., "no", "yes"),
+            their Y values (0/1), & which is considered the "positive" class.
+        - has an arbitrary list of fields
+            "ID" must be one of these
+            "text" is a field by default. Can be overridden in subclasses.
+        - getDocument() returns the text to be consider by a classifier
+            (the "text" field by default, but subclasses may combine multiple
+             fields into the "document", e.g., title, abstract, extractedText)
+        - a sample may be "rejected" and have a rejection reason. Idea:
+            During preprocessing, we may decide that a sample is not suitable
+            for training or classification
+            (relevanceClassifier doesn't use this feature)
+        - implements converting a Sample to and from text for reading/writing
+        - Samples can have preprocessing methods that modify the state of 
+            the sample (e.g., stemming the text)
+        - BaseSample implements some generic preprocessing primitives
+    ClassifiedSample
+        - a text sample that is classified (has a knownClassName, Y value)
+        - has an optional set of ExtraInfo fields: additional info about the
+            sample that is not meant to be used by a classifier but is useful
+            for analyzing classifier results
+    SampleSet
+        - a collection of Samples of the same type (BaseSample or descendent)
+        - reads/writes Sample files incl. optional meta data
+        - get parallel lists:    getSamples(), getSampleIDs(), getDocuments() 
+    ClassifiedSampleSet
+        - a SampleSet of ClassifiedSamples
+        - get parallel lists:    getKnownClassNames(), getKnownYvalues()
+        - getExtraInfoFieldNames()
+    SampleSetMetaData
+        - info about the Samples in a Sample file
+        - most important: name of the SampleObjType (python class name)
+            & the name of the python module that defines that type
+                (new in Jan 2021, previous versions assumed "sampleDataLib")
+        - enables SampleSet to read/write sets of different types of Samples
+        - meta data in a sample file is still optional for backward
+            compatability, but it would be simpler to make it required at this
+            point
+"""
 
 FIELDSEP     = '|'      # field separator when reading/writing sample fields
 RECORDEND    = ';;'     # record ending str when reading/writing sample files
@@ -116,6 +159,11 @@ class BaseSample (object):
     #----------------------
 
     def constructDoc(self):
+        """ 
+        Return the text of the "document" of this sample, i.e., the
+            string that a classifier should consider.
+        Override this method if your samples don't have a simple "text" field
+        """
         return self.values['text']
 
     def getDocument(self):	return self.constructDoc()
@@ -184,24 +232,15 @@ class BaseSample (object):
         self.setField('text', self.getField('text')[:20].replace('\n',' ')+'\n')
         return self
     # ---------------------------
-
 # end class BaseSample ------------------------
 
 class ClassifiedSample (BaseSample):
     """
-    Abstract class. Represents a training sample that has a known classification
-        (e.g. discard/keep, selected/unselected)
-    Knows how to take a text representation of a record (a text string with
-        delimitted fields) and parse into its fields
-    Has "extraInfoFields", information about the sample that don't necessarily
-        relate to the sample features used for training/prediction, but may
-        be used to subset the sample set when analyzing prediction results.
-        (e.g., if we want to analyze precision/recall for individual journals)
+    A BaseSample that is classified (has a knownClassName, Y value)
+        - has an optional set of ExtraInfo fields: additional info about the
+            sample that is not meant to be used by a classifier but is useful
+            for analyzing classifier results
     """
-
-    # fields of a sample as an input/output record (as text), in order
-    # Need to be specified by subclasses
-    # fields of a sample as an input/output record (as text), in order
     fieldNames = [ \
             'knownClassName',
             'ID'            ,
@@ -272,7 +311,7 @@ class ClassifiedSample (BaseSample):
 class SampleSet (object):
     """
     IS:     a set of Samples
-    HAS:    sample record list, ...
+    HAS:    list of Samples, list of Sample IDs, list of Sample documents, ...
     DOES:   Loads/parses sample records from a sample record file
             Writes sample records to a file
     """
@@ -459,7 +498,7 @@ class SampleSet (object):
 class ClassifiedSampleSet (SampleSet):
     """
     IS:     a SampleSet of ClassifiedSamples
-    HAS:    ClasifiedSample record list, counts of pos/neg samples
+    HAS:    list of knownClassnames and Yvalues of the samples, counts, ...
     DOES:   Returns lists of the knownClassNames & Yvalues of the samples.
             Keeps track of counts, get ExtraInfoFieldNames
     """

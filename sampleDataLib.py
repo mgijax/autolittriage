@@ -39,7 +39,7 @@ In baseSampleDataLib.py (MLTextTools)
             their Y values (0/1), & which is considered the "positive" class.
         - has an arbitrary list of fields
             "ID" must be one of these
-            "text" is a field by default
+            "text" is a field by default. Can be overridden in subclasses.
         - getDocument() returns the text to be consider by a classifier
             (the "text" field by default, but subclasses may combine multiple
              fields into the "document", e.g., title, abstract, extractedText)
@@ -64,14 +64,12 @@ In baseSampleDataLib.py (MLTextTools)
         - a SampleSet of ClassifiedSamples
         - get parallel lists:    getKnownClassNames(), getKnownYvalues()
         - getExtraInfoFieldNames()
-        - getExtraInfo() ???
     SampleSetMetaData
         - info about the Samples in a Sample file
         - most important: name of the SampleObjType (python class name)
             & the name of the python module that defines that type
                 (new in Jan 2021, previous versions assumed "sampleDataLib")
         - enables SampleSet to read/write sets of different types of Samples
-            (although each SampleSet is for just one type of Sample)
         - meta data in a sample file is still optional for backward
             compatability, but it would be simpler to make it required at this
             point
@@ -108,7 +106,6 @@ In sampleDataLib.py (autolittriage)
     CurGroupUnClassifiedSample  - JUST EXPERIMENTAL
         - a RefSample for secondary triage classification
         - has class names "selected" and "unselected"
-
 """
 
 FIELDSEP     = '|'      # field separator when reading/writing sample fields
@@ -137,12 +134,7 @@ class RefSample (BaseSample):
 
     Provides various methods to preprocess a sample record
     (preprocess the text prior to vectorization)
-
     """
-                # I think these need to be in alpha order if you
-                #  load samples using sklearn's load_files() function.
-                #  (and they need to match the directory names where the
-                #  sample files are stored)
     sampleClassNames = ['no','yes']
     y_positive = 1	# sampleClassNames[y_positive] is the "positive" class
     y_negative = 0	# ... negative
@@ -289,24 +281,12 @@ class RefSample (BaseSample):
             self.setExtractedText(newText)
         return self
     # ---------------------------
-
 # end class RefSample ------------------------
 
 class ClassifiedRefSample (RefSample, ClassifiedSample):
     """
     A reference Sample (article) that is classified and has a journal field.
-
-    Knows how to take a text representation of a record (a text string with
-        delimitted fields) and parse into its fields
-    Has "extraInfoFields", information about the sample that don't necessarily
-        relate to the sample features used for training/prediction, but may
-        be used to subset the sample set when analyzing prediction results.
-        (e.g., if we want to analyze precision/recall for individual journals)
     """
-
-    # fields of a sample as an input/output record (as text), in order
-    # Need to be specified by subclasses
-    # fields of a sample as an input/output record (as text), in order
     fieldNames = [ \
             'knownClassName',
             'ID'            ,
@@ -381,7 +361,7 @@ class PrimTriageClassifiedSample(ClassifiedRefSample):
 
 class PrimTriageUnClassifiedSample(RefSample):
     """
-    Represents a sample document to predict
+    Represents a sample document to predict for primary triage
     """
     sampleClassNames = ['discard','keep']
     y_positive = 1
@@ -399,7 +379,7 @@ class PrimTriageUnClassifiedSample(RefSample):
 class ClassifiedRefSampleSet (ClassifiedSampleSet):
     """
     IS:     a ClassifiedSampleSet of (classified) reference Samples
-    HAS:    list of journals from the samples
+    HAS:    set of journals from the samples
     """
     def __init__(self, sampleObjType=None):
         super().__init__(sampleObjType=sampleObjType)
