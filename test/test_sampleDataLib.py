@@ -96,6 +96,9 @@ the final words'''
     def test_getFieldSep(self):
         self.assertEqual('|', self.sample1.getFieldSep())
 
+    def test_getRecordEnd(self):
+        self.assertEqual(';;', self.sample1.getRecordEnd())
+
     def test_setgetKnownClassName(self):
         self.assertEqual(self.sample1.getKnownClassName(), 'discard')
         self.assertEqual(self.sample2.getKnownClassName(), 'keep')
@@ -220,6 +223,9 @@ the final words'''
 
     def test_getFieldSep(self):
         self.assertEqual('|', self.sample1.getFieldSep())
+
+    def test_getRecordEnd(self):
+        self.assertEqual(';;', self.sample1.getRecordEnd())
 
     def test_figureTextLegCloseWords50(self):
         expectedText = \

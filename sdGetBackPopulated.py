@@ -27,7 +27,7 @@ sampleObjType = sampleDataLib.PrimTriageClassifiedSample
 
 # for the Sample output file
 outputSampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=sampleObjType)
-RECORDEND    = outputSampleSet.getRecordEnd()
+RECORDEND    = sampleObjType.getRecordEnd()
 FIELDSEP     = sampleObjType.getFieldSep()
 
 #-----------------------------------

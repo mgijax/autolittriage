@@ -146,7 +146,8 @@ class RefSample (BaseSample):
             'abstract'      ,
             'extractedText' ,
             ]
-    fieldSep = FIELDSEP
+    fieldSep  = FIELDSEP
+    recordEnd = RECORDEND
     #----------------------
 
     def constructDoc(self):

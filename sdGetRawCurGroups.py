@@ -28,7 +28,7 @@ SAMPLE_OBJ_TYPE = sampleDataLib.CurGroupClassifiedSample
 sampleSet = sampleDataLib.ClassifiedSampleSet(sampleObjType=SAMPLE_OBJ_TYPE)
 # for the output delimited file
 FIELDSEP     = SAMPLE_OBJ_TYPE.getFieldSep()
-RECORDEND    = sampleSet.getRecordEnd()
+RECORDEND    = SAMPLE_OBJ_TYPE.getRecordEnd()
 
 POS_CLASSNAME = SAMPLE_OBJ_TYPE.getClassNames()[SAMPLE_OBJ_TYPE.getY_positive()]
 NEG_CLASSNAME = SAMPLE_OBJ_TYPE.getClassNames()[SAMPLE_OBJ_TYPE.getY_negative()]
