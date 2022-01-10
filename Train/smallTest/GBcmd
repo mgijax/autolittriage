@@ -1,5 +1,5 @@
 model=GB
-#dataDir=./data/jan2021
+#dataDir=./data/jan2022
 #baseDir=$dataDir/LegendsWords/Proc1
 #mtrun ${model}.py  --gsverbose
 mtrun ${model}.py --features --savemodel ${model}.pkl --predict  -v --gsverbose --rclassifier 341

@@ -1496,3 +1496,257 @@ tumor          selected papers:     0 predicted keep:     0 recall: 0.000
 qtl            selected papers:     0 predicted keep:     0 recall: 0.000
 Totals         keep     papers:     1 predicted keep:     0 recall: 0.000
 Predictions from RF_test_pred.txt - Wed Oct 16 15:08:10 2019
+### Start Time 2022/01/08-16-46-17  RF.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/smallTest/data/jan2022/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/smallTest/data/jan2022/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=241   randForSplit=259   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.96      0.98      0.97       138
+Train discard       0.97      0.96      0.96       113
+
+     accuracy                           0.97       251
+    macro avg       0.97      0.97      0.97       251
+ weighted avg       0.97      0.97      0.97       251
+
+Train (keep) F2: 0.9754    P: 0.9643    R: 0.9783    NPV: 0.9730
+
+['keep', 'discard']
+[[135   3]
+ [  5 108]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.63      0.80      0.71        15
+Valid discard       0.87      0.74      0.80        27
+
+     accuracy                           0.76        42
+    macro avg       0.75      0.77      0.75        42
+ weighted avg       0.78      0.76      0.77        42
+
+Valid (keep) F2: 0.7595    P: 0.6316    R: 0.8000    NPV: 0.8696
+
+['keep', 'discard']
+[[12  3]
+ [ 7 20]]
+
+### Best Pipeline Parameters:
+classifier__n_estimators: 5
+vectorizer__max_df: 0.75
+vectorizer__min_df: 0.02
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                stop_words='english')
+params: {'analyzer': 'word', 'binary': True, 'decode_error': 'strict', 'dtype': <class 'numpy.int64'>, 'encoding': 'utf-8', 'input': 'content', 'lowercase': False, 'max_df': 0.75, 'max_features': None, 'min_df': 0.02, 'ngram_range': (1, 1), 'preprocessor': None, 'stop_words': 'english', 'strip_accents': None, 'token_pattern': '(?u)\\b\\w\\w+\\b', 'tokenizer': None, 'vocabulary': None}
+
+classifier:
+RandomForestClassifier(class_weight='balanced', n_estimators=5, n_jobs=6,
+                       random_state=241, verbose=1)
+params: {'bootstrap': True, 'ccp_alpha': 0.0, 'class_weight': 'balanced', 'criterion': 'gini', 'max_depth': None, 'max_features': 'auto', 'max_leaf_nodes': None, 'max_samples': None, 'min_impurity_decrease': 0.0, 'min_impurity_split': None, 'min_samples_leaf': 1, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'n_estimators': 5, 'n_jobs': 6, 'oob_score': False, 'random_state': 241, 'verbose': 1, 'warm_start': False}
+
+
+### Feature weights: highest 20
++0.0385	cre
++0.0266	inform
++0.0255	prolifer
++0.0248	knock_out
++0.0233	defici
++0.0195	immunoprecipit
++0.0158	cooper
++0.0152	anim
++0.0145	cross
++0.0133	rat
++0.0126	examin
++0.0124	develop
++0.0121	creat
++0.0120	unpair
++0.0108	dose
++0.0106	term
++0.0102	probe
++0.0099	onset
++0.0099	movement
++0.0097	separ
+
+### Feature weights: lowest 20
++0.0000	withdraw
++0.0000	wk
++0.0000	wnt
++0.0000	women
++0.0000	work
++0.0000	world
++0.0000	worldwid
++0.0000	wound
++0.0000	wrote
++0.0000	xenograft
++0.0000	xhoi
++0.0000	xlsx
++0.0000	year
++0.0000	yellow
++0.0000	yfp
++0.0000	yield
++0.0000	young
++0.0000	zero
++0.0000	zone
++0.0000	zoom
+
+### Vectorizer:   Number of Features: 2972
+First 10 features: ['aa', 'aaa', 'aaaa', 'ab', 'abbrevi', 'aberr', 'abil', 'abl', 'ablat', 'abnorm']
+
+Middle 10 features: ['leak', 'learn', 'leav', 'led', 'lee', 'left', 'legend', 'leica', 'length', 'lentivir']
+
+Last 10 features: ['xhoi', 'xlsx', 'year', 'yellow', 'yfp', 'yield', 'young', 'zero', 'zone', 'zoom']
+
+### False positives for Validation set: 7
+28759640
+28683093
+28634226
+28938399
+28465349
+
+### False negatives for Validation set: 3
+25073926
+25373781
+27959934
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :          251          138          113          55%
+Validation Set      :           42           15           27          36%
+ValidationSplit: 0.20
+### End Time 2022/01/08-16-46-18. Total      1.32 seconds
+
+### Start Time 2022/01/08-16-47-37  RF.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/smallTest/data/jan2022/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/smallTest/data/jan2022/LegendsWords/Proc1/valSet.txt
+Test data path:       None
+Random Seeds:	randForClassifier=848   randForSplit=942   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.96      0.99      0.97       138
+Train discard       0.98      0.96      0.97       113
+
+     accuracy                           0.97       251
+    macro avg       0.97      0.97      0.97       251
+ weighted avg       0.97      0.97      0.97       251
+
+Train (keep) F2: 0.9812    P: 0.9645    R: 0.9855    NPV: 0.9818
+
+['keep', 'discard']
+[[136   2]
+ [  5 108]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.57      0.80      0.67        15
+Valid discard       0.86      0.67      0.75        27
+
+     accuracy                           0.71        42
+    macro avg       0.71      0.73      0.71        42
+ weighted avg       0.76      0.71      0.72        42
+
+Valid (keep) F2: 0.7407    P: 0.5714    R: 0.8000    NPV: 0.8571
+
+['keep', 'discard']
+[[12  3]
+ [ 9 18]]
+
+### Best Pipeline Parameters:
+classifier__n_estimators: 5
+vectorizer__max_df: 0.75
+vectorizer__min_df: 0.02
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                stop_words='english')
+params: {'analyzer': 'word', 'binary': True, 'decode_error': 'strict', 'dtype': <class 'numpy.int64'>, 'encoding': 'utf-8', 'input': 'content', 'lowercase': False, 'max_df': 0.75, 'max_features': None, 'min_df': 0.02, 'ngram_range': (1, 1), 'preprocessor': None, 'stop_words': 'english', 'strip_accents': None, 'token_pattern': '(?u)\\b\\w\\w+\\b', 'tokenizer': None, 'vocabulary': None}
+
+classifier:
+RandomForestClassifier(class_weight='balanced', n_estimators=5, n_jobs=6,
+                       random_state=848, verbose=1)
+params: {'bootstrap': True, 'ccp_alpha': 0.0, 'class_weight': 'balanced', 'criterion': 'gini', 'max_depth': None, 'max_features': 'auto', 'max_leaf_nodes': None, 'max_samples': None, 'min_impurity_decrease': 0.0, 'min_impurity_split': None, 'min_samples_leaf': 1, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'n_estimators': 5, 'n_jobs': 6, 'oob_score': False, 'random_state': 848, 'verbose': 1, 'warm_start': False}
+
+
+### Feature weights: highest 20
++0.0372	inform
++0.0265	defici
++0.0253	phenotyp
++0.0201	host
++0.0163	journal
++0.0161	incid
++0.0159	tumor_typ
++0.0158	splice
++0.0141	infect
++0.0138	basal
++0.0136	tumorigenesi
++0.0132	repress
++0.0130	percentag
++0.0126	bacteria
++0.0119	patch
++0.0117	cross
++0.0116	arrowhead
++0.0112	serin
++0.0110	neuron
++0.0105	chronic
+
+### Feature weights: lowest 20
++0.0000	window
++0.0000	withdraw
++0.0000	wk
++0.0000	wnt
++0.0000	women
++0.0000	world
++0.0000	worldwid
++0.0000	wound
++0.0000	wrote
++0.0000	xenograft
++0.0000	xhoi
++0.0000	xlsx
++0.0000	year
++0.0000	yellow
++0.0000	yfp
++0.0000	yield
++0.0000	young
++0.0000	zero
++0.0000	zone
++0.0000	zoom
+
+### Vectorizer:   Number of Features: 2972
+First 10 features: ['aa', 'aaa', 'aaaa', 'ab', 'abbrevi', 'aberr', 'abil', 'abl', 'ablat', 'abnorm']
+
+Middle 10 features: ['leak', 'learn', 'leav', 'led', 'lee', 'left', 'legend', 'leica', 'length', 'lentivir']
+
+Last 10 features: ['xhoi', 'xlsx', 'year', 'yellow', 'yfp', 'yield', 'young', 'zero', 'zone', 'zoom']
+
+### False positives for Validation set: 9
+28683093
+28368510
+28634226
+25393853
+25906260
+
+### False negatives for Validation set: 3
+25073926
+25825652
+26906676
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :          251          138          113          55%
+Validation Set      :           42           15           27          36%
+ValidationSplit: 0.20
+### End Time 2022/01/08-16-47-38. Total      1.20 seconds
+
+Recall for papers selected by each curation group. 42 papers analyzed
+ap             selected papers:    15 predicted keep:    12 recall: 0.800
+gxd            selected papers:     1 predicted keep:     1 recall: 1.000
+go             selected papers:    14 predicted keep:    11 recall: 0.786
+tumor          selected papers:     0 predicted keep:     0 recall: 0.000
+qtl            selected papers:     0 predicted keep:     0 recall: 0.000
+Totals         keep     papers:    15 predicted keep:    12 recall: 0.800
+Predictions from RF_val_pred.txt - Sat Jan  8 16:47:41 2022

@@ -8614,3 +8614,212 @@ tumor          selected papers:   458 predicted keep:   414 recall: 0.904
 qtl            selected papers:    26 predicted keep:    22 recall: 0.846
 Totals         keep     papers:  6706 predicted keep:  6053 recall: 0.903
 Predictions from GB_val_pred.txt - Mon Jan  4 14:38:09 2021
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.3371           0.0439           59.78m
+         2           1.2995           0.0376           49.97m
+         3           1.2634           0.0367           46.87m
+         4           1.2303           0.0327           45.29m
+         5           1.2009           0.0303           43.75m
+         6           1.1719           0.0268           43.10m
+         7           1.1471           0.0259           42.63m
+         8           1.1241           0.0231           42.47m
+         9           1.1009           0.0214           42.18m
+        10           1.0801           0.0206           41.86m
+        20           0.9329           0.0113           40.24m
+        30           0.8501           0.0064           39.58m
+        40           0.7996           0.0047           39.09m
+        50           0.7642           0.0030           38.42m
+        60           0.7344           0.0022           38.06m
+        70           0.7140           0.0014           37.66m
+        80           0.7003           0.0013           37.18m
+        90           0.6885           0.0013           36.71m
+       100           0.6736           0.0008           36.32m
+       200           0.6047           0.0002           32.93m
+       300           0.5669           0.0002           30.24m
+       400           0.5381          -0.0000           27.69m
+       500           0.5156           0.0002           25.13m
+       600           0.5053          -0.0001           22.62m
+       700           0.4891          -0.0001           20.27m
+       800           0.4771           0.0000           17.93m
+       900           0.4637           0.0000           15.63m
+      1000           0.4521          -0.0000           13.35m
+      Iter       Train Loss      OOB Improve   Remaining Time 
+         1           1.3406           0.0448           73.61m
+         2           1.3014           0.0387           61.42m
+         3           1.2655           0.0351           57.14m
+         4           1.2334           0.0328           56.11m
+         5           1.2022           0.0299           54.94m
+         6           1.1738           0.0285           54.04m
+         7           1.1475           0.0263           53.66m
+         8           1.1234           0.0239           53.13m
+         9           1.1012           0.0211           52.60m
+        10           1.0811           0.0206           52.46m
+        20           0.9328           0.0113           51.09m
+        30           0.8468           0.0059           50.34m
+        40           0.7945           0.0041           49.60m
+        50           0.7581           0.0028           49.17m
+        60           0.7306           0.0022           48.68m
+        70           0.7094           0.0015           48.09m
+        80           0.6945           0.0014           47.29m
+        90           0.6807           0.0013           47.00m
+       100           0.6652           0.0012           46.71m
+       200           0.6025           0.0002           42.00m
+       300           0.5662           0.0001           38.55m
+       400           0.5371           0.0001           35.34m
+       500           0.5197           0.0000           32.19m
+       600           0.5044          -0.0000           29.07m
+       700           0.4913          -0.0000           26.12m
+       800           0.4760          -0.0000           23.21m
+       900           0.4679          -0.0000           20.27m
+      1000           0.4595           0.0000           17.32m
+### Start Time 2022/01/10-09-48-19  GB.py	index file: index.out
+Training data path:   /Users/jak/work/autolittriage/Train/primTriage/data/jan2022/LegendsWords/Proc1/trainSet.txt	GridSearch Beta: 2
+Validation data path: /Users/jak/work/autolittriage/Train/primTriage/data/jan2022/LegendsWords/Proc1/valSet.txt
+Test data path:       /Users/jak/work/autolittriage/Train/primTriage/data/jan2022/LegendsWords/Proc1/testSet.txt
+Random Seeds:	randForClassifier=396   randForSplit=882   
+### Metrics: Training Set
+               precision    recall  f1-score   support
+
+   Train keep       0.94      0.92      0.93     30499
+Train discard       0.91      0.93      0.92     25960
+
+     accuracy                           0.93     56459
+    macro avg       0.92      0.93      0.92     56459
+ weighted avg       0.93      0.93      0.93     56459
+
+Train (keep) F2: 0.9240    P: 0.9401    R: 0.9200    NPV: 0.9083
+
+['keep', 'discard']
+[[28060  2439]
+ [ 1789 24171]]
+
+### Metrics: Validation Set
+               precision    recall  f1-score   support
+
+   Valid keep       0.89      0.90      0.90      6719
+Valid discard       0.92      0.91      0.91      8061
+
+     accuracy                           0.91     14780
+    macro avg       0.90      0.90      0.90     14780
+ weighted avg       0.91      0.91      0.91     14780
+
+Valid (keep) F2: 0.8986    P: 0.8926    R: 0.9001    NPV: 0.9162
+
+['keep', 'discard']
+[[6048  671]
+ [ 728 7333]]
+
+### Metrics: Test Set
+               precision    recall  f1-score   support
+
+   Test  keep       0.90      0.90      0.90      5080
+Test  discard       0.92      0.91      0.92      6157
+
+     accuracy                           0.91     11237
+    macro avg       0.91      0.91      0.91     11237
+ weighted avg       0.91      0.91      0.91     11237
+
+Test  (keep) F2: 0.8996    P: 0.8965    R: 0.9004    NPV: 0.9175
+
+['keep', 'discard']
+[[4574  506]
+ [ 528 5629]]
+
+### Note: blessed GB.
+
+### Best Pipeline Parameters:
+
+vectorizer:
+CountVectorizer(binary=True, lowercase=False, max_df=0.75, min_df=0.02,
+                ngram_range=(1, 2), stop_words='english')
+params: {'analyzer': 'word', 'binary': True, 'decode_error': 'strict', 'dtype': <class 'numpy.int64'>, 'encoding': 'utf-8', 'input': 'content', 'lowercase': False, 'max_df': 0.75, 'max_features': None, 'min_df': 0.02, 'ngram_range': (1, 2), 'preprocessor': None, 'stop_words': 'english', 'strip_accents': None, 'token_pattern': '(?u)\\b\\w\\w+\\b', 'tokenizer': None, 'vocabulary': None}
+
+classifier:
+GradientBoostingClassifier(learning_rate=0.05, max_features=0.7,
+                           min_samples_leaf=150, min_samples_split=600,
+                           n_estimators=1600, random_state=396, subsample=0.85,
+                           verbose=1)
+params: {'ccp_alpha': 0.0, 'criterion': 'friedman_mse', 'init': None, 'learning_rate': 0.05, 'loss': 'deviance', 'max_depth': 3, 'max_features': 0.7, 'max_leaf_nodes': None, 'min_impurity_decrease': 0.0, 'min_impurity_split': None, 'min_samples_leaf': 150, 'min_samples_split': 600, 'min_weight_fraction_leaf': 0.0, 'n_estimators': 1600, 'n_iter_no_change': None, 'presort': 'deprecated', 'random_state': 396, 'subsample': 0.85, 'tol': 0.0001, 'validation_fraction': 0.1, 'verbose': 1, 'warm_start': False}
+
+
+### Feature weights: highest 20
++0.2802	mice figur
++0.1607	wild_typ mice
++0.0830	cre
++0.0570	wild_typ
++0.0412	litterm
++0.0317	mut_mut
++0.0263	transgen mice
++0.0256	genotyp
++0.0150	knock_out
++0.0145	transgen
++0.0134	knock_out mice
++0.0121	relat figur
++0.0104	mice compar
++0.0083	mut_mut mice
++0.0072	mice strain
++0.0052	defici
++0.0051	embryonic_day
++0.0050	support inform
++0.0045	mice express
++0.0041	xenograft
+
+### Feature weights: lowest 20
++0.0000	wnt
++0.0000	wnt signal
++0.0000	wonder
++0.0000	work
++0.0000	wors
++0.0000	wound
++0.0000	wound heal
++0.0000	wrote
++0.0000	wrote manuscript
++0.0000	yeast
++0.0000	yellow arrow
++0.0000	yfp
++0.0000	yield
++0.0000	younger
++0.0000	zeiss
++0.0000	zero
++0.0000	zhang
++0.0000	zhang et
++0.0000	zinc
++0.0000	zoom
+
+### Vectorizer:   Number of Features: 6752
+First 10 features: ['aa', 'aaa', 'aav', 'ab', 'abbrevi', 'abcam', 'aberr', 'abi', 'abil', 'abl']
+
+Middle 10 features: ['introduct', 'intron', 'invad', 'invas', 'invers', 'invers correl', 'invert', 'investig', 'investig effect', 'investig express']
+
+Last 10 features: ['young', 'younger', 'zebrafish', 'zeiss', 'zero', 'zhang', 'zhang et', 'zinc', 'zone', 'zoom']
+
+### False positives for Validation set: 728
+28057939
+28095433
+28448580
+25121482
+25738498
+
+### False negatives for Validation set: 671
+28422959
+28395336
+28610618
+26599547
+28112164
+
+### Sample set sizes
+                    :      Samples     Positive     Negative   % Positive
+Training Set        :        56459        30499        25960          54%
+Validation Set      :        14780         6719         8061          45%
+Test Set            :        11237         5080         6157          45%
+ValidationSplit: 0.20
+### End Time 2022/01/10-11-24-18. Total   5759.02 seconds
+
+Recall for papers selected by each curation group. 14780 papers analyzed
+ap             selected papers:  6497 predicted keep:  5949 recall: 0.916
+gxd            selected papers:   511 predicted keep:   486 recall: 0.951
+go             selected papers:  5322 predicted keep:  4899 recall: 0.921
+tumor          selected papers:   435 predicted keep:   386 recall: 0.887
+qtl            selected papers:    25 predicted keep:    19 recall: 0.760
+Totals         keep     papers:  6719 predicted keep:  6048 recall: 0.900
+Predictions from GB_val_pred.txt - Mon Jan 10 11:25:24 2022

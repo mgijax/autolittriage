@@ -1,4 +1,4 @@
-#!/usr/bin/bash -x
+#!/bin/bash -x
 
 # buildSmall.sh
 # Purpose: build small training/validation/test dataset for relevance classifier
