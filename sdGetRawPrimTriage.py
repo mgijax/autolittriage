@@ -139,6 +139,8 @@ BUILD_OMIT_TABLE = [ \
         on (r._refs_key = bs._refs_key and bs.iscurrent=1 )
         join bib_status_view bsv on (r._refs_key = bsv._refs_key)
         left join bib_workflow_tag bt on (r._refs_key = bt._refs_key)
+        join bib_workflow_relevance wr on (r._refs_key = wr._refs_key
+                                                and wr.iscurrent=1)
         join acc_accession a
         on (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
             and a._mgitype_key=1 )
@@ -159,8 +161,8 @@ BUILD_OMIT_TABLE = [ \
         )
         or
         (
-            r.isDiscard = 1
-            and bt._tag_key = 49170000  -- MGI:Mice_in_references_only
+            wr._relevance_key = 70594666        -- discard
+            and bt._tag_key = 49170000          -- MGI:Mice_in_references_only
         )
 ''' % (START_DATE),
 '''
@@ -193,7 +195,8 @@ FINAL_TMP_TABLE_SQL =  \
     create temporary table %s
     as
     select distinct r._refs_key,
-        r.isdiscard, r.year,
+        rt.term as knownClassName,
+        r.year,
         to_char(r.creation_date, 'MM/DD/YYYY') as "creation_date",
         r.isreviewarticle,
         typeTerm.term as ref_type,
@@ -213,6 +216,9 @@ FINAL_TMP_TABLE_SQL =  \
         -- (was originally including supp status term for analysis, but
         --  sometimes there were duplicate status rcds in bib_workflow_data,
         --  so I'm skipping this for now)
+        join bib_workflow_relevance wr on (r._refs_key = wr._refs_key 
+                                                and wr.iscurrent=1)
+        join voc_term rt on (wr._relevance_key = rt._term_key)
         join voc_term typeTerm on (r._referencetype_key = typeTerm._term_key)
         join acc_accession a on
              (a._object_key = r._refs_key and a._logicaldb_key=29 -- pubmed
@@ -230,7 +236,8 @@ WHERE_CLAUSES = { \
 'discard_after' :
     '''
     where -- discard_after
-    r.isdiscard = 1
+    wr._relevance_key = 70594666        -- discard
+        -- Note: using rt.term = 'discard', I could not get the query to return
     and tr.creation_date > '%s' -- After lit triage release
     and tr.creation_date <= '%s' -- before end date
     ''' % (LIT_TRIAGE_DATE, END_DATE),
@@ -268,10 +275,11 @@ WHERE_CLAUSES = { \
 'test_2020' :
     '''
     where -- test set of 2020 refs
-    tr.creation_date > '%s' -- After end date
+    tr.creation_date > '%s'          -- After end date
+    and tr.creation_date <= '12/31/2020' -- before end of 2020
     and
     (
-        (r.isdiscard = 1)
+        (wr._relevance_key = 70594666)        -- discard
         or
         (bsv.ap_status in ('Chosen', 'Indexed', 'Full-coded')
          or bsv.go_status in ('Chosen', 'Indexed', 'Full-coded')
@@ -432,13 +440,7 @@ def sqlRecord2ClassifiedSample(r,		# sql Result record
     newR = {}
     newSample = sampleObjType()
 
-    if r['isdiscard'] == 1:
-        knownClassIndex = newSample.getY_negative()
-    else:
-        knownClassIndex = newSample.getY_positive()
-
-    newR['knownClassName']= newSample.getClassNames()[knownClassIndex]
-   
+    newR['knownClassName']= str(r['knownClassName'])
     newR['ID']            = str(r['pubmed'])
     newR['creationDate']  = str(r['creation_date'])
     newR['year']          = str(r['year'])
