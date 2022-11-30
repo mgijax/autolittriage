@@ -8,15 +8,18 @@ We treat tables as figures too.
 As we refer to "figure caption" or "figure text" or "fig", we mean "tables" and
 "table text" too.
 
-Example:
-    converter = Text2FigConverter()
-    for b in converter.text2FigText(text)
+Example Usage:
+    converter = Text2FigConverter(conversionType='legCloseWords')
+    for b in converter.text2FigText(text):
         print b  # a chunk of text that contains figure related text
+
+To run automated tests:   python test_figureText.py [-v]
 
 #######################################################################
 """
 
 import re
+from utilsLib import spacedOutRegex
 
 class Text2FigConverter (object):
     """
@@ -39,6 +42,9 @@ class Text2FigConverter (object):
                                         #   to include on each side of "fig"
                 ):
         self.conversionType = conversionType
+        if conversionType not in ['legends', 'legParagraphs', 'legCloseWords']:
+            raise AttributeError("invalid text2fig conversion type '%s'\n" % \
+                                                    self.conversionType)
         self.numWords = numWords
 
     def text2FigText(self, text,
@@ -46,16 +52,17 @@ class Text2FigConverter (object):
         """
         Return list of figure/table text blurbs in text
         """
-        if self.conversionType == 'legends':
+        if self.conversionType == 'legCloseWords':
+            return text2FigText_LegendAndWords(text,self.numWords)
+        elif self.conversionType == 'legends':
             return text2FigText_Legend(text)
         elif self.conversionType == 'legParagraphs':
             return text2FigText_LegendAndParagraph(text)
-        elif self.conversionType == 'legCloseWords':
-            return text2FigText_LegendAndWords(text,self.numWords)
-        else:
-            raise AttributeError("invalid text2fig conversion type '%s'\n" % \
-                                                    self.conversionType)
 #---------------------------------
+
+# Nomenclature:
+# 'regex' = the text of a regular expression (as a string)
+# 're'    = a regular expression object from the re module
 
 PARAGRAPH_BOUNDARY = '\n\n'	# defines a paragraph boundary
 PARAGRAPH_BOUNDARY_LEN = len(PARAGRAPH_BOUNDARY)
@@ -64,11 +71,23 @@ PARAGRAPH_BOUNDARY_LEN = len(PARAGRAPH_BOUNDARY)
 #  i.e.,  "fig" or "figure" or "figures" or "table" or "tables"
 figureRe = re.compile(r'\b(?:fig(?:ure)?|table)s?\b', re.IGNORECASE)
 
-# match a word that can begin a figure or table legend.
+# match the words that can begin a figure or table legend.
 #   i.e., "fig" or "figure" or "supp...figure" or "table"
 #   Note no plurals
 legendRe = re.compile(\
-        r'\b(?:(?:(?:supp\w*|online|extended\sdata)\s)?fig(?:ure)?|table)\b',
+        r'\b(?:' +
+            r'(?:' +  # words that sometimes preceed "Figure" "Table" in legend
+                r'(?:' + r's[ ]*u[ ]*p[ ]*p[ ]*(?:\w|[ ])*' + r'|' +
+                    spacedOutRegex('online')                + r'|' +
+                    spacedOutRegex('extendeddata') + 
+                r')\s+' +
+            r')?' +
+            r'(?:' +    # the base words that start a legend
+                spacedOutRegex('figure') + r'|' +
+                spacedOutRegex('fig') + r'|' +
+                spacedOutRegex('table') +
+            r')' +
+        r')\b',
         re.IGNORECASE)
 
 #---------------------------------
@@ -95,17 +114,21 @@ def text2FigText_Legend(text,
     return [ p for p in paragraphIterator(text) if legendRe.match(p) ]
 #---------------------------------
 
-def text2FigText_LegendAndParagraph(text,
-    ):
+def text2FigText_LegendAndParagraph(text,):
     """
     Return list of paragraphs in text that talk about figures or tables
     (includes legends)
     """
-    return [ p for p in paragraphIterator(text) if figureRe.search(p) ]
+    figParagraphs = []
+
+    for p in paragraphIterator(text):
+        if legendRe.match(p) or figureRe.search(p):
+            figParagraphs.append(p)
+
+    return figParagraphs
 #---------------------------------
 
-def text2FigText_LegendAndWords(text, numWords=50,
-    ):
+def text2FigText_LegendAndWords(text, numWords=50,):
     """
     Return list of (full) legends and parts of paragraphs that talk about
       figures or tables
@@ -123,8 +146,7 @@ def text2FigText_LegendAndWords(text, numWords=50,
     return figParagraphs
 #---------------------------------
 
-def getFigureBlurbs(text, numWords=50,
-    ):
+def getFigureBlurbs(text, numWords=50,):
     """
     Search through text for references to figures/tables.
     Return a list of text blurbs consisting of numWords around those references
@@ -175,153 +197,3 @@ def getFigureBlurbs(text, numWords=50,
 
     return blurbs
 #---------------------------------
-
-if __name__ == "__main__": 	# ad hoc test code
-    testDoc = """
-    initial first words table fig
-    blah1 fig
-    blah2 blah3 fig
-    blah4 blah5 blah6 fig
-    blah7 blah8 blah9 blah10 fig
-    blah11 blah12 blah13 blah14 blah15 fig
-    blah16 blah17 blah18 blah19 blah20 blah21 fig
-    blah22 blah23 blah24 blah25 blah26 blah27 blah28 fig
-    final words
-    """
-    if True:	# getFigureBlurbs()
-        print("getFigureBlurbs() w/ numWords=2")
-        blurbs = getFigureBlurbs(testDoc, numWords=2)
-        for b in blurbs:
-            print("****|%s|****" % b)
-
-        print()
-        print("getFigureBlurbs() w/ numWords=3")
-        blurbs = getFigureBlurbs(testDoc, numWords=3)
-        for b in blurbs:
-            print("****|%s|****" % b)
-
-    if True:	# paragraphIterator
-        print()
-        print('paragraphIterator')
-        testCases = [ 'abc\n\ndef ghi\n\nthe end',
-                    '',
-                    'abc def',
-                    '\n\nabc def\n\n',
-                    ]
-        for text in testCases:
-            print('--------')
-            for p in paragraphIterator(text):
-                print("'%s'" % p)
-
-    simpleTestDoc = """
-start of text. Fig 1 is really interesting, I mean it. Really.
-
-Some intervening text. blah1 blah2 blah3 blah4 blah5 blah6
-
-Figure 1: this is the caption 1. I really like it too.
-and this is a bit more of the caption.
-
-Some intervening text. this is suitable and should not match. Nor should 
-gofigure
-
-Figures can be helpful, but this is not a figure legend.
-
-Some text about tables. blah blah.
-
-Table: the start of a table
-and this is a bit more of the caption.
-
-Figure 2: this is caption 2. Also spellbinding
-and this is a bit more of the caption.
-
-Supplemental Figure 3: this is the caption of a supplemental figure.
-and this is a bit more of the caption.
-
-Supp Figure 3:
-this is the second caption of a supp figure.
-and this is a bit more of the caption.
-
-Extended Data Figure 3: this is the caption of a extended data figure.
-and this is a bit more of the caption.
-
-Extended Data Figure:
-this is the caption of a extended data figure.
-and this is a bit more of the caption.
-
-Online Figure 3: this is the caption of a online figure.
-and this is a bit more of the caption.
-
-here is a supp figure mention
-
-And here is the end of this amazing document. Really it is over
-"""
-    if True:	# Legend and Paragraphs
-
-        print()
-        print("Text2FigConverter Just Legends")
-        blurbs = Text2FigConverter().text2FigText(simpleTestDoc)
-        for b in blurbs:
-            print(b)
-            print()
-            #print "****|%s|****" % b
-
-        print()
-        print("Text2FigConverter Legends and Paragraphs")
-        blurbs = Text2FigConverter(conversionType="legParagraphs").text2FigText(simpleTestDoc)
-        for b in blurbs:
-            print(b)
-            print()
-            #print "****|%s|****" % b
-
-        print()
-        print("Text2FigConverter Legends and Words, numWords=5")
-        blurbs = Text2FigConverter(conversionType="legCloseWords", numWords=5).text2FigText(simpleTestDoc)
-        for b in blurbs:
-            print("****|%s|****" % b)
-            print()
-    if False:
-        print("Should raise error")
-        c = Text2FigConverter(conversionType='foo').text2FigText('text')
-
-
-    if True:	# boundary conditions - Legend and Paragraphs
-        print()
-        print("Boundary conditions in Legends and paragraphs")
-        simpleTestDoc = "no paragraph start but figure\n\n"
-        blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
-        for b in blurbs:
-            print("'%s'" % b)
-        print()
-
-        simpleTestDoc = "\n\nno paragraph end figure"
-        blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
-        for b in blurbs:
-            print("'%s'" % b)
-        print()
-
-        simpleTestDoc = "no paragraph start or end figure"
-        blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
-        for b in blurbs:
-            print("'%s'" % b)
-        print()
-
-        simpleTestDoc = ""
-        print("empty string")
-        blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
-        for b in blurbs:
-            print("'%s'" % b)
-        print()
-
-        simpleTestDoc = "s\n\n figure 1 blah\n\nD\n\n a fig sentence\n\nE"
-        print("one character")
-        blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
-        for b in blurbs:
-            print("'%s'" % b)
-        print()
-
-        simpleTestDoc = "\n\n"
-        print("only para boundary")
-        blurbs = text2FigText_LegendAndParagraph(simpleTestDoc)
-        for b in blurbs:
-            print("'%s'" % b)
-        print()
