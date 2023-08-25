@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 #-----------------------------------
 '''
   Purpose:
@@ -118,7 +116,7 @@ BUILD_TMP_TABLES = [ \
     # Currently, reasons to omit:
     # (1) articles "indexed" by pm2gene and not selected by a group other than
     #     GO
-    # (2) created by the goa load and not selected by a group other than GO.
+    # (2) created by the go load and not selected by a group other than GO.
     # In these cases, no curator has selected the paper, so we don't really
     #  know if these are relevant (not good ground truth)
     #
@@ -141,7 +139,7 @@ BUILD_TMP_TABLES = [ \
         (   (   (bs._status_key = 31576673 and bs._group_key = 31576666 and 
                     bs._createdby_key = 1571 -- index for GO by pm2geneload
                 )
-                or r._createdby_key = 1575 -- created by littriage_goa
+                or r._createdby_key = 1575 -- created by littriage_go
             )
             and           -- not selected by any other group
             (

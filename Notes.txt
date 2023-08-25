@@ -2070,20 +2070,20 @@ Jan 27, 2020
 
 Feb 13, 2020
     Did everyone meeting on Feb 11, presenting results for the GB classifier.
-    Harold brought up the fact that the littriage_goa loader has added papers
+    Harold brought up the fact that the littriage_go loader has added papers
     selected for GO that may not fit our manual triage criteria. So maybe we
     want to remove them from the training/sample set?
     Did some queries:
-	1177 papers in the db created by littriage_goa
+	1177 papers in the db created by littriage_go
 	 346 of these have actually been selected/indexed/curated by AP/MTB/GXD
 
 	so there are not TOO many and some would have been selected by other 
 	curators anyway. So I'm not inclined to worry about removing them.
 	However, it would be pretty easy to add papers selected ONLY for GO
-	that are created by the littriage_goa user to the tmp_omit table
+	that are created by the littriage_go user to the tmp_omit table
 	in sdGetRawPrimTriage.py (831 papers).
 
-	Some of the "challenging" journals may be primarily for littriage_goa
+	Some of the "challenging" journals may be primarily for littriage_go
 	loaded papers however. Probably worth omitting and rerunning everything.
 
     Connie also points out that recall score for GO papers is not necessarily
@@ -2144,7 +2144,7 @@ Oct 2, 2020
             python 3.7 vs 3.8. I could do that, but I'm presuming things should
             work with both versions.
     Modified sdGetRawPrimtriage.py to
-        a) omit papers loaded by littriage_goa if they have not been selected
+        a) omit papers loaded by littriage_go if they have not been selected
             by a group other than GO
         b) added end date for training set selection (12/31/2019), and changed
             the START_DATE to 1/1/2017 to lower the number of keep_before
