@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 # Read a text file (extracted text) (from stdin) and run the
 #  figure text extraction, output the figure text to stdout.
 #

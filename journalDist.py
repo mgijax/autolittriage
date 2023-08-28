@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 #
 # journalDist.py
 # Reads sample records from files and computes the journal counts/distribution 

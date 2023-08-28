@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 #
 # Compute recall and precision for subsets of papers
 # Current subsets supported:

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3 
 #
 # sdSplitSamples.py
 # Takes 1 or more files of samples & randomly splits the samples into 2 outputs

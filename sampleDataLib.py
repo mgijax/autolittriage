@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 #
 # Library to support handling of lit triage samples (training samples or
 #  samples to predict)
