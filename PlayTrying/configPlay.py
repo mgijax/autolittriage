@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # play with, test using configparser to find config files
 import utilsLib
 import configparser

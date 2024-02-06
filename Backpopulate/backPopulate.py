@@ -1,5 +1,3 @@
-#!/usr/bin/python2.7
-
 """ Author:  Jim, August 2018
     For specified journals, and other params (volume, issue, date range)
 	get PDFs (and/or .xml) from PMC Eutils and Open Access (OA) search.

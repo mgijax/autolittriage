@@ -1,5 +1,3 @@
-#!/usr/bin/python2.7
-
 """ Author:  Jim, Sept 2018
     Convert downloaded PDF file names from PMID_nnnnn.pdf to PMCmmmmm.pdf
 """

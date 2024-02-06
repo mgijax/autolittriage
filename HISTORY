@@ -1,11 +1,16 @@
-TAG: littriageload-6-0-22-2
+TAG: autolittriage-6-0-23-1
+DATE: 02/06/2024
+STAFF: lec
+wts2-1397/fl2-731/Migration to Rocky OS/backend/data loads
+
+TAGautolittriage-6-0-22-2
 DATE: 08/28/2023
 STAFF: lec
 wts2-1155/fl2-491/GOC:  littriageload/merge littriage_goa/littriage_noctua folders to littriage_go
 sdGetBackPopulated.py
 Notes.txt
 
-TAG: littriageload-6-0-22-1
+TAGautolittriage-6-0-22-1
 DATE: 11/30/2022
 STAFF: lec
 fl2/gxd secondary triage

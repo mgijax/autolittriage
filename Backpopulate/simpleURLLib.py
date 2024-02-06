@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 """
 Simple Library for reading URLs.
 Simple readURL(url, ...) function

@@ -1,5 +1,3 @@
-#!/usr/bin/python
-
 """
 Library for NCBI eutils API helper functions
 Author: Jim

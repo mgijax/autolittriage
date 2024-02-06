@@ -1,5 +1,3 @@
-#!/usr/bin/env python2.7
-
 #
 #  Purpose:
 #	   run sql to get references and their extracted text.
