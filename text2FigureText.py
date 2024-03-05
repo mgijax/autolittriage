@@ -11,20 +11,20 @@ def parseCmdLine():
     description='Read text from stdin, write figure text to stdout.')
 
     parser.add_argument('--figoption', dest='figOption', action='store',
-        choices=['legend', 'paragraph', 'words', 'close words'],default='words',
+        choices=['legends', 'legParagraphs', 'legCloseWords'],
+        default='legCloseWords',
         help="the type of fig text extraction. See figureText.py. " +
-        "'words' = 'close words', the default.")
+        "legCloseWords is default. This is used by littriageload.")
 
     parser.add_argument('--numwords', '--words', dest='numWords',action='store',
         type=int, default=50,
-        help="number of words for the 'words' figoption. See figureText.py. " +
-        "Default: 50.")
+        help="number of words for legCloseWords figoption. See figureText.py." +
+        " Default: 50 (used by littriageload)")
 
     parser.add_argument('-q', '--quiet', dest='verbose', action='store_false',
         required=False, help="skip helpful messages to stderr")
 
     args = parser.parse_args()
-    if args.figOption == 'words': args.figOption = 'close words'
     args.inputFile = sys.stdin	# set here in case we ever have input file opt
 
     return args
