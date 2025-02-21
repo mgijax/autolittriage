@@ -72,10 +72,7 @@ def getArgs():
 
     args =  parser.parse_args()
 
-    if args.server == 'adhoc':
-        args.host = 'mgi-adhoc.jax.org'
-        args.db = 'mgd'
-    elif args.server == 'prod':
+    if args.server == 'prod':
         args.host = 'bhmgidb01.jax.org'
         args.db = 'prod'
     elif args.server == 'dev':

@@ -1,7 +1,8 @@
+TAG: autolittriage-6-0-25-2
 TAG: autolittriage-6-0-25-1
-DATE: 01/27/2025
+DATE: 01/27/2025, 02/21/2025
 STAFF: lec
-wts2-1605/e4g-124/Retire AdHoc Server : remove local dependencies" ; git push
+wts2-1605/e4g-124/Retire AdHoc Server : remove local dependencies
         modified:   Backpopulate/getMgiPubmedIDs.py
         modified:   sdGetBackPopulated.py
         modified:   sdGetRawCurGroups.py
